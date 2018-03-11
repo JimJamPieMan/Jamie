@@ -350,12 +350,12 @@ const search = require('youtube-search');
      var opts = {
   maxResults: 1,
   key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
-  kind: "youtube#video"
+   type:'video'
 };
 
 search(args[1], opts, function(err, results) {
   if(err) return console.log(err);
-var searchUrl = results.link;
+var searchUrl = results[0].link;
   console.dir(searchUrl);
   message.channel.send(searchUrl);
 
