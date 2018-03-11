@@ -349,7 +349,8 @@ const search = require('youtube-search');
    }else{
      var opts = {
   maxResults: 1,
-  key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314'
+  key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
+  kind: "youtube#video"
 };
 
 search(args[1], opts, function(err, results) {
