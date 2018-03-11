@@ -347,7 +347,16 @@ const search = require('youtube-search');
        }
 
    }else{
-     message.reply('only youtube links are allowed you fucking fucccck');
+     var opts = {
+  maxResults: 1,
+  key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314'
+};
+
+search(args[1], opts, function(err, results) {
+  if(err) return console.log(err);
+
+  console.dir(results);
+});
    }
 
 
