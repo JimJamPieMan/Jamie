@@ -355,8 +355,22 @@ const search = require('youtube-search');
 
 search(args[1], opts, function(err, results) {
   if(err) return console.log(err);
+var searchUrl = results.link;
+  console.dir(searchUrl);
+  message.channel.send(searchUrl);
 
-  console.dir(results);
+  if (!servers[message.guild.id]) servers[message.guild.id] = {
+    queue: []
+  }
+  var server = servers[message.guild.id];
+
+  server.queue.push(searchUrl);
+
+  message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+
+  if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+    play(connection, message);
+  });
 });
    }
 
