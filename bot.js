@@ -1,5 +1,6 @@
  const Commando = require('discord.js');
  const Bot = new Commando.Client();
+const search = require('youtube-search');
  //const config = require('/config.json');
  const randomPuppy = require('random-puppy');
  const randomCat = require('random-cat');
@@ -326,19 +327,30 @@
                return;
              }
 
-             if (!servers[message.guild.id]) servers[message.guild.id] = {
-               queue: []
-             }
-             var server = servers[message.guild.id];
+             if (message.content.includes("http://") || message.content.includes("https://")) {
+       if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
+         if (!servers[message.guild.id]) servers[message.guild.id] = {
+           queue: []
+         }
+         var server = servers[message.guild.id];
 
-             server.queue.push(args[1]);
+         server.queue.push(args[1]);
 
-             message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+         message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
 
-             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
-               play(connection, message);
-             });
-             break;
+         if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+           play(connection, message);
+         });
+         break;
+       } else {
+           message.reply('only youtube links are allowed you fucking fucccck');
+       }
+
+   }else{
+     message.reply('only youtube links are allowed you fucking fucccck');
+   }
+
+
            case "skip":
              var server = servers[message.guild.id];
 
