@@ -373,6 +373,7 @@ var searchUrl = results[0].link;
   });
 });
    }
+   break;
 
 
            case "skip":
