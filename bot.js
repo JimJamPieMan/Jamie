@@ -1,6 +1,6 @@
  const Commando = require('discord.js');
  const Bot = new Commando.Client();
-const search = require('youtube-search');
+ const search = require('youtube-search');
  //const config = require('/config.json');
  const randomPuppy = require('random-puppy');
  const randomCat = require('random-cat');
@@ -328,52 +328,53 @@ const search = require('youtube-search');
              }
 
              if (message.content.includes("http://") || message.content.includes("https://")) {
-       if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
-         if (!servers[message.guild.id]) servers[message.guild.id] = {
-           queue: []
-         }
-         var server = servers[message.guild.id];
+               if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
+                 if (!servers[message.guild.id]) servers[message.guild.id] = {
+                   queue: []
+                 }
+                 var server = servers[message.guild.id];
 
-         server.queue.push(args[1]);
+                 server.queue.push(args[1]);
 
-         message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
 
-         if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
-           play(connection, message);
-         });
-         break;
-       } else {
-           message.reply('only youtube links are allowed you fucking fucccck');
-       }
+                 if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+                   play(connection, message);
+                 });
+                 break;
+               } else {
+                 message.reply('only youtube links are allowed you fucking fucccck');
+               }
 
-   }else{
-     var opts = {
-  maxResults: 1,
-  key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
-   type:'video'
-};
+             } else {
+               var opts = {
+                 maxResults: 1,
+                 key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
+                 type: 'video'
+               };
 
-search(args[1], opts, function(err, results) {
-  if(err) return console.log(err);
-var searchUrl = results[0].link;
-  console.dir(searchUrl);
-  message.channel.send(searchUrl);
+               search(args[1], opts, function(err, results) {
+                 if (err) return console.log(err);
+                 var searchUrl = results[0].link;
+                 console.dir(searchUrl);
+                 message.channel.send(searchUrl);
+                 });
 
-  if (!servers[message.guild.id]) servers[message.guild.id] = {
-    queue: []
-  }
-  var server = servers[message.guild.id];
+                 if (!servers[message.guild.id]) servers[message.guild.id] = {
+                   queue: []
+                 }
+                 var server = servers[message.guild.id];
 
-  server.queue.push(searchUrl);
+                 server.queue.push(searchUrl);
 
-  message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
 
-  if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
-    play(connection, message);
-  });
-});
-   }
-   break;
+                 if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+                   play(connection, message);
+                 });
+
+             }
+             break;
 
 
            case "skip":
