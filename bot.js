@@ -396,6 +396,9 @@
              message.channel.sendMessage("resumed mother fukaaaaaaa");
              break;
 
+             case "queue"
+var server = servers[message.guild.id];
+message.channel.send(server.queue);
 
          }
 
