@@ -371,17 +371,7 @@
            case "skip":
              var server = servers[message.guild.id];
 
-             if (server.dispatcher) server.dispatcher.end(skip());
-function skip(){
-  if (server.queue[0]){
-     play(connection, message);
-   }
-  else {
-    connection.disconnect();
-  message.channel.sendMessage("look at all those songs that just played");
-}
-}
-
+             if (server.dispatcher) server.dispatcher.end();
              message.channel.sendMessage("i skipped that bitch just like skipping in primary school");
              break;
 
