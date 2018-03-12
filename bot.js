@@ -38,16 +38,7 @@
    settings.delete(guild.id);
  });
 
- Bot.on("guildMemberAdd", member => {
-   // This executes when a member joins, so let's welcome them!
-   const guildConf = settings.get(member.guild.id);
 
-   // Our welcome message has a bit of a placeholder, let's fix that:
-   const welcomeMessage = guildConf.welcomeMessage.replace("{{user}}", member.user.tag)
-
-   // we'll send to the default channel - not the best practice, but whatever
-   member.guild.defaultChannel.send(welcomeMessage).catch(console.error);
- });
 
  Bot.on('ready', () => {
 
@@ -380,7 +371,17 @@
            case "skip":
              var server = servers[message.guild.id];
 
-             if (server.dispatcher) server.dispatcher.end();
+             if (server.dispatcher) server.dispatcher.end(skip());
+function skip(){
+  if (server.queue[0]){
+     play(connection, message);
+   }
+  else {
+    connection.disconnect();
+  message.channel.sendMessage("look at all those songs that just played");
+}
+}
+
              message.channel.sendMessage("i skipped that bitch just like skipping in primary school");
              break;
 
