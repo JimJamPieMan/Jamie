@@ -312,7 +312,7 @@ Bot.on("message", async message => {
             break;
           case "queue":
             var server = servers[message.guild.id];
-            message.channel.send(``\`\`\`${server.queue.join""}\`\`\``);
+            message.channel.send(`\`\`\`${server.queue.join(" <br> ")}\`\`\``);
         }
 
         function play(connection, message) {
