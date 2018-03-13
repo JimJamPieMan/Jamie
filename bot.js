@@ -240,18 +240,19 @@ Bot.on("message", async message => {
             }
             if (message.content.includes("http://") || message.content.includes("https://")) {
               if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
-                if (!servers[message.guild.id]) servers[message.guild.id] = {
+                if (!servers[message.guild.id]) {
+                  servers[message.guild.id] = {
                   queue: []
                 }
+              }
                 var server = servers[message.guild.id];
-
                 server.queue.push(args[1]);
-
                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
-
-                if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+                if (!message.guild.voiceConnection) {
+                  message.member.voiceChannel.join().then(function(connection) {
                   play(connection, message);
                 });
+              }
                 break;
               } else {
                 message.reply('only youtube links are allowed you fucking fucccck');
@@ -267,15 +268,19 @@ Bot.on("message", async message => {
                 var searchUrl = results[0].link;
                 console.dir(searchUrl);
                 message.channel.send(searchUrl);
-                if (!servers[message.guild.id]) servers[message.guild.id] = {
+                if (!servers[message.guild.id]) {
+                  servers[message.guild.id] = {
                   queue: []
                 }
+              }
                 var server = servers[message.guild.id];
                 server.queue.push(searchUrl);
                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
-                if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection) {
+                if (!message.guild.voiceConnection){
+                  message.member.voiceChannel.join().then(function(connection) {
                   play(connection, message);
                 });
+              }
               });
             }
             break;
@@ -314,9 +319,11 @@ Bot.on("message", async message => {
           server.dispatcher.setVolume(serverVol);
           server.queue.shift();
           server.dispatcher.on("end", function() {
-            if (server.queue[0]) play(connection, message);
-            else connection.disconnect();
+            if (server.queue[0]){
+              play(connection, message);
+            }else{ connection.disconnect();
             message.channel.sendMessage("look at all those songs that just played");
+          }
           });
         }
       }
