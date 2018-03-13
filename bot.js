@@ -263,7 +263,7 @@ Bot.on("message", async message => {
                 key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
                 type: 'video'
               };
-              search(args[1], opts, function(err, results) {
+              search(args[1]++, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
                 console.dir(searchUrl);
@@ -327,7 +327,7 @@ Bot.on("message", async message => {
           server.dispatcher.on("end", function() {
             if (server.queue[0]){
 
-              setTimeout(() => play(connection, message);, 200)
+              setTimeout(() => play(connection, message), 200)
 
             }else{ connection.disconnect();
             message.channel.sendMessage("look at all those songs that just played");
