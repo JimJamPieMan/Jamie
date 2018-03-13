@@ -286,23 +286,28 @@ Bot.on("message", async message => {
             break;
           case "skip":
             var server = servers[message.guild.id];
-            if (server.dispatcher) server.dispatcher.end();
+            if (server.dispatcher){ server.dispatcher.end();
             message.channel.sendMessage("i skipped that bitch just like skipping in primary school");
+          }
             break;
           case "stop":
             var server = servers[message.guild.id];
-            if (message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
+            if (message.guild.voiceConnection) {
+            message.guild.voiceConnection.disconnect();
             message.channel.sendMessage("k. c u fagut");
+          }
             break;
           case "pause":
             var server = servers[message.guild.id];
-            if (server.dispatcher) server.dispatcher.pause();
+            if (server.dispatcher){ server.dispatcher.pause();
             message.channel.sendMessage("paused mother fukaaaaaaa");
+          }
             break;
           case "resume":
             var server = servers[message.guild.id];
-            if (server.dispatcher) server.dispatcher.resume();
+            if (server.dispatcher) {server.dispatcher.resume();
             message.channel.sendMessage("resumed mother fukaaaaaaa");
+          }
             break;
           case "queue":
             var server = servers[message.guild.id];
