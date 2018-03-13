@@ -326,7 +326,9 @@ Bot.on("message", async message => {
           server.queue.shift();
           server.dispatcher.on("end", function() {
             if (server.queue[0]){
-              play(connection, message);
+
+              setTimeout(() => play(connection, message);, 200)
+
             }else{ connection.disconnect();
             message.channel.sendMessage("look at all those songs that just played");
           }
