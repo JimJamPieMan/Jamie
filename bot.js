@@ -286,7 +286,8 @@ Bot.on("message", async message => {
             break;
           case "skip":
             var server = servers[message.guild.id];
-            if (server.dispatcher){ server.dispatcher.end();
+            if (server.dispatcher){
+              server.dispatcher.end();
             message.channel.sendMessage("i skipped that bitch just like skipping in primary school");
           }
             break;
@@ -311,7 +312,7 @@ Bot.on("message", async message => {
             break;
           case "queue":
             var server = servers[message.guild.id];
-            message.channel.send(server.queue);
+            message.channel.send(``\`\`\`${server.queue}\`\`\``);
         }
 
         function play(connection, message) {
