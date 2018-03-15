@@ -263,7 +263,14 @@ Bot.on("message", async message => {
                 key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
                 type: 'video'
               };
-              search(args[1], opts, function(err, results) {
+
+              for (var i = 1; i <= args.length; i++) {
+                  var item = args[i];
+                  var searchTeam = item.push(args[i]);
+                  console.log(searchTerm);
+              }
+
+              search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
                 console.dir(searchUrl);
@@ -312,7 +319,7 @@ Bot.on("message", async message => {
             break;
           case "queue":
             var server = servers[message.guild.id];
-            message.channel.send(`\`\`\`${server.queue.join("%0D%0A")}\`\`\``);
+            message.channel.send(`\`\`\`${server.queue.join(" ")}\`\`\``);
         }
 
         function play(connection, message) {
@@ -330,6 +337,7 @@ Bot.on("message", async message => {
               setTimeout(() => play(connection, message), 200)
 
             }else{ connection.disconnect();
+
             message.channel.sendMessage("look at all those songs that just played");
           }
           });
