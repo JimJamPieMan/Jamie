@@ -263,11 +263,9 @@ Bot.on("message", async message => {
                 key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
                 type: 'video'
               };
-
               args.shift();
               var searchTerm = args.join("_");
               console.log(searchTerm);
-
               search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
