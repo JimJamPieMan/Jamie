@@ -41,41 +41,46 @@ Bot.on('ready', () => {
 //Setup the queue system for music
 var servers = {};
 Bot.on("message", async message => {
-  if (message.content.startsWith("ur mom gay")) {
-    message.channel.send("no u");
-  } else {
-    const guildConf = settings.get(message.guild.id);
-    if (message.content.indexOf(PREFIX) !== 0) return;
-    const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
-    const command = args.shift().toLowerCase();
+      if (message.content.startsWith("ur mom gay")) {
+        message.channel.send("no u");
+      } else {
+        const guildConf = settings.get(message.guild.id);
+        if (message.content.indexOf(PREFIX) !== 0) return;
+        const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
+        const command = args.shift().toLowerCase();
 
-    var commandS = ["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "sounds", "info", "manesh", "meme", "music", "wolfjob", "help"];
+        // var commandS = ["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "sounds", "info", "manesh", "meme", "music", "wolfjob", "help"];
+        //
+        // if (command != commandS) {
+        //   message.reply("woah up there cowboi");
+        // } else {
 
-    if (command != commandS){
-      message.reply("woah up there cowboi");
-    }else{
+          //Changes the volume
+          if (command === "volume") {
+            const key = "volume";
+            if (!guildConf.hasOwnProperty(key)) return message.reply("well ill be fucked as to how you got this error");
+            var vol = args[0];
 
-//Changes the volume
-    if (command === "volume") {
-      const key = "volume";
-      if (!guildConf.hasOwnProperty(key)) return message.reply("well ill be fucked as to how you got this error");
-      var vol = args[0];
-      guildConf[key] = vol;
-      settings.set(message.guild.id, guildConf);
-      message.channel.send(`THE FUCKING VOLUME IS NOW \n\`${vol}\``);
-    }
+            if (!args[0] || isNaN(args[0])) {
+              message.reply("could you try that again. *F O R  F U C K  S A K E*");
+            } else {
+              guildConf[key] = vol;
+              settings.set(message.guild.id, guildConf);
+              message.channel.send(`THE FUCKING VOLUME IS NOW \n\`${vol}\``);
+            }
 
-//Shows the volume
-    if (command === "showvol") {
-      var config = guildConf.volume;
-      message.channel.send(`this servers volume is fucking : \`\`\`${config}\`\`\``);
-    }
+          }
 
-//Sends a random pupper
-    if (command === "pupper") {
-      randomPuppy()
-        .then(url => {
-          message.reply("here is you dogger " + url);
+          //Shows the volume
+          if (command === "showvol") {
+            var config = guildConf.volume;
+            message.channel.send(`this servers volume is fucking : \`\`\`${config}\`\`\``);
+          }
+
+          //Sends a random pupper
+          if (command === "pupper") {
+            randomPuppy()
+              .then(url => {          message.reply("here is you dogger " + url);
         })
     }
 
@@ -443,7 +448,7 @@ Bot.on("message", async message => {
       });
     }
   }
-}
+//}
 });
 
 //Logs the bot in with a secret token
