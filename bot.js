@@ -49,6 +49,12 @@ Bot.on("message", async message => {
     const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
+    var commandS = ["volume"];
+
+    if (command !== commandS){
+      message.reply("woah up there cowboi");
+    }else{
+
 //Changes the volume
     if (command === "volume") {
       const key = "volume";
@@ -437,6 +443,7 @@ Bot.on("message", async message => {
       });
     }
   }
+}
 });
 
 //Logs the bot in with a secret token
