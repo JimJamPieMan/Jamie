@@ -264,13 +264,11 @@ Bot.on("message", async message => {
                 type: 'video'
               };
 
-              for (var i = 1; i <= args.length; i++) {
-                  var items = args[i].join("");
+              args.shift();
+              var searchTerm = args.join("_");
+              console.log(searchTerm);
 
-                  console.log(items);
-              }
-
-              search(args[1], opts, function(err, results) {
+              search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
                 console.dir(searchUrl);
