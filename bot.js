@@ -265,12 +265,12 @@ Bot.on("message", async message => {
               };
 
               for (var i = 1; i <= args.length; i++) {
-                  var item = args[i];
-                  var searchTeam = item.push(args[i]);
-                  console.log(searchTerm);
+                  var items = args[i].join("");
+
+                  console.log(items);
               }
 
-              search(searchTerm, opts, function(err, results) {
+              search(args[1], opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
                 console.dir(searchUrl);
