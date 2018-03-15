@@ -49,9 +49,9 @@ Bot.on("message", async message => {
     const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    var commandS = ["volume"];
+    var commandS = ["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "sounds", "info", "manesh", "meme", "music", "wolfjob", "help"];
 
-    if (command !== commandS){
+    if (command != commandS){
       message.reply("woah up there cowboi");
     }else{
 
