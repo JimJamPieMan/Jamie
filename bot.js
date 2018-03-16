@@ -280,7 +280,7 @@ Bot.on("message", async message => {
               search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
-                console.dir(searchUrl);
+                console.dir(results[0]);
                 message.channel.send(searchUrl);
                 if (!servers[message.guild.id]) {
                   servers[message.guild.id] = {
@@ -327,7 +327,7 @@ Bot.on("message", async message => {
           case "queue":
             var server = servers[message.guild.id];
 
-            //put a array loop for embeds here, also make the now playing message a little better. perhaps with a better search api(?)i.e title, imag
+            //put a array loop for embeds here in order to make the now playing message a little better then its current form. perhaps with a better search api(?)i.e title, imag
             message.channel.send(`\`\`\`${server.queue.join(" ")}\`\`\``);
         }
 
