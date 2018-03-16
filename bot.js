@@ -309,7 +309,7 @@ Bot.on("message", async message => {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
             message.guild.voiceConnection.disconnect();
-            
+
           }
             break;
           case "pause":
@@ -326,6 +326,8 @@ Bot.on("message", async message => {
             break;
           case "queue":
             var server = servers[message.guild.id];
+
+            //put a array loop for embeds here
             message.channel.send(`\`\`\`${server.queue.join(" ")}\`\`\``);
         }
 
@@ -345,7 +347,7 @@ Bot.on("message", async message => {
 message.channel.sendMessage("i am playing the next song in the queue motherfuckerrrrrr");
             }else{ connection.disconnect();
 
-            message.channel.sendMessage("look at all those songs that just played");
+            message.channel.sendMessage("k. done");
           }
           });
         }
