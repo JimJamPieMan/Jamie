@@ -18,6 +18,8 @@
     "enmap-level": "^1.0.1",
     "erlpack": "github:discordapp/erlpack",
     "get-meme-urls": "^1.0.0",
+    "get-video-id": "^3.0.0",
+    "html-to-text": "^4.0.0",
     "node-opus": "^0.2.7",
     "nodemailer": "^4.4.2",
     "random-cat": "^1.0.1",
@@ -28,6 +30,7 @@
     "tar": "^4.3.2",
     "to-unicode": "^1.0.2",
     "youtube-dl": "^1.12.2",
+    "youtube-info": "^1.2.0",
     "youtube-search": "^1.0.10",
     "ytdl-core": "^0.20.1"
   },

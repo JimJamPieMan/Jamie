@@ -17,6 +17,9 @@ const settings = new Enmap({
     name: "settings"
   })
 });
+const getVideoId = require('get-video-id');
+var fetchVideoInfo = require('youtube-info');
+var htmlToText = require('html-to-text');
 //Default Settings
 const defaultSettings = {
   prefix: "`",
@@ -246,7 +249,7 @@ Bot.on("message", async message => {
               return;
             }
             if (!args[1]) {
-              message.reply("i need a youtube link to play nothing else works(search coming in a bit i think) (usage '`music play <url> || stop || skip || pause || resume)");
+              message.reply("i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage '`music play <url> || <searchterm> || stop || skip || pause || resume)");
               return;
             }
             if (message.content.includes("http://") || message.content.includes("https://")) {
@@ -280,7 +283,7 @@ Bot.on("message", async message => {
               search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
-                console.dir(results[0]);
+                // console.dir(results[0]);
                 message.channel.send(searchUrl);
                 if (!servers[message.guild.id]) {
                   servers[message.guild.id] = {
@@ -333,10 +336,43 @@ Bot.on("message", async message => {
 
         function play(connection, message) {
           var server = servers[message.guild.id];
-          server.dispatcher = connection.playStream(yt(server.queue[0], {
-            filter: "audioonly"
-          }));
-
+          server.dispatcher = connection.playStream(yt(server.queue[0], {filter: "audioonly"}));
+          var vidIDforSearch = getVideoId(server.queue[0]).id;
+          fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
+console.log(videoInfo.title);
+            
+            var minutes = Math.floor(videoInfo.duration / 60);
+            var seconds = videoInfo.duration - minutes * 60;
+            
+var oldDes = videoInfo.description;
+var normalDes = htmlToText.fromString(oldDes, {
+  wordwrap: false
+});
+            
+    if (normalDes.length > 50) {
+    normalDes = normalDes.substr(0,50)+'[...]('+videoInfo.url+')';
+}
+            
+const embed = {
+        "title": "nowPlaying() "+ "'"+videoInfo.title+ "'",
+        "description": normalDes,
+        "color": 9442302,
+        "footer": {
+          "text": "dont be silly, protecc your willy"
+        },
+        "thumbnail": {
+          "url": videoInfo.thumbnailUrl
+        },
+        "fields": [{
+        name: "how long this shit is",
+        value: minutes+"m"+seconds+"s"
+      },
+                  {
+        name: "linky link",
+        value: videoInfo.url
+      }]};
+message.channel.send({embed});
+});
           var serverVol = guildConf.volume;
           server.dispatcher.setVolume(serverVol);
           server.queue.shift();
