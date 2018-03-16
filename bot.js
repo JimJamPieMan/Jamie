@@ -324,21 +324,21 @@ Bot.on("message", async message => {
             message.channel.sendMessage("resumed mother fukaaaaaaa");
           }
             break;
-          case "queue":
-            var server = servers[message.guild.id];
-
-            for (i = 0; i < server.queue.length; i++) {
-const nowPlaying = {
-  "title": "now playing",
-  "description": args[i],
-  "color": 9442302,
-  "footer": {
-    "text": "thank you, love from james xoxo"
-  }
-            }
-            //put a array loop for embeds here, also make the now playing message a little better. perhaps with a better search api(?)i.e title, length,
-            message.channel.send(" ",{nowPlaying});
-        }
+//           case "queue":
+//             var server = servers[message.guild.id];
+//
+//             for (i = 0; i < server.queue.length; i++) {
+// const nowPlaying = {
+//   "title": "now playing",
+//   "description": args[i],
+//   "color": 9442302,
+//   "footer": {
+//     "text": "thank you, love from james xoxo"
+//   }
+//             }
+//             //put a array loop for embeds here, also make the now playing message a little better. perhaps with a better search api(?)i.e title, length,
+//             message.channel.send(" ",{nowPlaying});
+//         }
 
         function play(connection, message) {
           var server = servers[message.guild.id];
