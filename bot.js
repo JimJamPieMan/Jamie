@@ -309,7 +309,7 @@ Bot.on("message", async message => {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
             message.guild.voiceConnection.disconnect();
-            message.channel.sendMessage("k. c u fagut");
+            
           }
             break;
           case "pause":
