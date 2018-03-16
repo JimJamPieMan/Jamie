@@ -329,10 +329,10 @@ Bot.on("message", async message => {
 
             for (i = 0; i < server.queue.length; i++) {
 const nowPlaying = {
-              {
+
                 "name": "song",
                 "value": args[i];
-              }
+              
             }
             }
             //put a array loop for embeds here, also make the now playing message a little better. perhaps with a better search api(?)i.e title, length,
