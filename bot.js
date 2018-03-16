@@ -327,7 +327,15 @@ Bot.on("message", async message => {
           case "queue":
             var server = servers[message.guild.id];
 
-            //put a array loop for embeds here
+            for (i = 0; i < server.queue.length; i++) {
+const nowPlaying = {
+              {
+                "name": "song",
+                "value": args[i];
+              }
+            }
+            }
+            //put a array loop for embeds here, also make the now playing message a little better. perhaps with a better search api(?)i.e title, length,
             message.channel.send(`\`\`\`${server.queue.join(" ")}\`\`\``);
         }
 
