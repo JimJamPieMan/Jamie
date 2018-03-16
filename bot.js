@@ -334,7 +334,7 @@ Bot.on("message", async message => {
           server.dispatcher = connection.playStream(yt(server.queue[0], {
             filter: "audioonly"
           }));
-          message.channel.sendMessage("i am playing the next song in the queue motherfuckerrrrrr");
+
           var serverVol = guildConf.volume;
           server.dispatcher.setVolume(serverVol);
           server.queue.shift();
@@ -342,7 +342,7 @@ Bot.on("message", async message => {
             if (server.queue[0]){
 
               setTimeout(() => play(connection, message), 200)
-
+message.channel.sendMessage("i am playing the next song in the queue motherfuckerrrrrr");
             }else{ connection.disconnect();
 
             message.channel.sendMessage("look at all those songs that just played");
