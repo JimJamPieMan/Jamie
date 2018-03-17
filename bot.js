@@ -66,7 +66,6 @@ Bot.on("message", async message => {
         // } else {
 
         if (command === "halloween"){
-      
     var oneMinute = 60 * 1000;
     var oneHour = oneMinute * 60;
     var oneDay = oneHour * 24;
@@ -79,10 +78,7 @@ Bot.on("message", async message => {
     }
     var diff = nextHalloween.getTime() - today.getTime();
     diff = Math.floor(diff/oneDay);
- 
            message.channel.send("OMG ITS ONLY "+diff+" DAYS TILL HALLOWEEN BETTER GET READY FUCKERS",{tts:true});
-        
-         
         }
           //Changes the volume
           if (command === "volume") {
@@ -97,7 +93,6 @@ Bot.on("message", async message => {
               settings.set(message.guild.id, guildConf);
               message.channel.send(`THE FUCKING VOLUME IS NOW \n\`${vol}\``);
             }
-
           }
 
           //Shows the volume
@@ -179,6 +174,7 @@ Bot.on("message", async message => {
 
 //Moves you a predetermined channel
     if (command === "fuck") {
+      console.log(message.guid);
       message.member.setVoiceChannel('354951906147434496');
       message.reply('Seeya you fuck');
     }
@@ -204,7 +200,7 @@ Bot.on("message", async message => {
           console.log(message.member);
         } else {
           voiceChannel.leave();
-        };
+        }
       } else {
         message.member.setVoiceChannel('354951906147434496');
         message.say("HOW FUCKIN DARE YOU TRY TO KICK ME");
@@ -259,7 +255,7 @@ Bot.on("message", async message => {
         message.reply(result[0] + " i am not gonna lie, this is a fucking shit meme, i havent even seen it i just fucking know");
       }).catch(err => {
         // handle err
-        message.reply("whoops fuck went up and shit went down!")
+        message.reply("whoops fuck went up and shit went down!");
       });
     }
 
