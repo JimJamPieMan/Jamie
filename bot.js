@@ -57,24 +57,33 @@ Bot.on('ready', () => {
 //Setup the queue system for music
 var servers = {};
 Bot.on("message", async message => {
+
+  //Setup the prefix, commands and args
   const guildConf = settings.get(message.guild.id);
   if (message.content.indexOf(PREFIX) !== 0) return;
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  //Ignore all bots
   if (message.author.bot) return;
+
+  //Ignore dms with a reply
   if (message.channel.type === "dm") {
     message.channel.send("i dont work here and i never will, i am meant to be shared by the many");
     return;
   }
+
+  //yep
   if (message.content.startsWith("ur mom gay")) {
     message.channel.send("no u");
   } else {
 
+    //ignore things that aren't a command
     if (!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval"].includes(command))) {
       message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, your probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
     } else {
 
+      //The famed eval command
       if (command === "eval") {
         if (message.author.id !== process.env.myID) {
           message.channel.send(message.author + " you dont have permission to use this and no one ever will");
@@ -89,10 +98,8 @@ Bot.on("message", async message => {
         try {
           const code = args.join(" ");
           let evaled = eval(code);
-
           if (typeof evaled !== "string")
             evaled = require("util").inspect(evaled);
-
           message.channel.send(clean(evaled), {
             code: "xl"
           });
@@ -101,6 +108,7 @@ Bot.on("message", async message => {
         }
       }
 
+      //Gives a random sex thing (idk)
       if (command === "funnysexthing") {
         let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
 
@@ -108,6 +116,7 @@ Bot.on("message", async message => {
         message.channel.send(phraseObj.saying[phraseSaying]);
       }
 
+      //Gives the amount of time to halloween
       if (command === "halloween") {
         var oneMinute = 60 * 1000;
         var oneHour = oneMinute * 60;
@@ -125,6 +134,7 @@ Bot.on("message", async message => {
           tts: true
         });
       }
+      
       //Changes the volume
       if (command === "volume") {
         const key = "volume";
@@ -431,7 +441,7 @@ Bot.on("message", async message => {
             case "queue":
               var server = servers[message.guild.id];
           }
-          
+
           function play(connection, message) {
             var server = servers[message.guild.id];
             server.dispatcher = connection.playStream(yt(server.queue[0], {
