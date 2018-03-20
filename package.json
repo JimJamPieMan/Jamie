@@ -17,6 +17,7 @@
     "enmap": "^0.4.6",
     "enmap-level": "^1.0.1",
     "erlpack": "github:discordapp/erlpack",
+    "fs": "0.0.1-security",
     "get-meme-urls": "^1.0.0",
     "get-video-id": "^3.0.0",
     "html-to-text": "^4.0.0",

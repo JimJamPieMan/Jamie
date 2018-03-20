@@ -1,11 +1,9 @@
-/*TODO LIST
-- make the change channel command work in other servers
-- make sure some messages are thrown when things dont work
-- tidy up the music command
-- make it so when an unknown command is enterd it says whatever
+/*TODOlist
+
 */
 
 //Setup the requirements
+
 const Commando = require('discord.js');
 const Bot = new Commando.Client();
 const search = require('youtube-search');
@@ -27,6 +25,16 @@ const settings = new Enmap({
 const getVideoId = require('get-video-id');
 var fetchVideoInfo = require('youtube-info');
 var htmlToText = require('html-to-text');
+const fs = require("fs");
+const clean = text => {
+  if (typeof(text) === "string")
+    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  else
+      return text;
+}
+
+var maker = Bot.users.find("id", process.env.myID);
+
 //Default Settings
 const defaultSettings = {
   prefix: "`",
@@ -46,24 +54,67 @@ Bot.on("guildDelete", guild => {
 });
 //When the bot is turned on, se the activity
 Bot.on('ready', () => {
-  Bot.user.setActivity("type fucking `help");
+  Bot.user.setUsername("James' bot");
+  Bot.user.setActivity("type fucking `help " + "("+Bot.guilds.size+")" );
 });
 //Setup the queue system for music
 var servers = {};
 Bot.on("message", async message => {
-      if (message.content.startsWith("ur mom gay")) {
-        message.channel.send("no u");
-      } else {
-        const guildConf = settings.get(message.guild.id);
+  const guildConf = settings.get(message.guild.id);
         if (message.content.indexOf(PREFIX) !== 0) return;
         const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
+  
+  if (message.author.bot) return;
+  if (message.channel.type === "dm"){
+    message.channel.send("i dont work here and i never will, i am meant to be shared by the many");
+    return;
+  }
+      if (message.content.startsWith("ur mom gay")) {
+        message.channel.send("no u");
+      } else{
+        
+  
+       
+         if(!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo","info", "manesh", "meme", "music","help", "halloween", "funnysexthing", "eval"].includes(command))){
+           message.channel.send(message.author+" wee woo wee woo, we got a smart ass over here. (that command doesn't exist, your probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
+         }else{
+           
+           
+           
+           
+           
+           
+           if (command === "eval") {
+    if(message.author.id !== process.env.myID) {
+      message.channel.send(message.author+" you dont have permission to use this and no one ever will");
+      var badPerson = message.author;
+      Bot.fetchUser(process.env.myID)
+    .then(user => {user.send("Someone tried to use the eval command. They were warned "+badPerson + " in " + message.guild.name)})
+    return;
+    }
+            message.author.send("eval command used by you");
+    try {
+      const code = args.join(" ");
+      let evaled = eval(code);
 
-        // var commandS = ["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "sounds", "info", "manesh", "meme", "music", "wolfjob", "help"];
-        //
-        // if (command != commandS) {
-        //   message.reply("woah up there cowboi");
-        // } else {
+      if (typeof evaled !== "string")
+        evaled = require("util").inspect(evaled);
+
+      message.channel.send(clean(evaled), {code:"xl"});
+    } catch (err) {
+      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+    }
+  }
+          
+          
+        
+       if (command === "funnysexthing"){
+         let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
+            
+           var phraseSaying = Math.floor(Math.random()*34);
+         message.channel.send(phraseObj.saying[phraseSaying]);
+       }
 
         if (command === "halloween"){
     var oneMinute = 60 * 1000;
@@ -119,8 +170,8 @@ Bot.on("message", async message => {
       var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'jamesbotfeedback@gmail.com',
-          pass: 'Astro12345@'
+          user: process.env.email,
+          pass: process.env.pass
         }
       });
       var emailsender = message.author.username;
@@ -128,7 +179,7 @@ Bot.on("message", async message => {
         message.reply('you might want to add some fucking text you fuck');
         console.log('message didnt send');
       } else {
-        console.log(emailsender);
+        message.channel.startTyping();
         var messageText = args.join(" ");
         var mailOptions = {
           from: 'jamesbotfeedback@gmail.com',
@@ -140,9 +191,10 @@ Bot.on("message", async message => {
           if (error) {
             console.log(error);
             message.reply('well fuck it didnt work maybe gove it another fucking hot');
+            message.channel.stopTyping();
           } else {
-            console.log('Email sent: ' + info.response);
             message.reply('Your fucking feedback was sent so thats fucking great');
+            message.channel.stopTyping();
           }
         });
       }
@@ -157,7 +209,6 @@ Bot.on("message", async message => {
     if (command === "elf") {
       SyllaRhyme(function(sr) {
         var rword = randomWords();
-        console.log(rword);
         var words = sr.rhymes(rword);
         var randomAnswer1 = words[Math.floor(Math.random() * words.length)];
         var randomAnswer2 = words[Math.floor(Math.random() * words.length)];
@@ -174,15 +225,39 @@ Bot.on("message", async message => {
 
 //Moves you a predetermined channel
     if (command === "fuck") {
-      console.log(message.guid);
-      message.member.setVoiceChannel('354951906147434496');
+      if (!message.member.voiceChannel) {
+              message.channel.send("if i were to move you when your not in a voice channel the whole world would probably explode and we dont want that do we so maybe get in a channel, Dick!");
+              return;
+            }
+     var channels = message.guild.channels.filter(channel => channel.type === 'voice');
+        var channelcount = message.guild.channels.size
+        var guildname = message.guild.name;
+      var channelTogo = channels.map(channel => channel.id);
+       var voicechan = Math.floor(Math.random() * channelTogo.length);
+      var finalChannel = channelTogo[voicechan];
+      message.member.setVoiceChannel(finalChannel);
       message.reply('Seeya you fuck');
-    }
+      }
 
 //moves someone else to another channel
     if (command === "fuckoff") {
       var member = message.mentions.members.first();
-      member.setVoiceChannel("354951906147434496").then((member) => {
+       if (!message.member.voiceChannel) {
+              message.channel.send("now that would be a little rude wouldn't it you fuck");
+              return;
+            }
+      if(!member.voiceChannel){
+        message.channel.send("wow you must really hate them, they arent even in a voice channel");
+        return;
+      }
+      var channels = message.guild.channels.filter(channel => channel.type === 'voice');
+        var channelcount = message.guild.channels.size
+        var guildname = message.guild.name;
+      var channelTogo = channels.map(channel => channel.id);
+       var voicechan = Math.floor(Math.random() * channelTogo.length);
+      var finalChannel = channelTogo[voicechan];
+
+      member.setVoiceChannel(finalChannel).then((member) => {
         message.channel.send("you moved that fucker go you bitch ");
       }).catch(() => {
         message.channel.send("oopsy poopsie you got a moopsie");
@@ -192,47 +267,51 @@ Bot.on("message", async message => {
 //Makes the bot leave
     if (command === "gtfo") {
       let myRole = message.guild.roles.find("name", "Rue brick");
-      console.log(myRole.id);
       if (message.member.roles.has(myRole.id)) {
         var voiceChannel = message.member.voiceChannel;
         if (!voiceChannel) {
           return message.reply("why the fuck would you want me to leave if you aren't in a chat you fuck leave me the fuck alone");
-          console.log(message.member);
         } else {
           voiceChannel.leave();
         }
       } else {
-        message.member.setVoiceChannel('354951906147434496');
+        var channels = message.guild.channels.filter(channel => channel.type === 'voice');
+        var channelcount = message.guild.channels.size
+        var guildname = message.guild.name;
+      var channelTogo = channels.map(channel => channel.id);
+       var voicechan = Math.floor(Math.random() * channelTogo.length);
+      var finalChannel = channelTogo[voicechan];
+        message.member.setVoiceChannel(finalChannel);
         message.say("HOW FUCKIN DARE YOU TRY TO KICK ME");
       }
     }
 
 //Used to play local mp3 files from the server before it was moved to a different hosting service
-    if (command === "sounds") {
-      message.reply("don work, the way it hosted means this dont work now sadly");
-      /*
-      var voiceChannel = message.member.voiceChannel;
-        if (!voiceChannel){
-            return message.reply("if you want to hear fucking sounds get in a fucking channel");
-          }
-                else if (args[0] === "" || isNaN(args[0])){
-                  message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
-          }
-          else{
-            var soundtoplay = args[0].toString();
-            console.log(args[0]);
-             message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
-           voiceChannel.join().then(connection => {
-               console.log("joined channel");
-               const dispatcher = connection.playFile("assets/"+args[0] + '.mp3');
-               dispatcher.on("end", end => {
-                   console.log("left channel");
-                   message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
-                   voiceChannel.leave();
-               });
-           }).catch(err => console.log(err));
-         }*/
-    }
+    // if (command === "sounds") {
+    //   message.reply("don work, the way it hosted means this dont work now sadly");
+    //   /*
+    //   var voiceChannel = message.member.voiceChannel;
+    //     if (!voiceChannel){
+    //         return message.reply("if you want to hear fucking sounds get in a fucking channel");
+    //       }
+    //             else if (args[0] === "" || isNaN(args[0])){
+    //               message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
+    //       }
+    //       else{
+    //         var soundtoplay = args[0].toString();
+    //         console.log(args[0]);
+    //          message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
+    //        voiceChannel.join().then(connection => {
+    //            console.log("joined channel");
+    //            const dispatcher = connection.playFile("assets/"+args[0] + '.mp3');
+    //            dispatcher.on("end", end => {
+    //                console.log("left channel");
+    //                message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
+    //                voiceChannel.leave();
+    //            });
+    //        }).catch(err => console.log(err));
+    //      }*/
+    // }
 
 //Gives a little info on the bot
     if (command === "info") {
@@ -284,6 +363,7 @@ Bot.on("message", async message => {
                 var server = servers[message.guild.id];
                 server.queue.push(args[1]);
                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+               
                 if (!message.guild.voiceConnection) {
                   message.member.voiceChannel.join().then(function(connection) {
                   play(connection, message);
@@ -296,16 +376,14 @@ Bot.on("message", async message => {
             } else {
               var opts = {
                 maxResults: 1,
-                key: 'AIzaSyC1akpWfDs9Ik8du4H5mf4mE57DG__u314',
+                key: process.env.youtubeapi,
                 type: 'video'
               };
               args.shift();
               var searchTerm = args.join("_");
-              console.log(searchTerm);
               search(searchTerm, opts, function(err, results) {
                 if (err) return console.log(err);
                 var searchUrl = results[0].link;
-                // console.dir(results[0]);
                 message.channel.send(searchUrl);
                 if (!servers[message.guild.id]) {
                   servers[message.guild.id] = {
@@ -315,6 +393,7 @@ Bot.on("message", async message => {
                 var server = servers[message.guild.id];
                 server.queue.push(searchUrl);
                 message.channel.sendMessage("i added that bitch to the queueueueuueueueueuueueueueu");
+                
                 if (!message.guild.voiceConnection){
                   message.member.voiceChannel.join().then(function(connection) {
                   play(connection, message);
@@ -360,26 +439,24 @@ Bot.on("message", async message => {
           server.dispatcher = connection.playStream(yt(server.queue[0], {filter: "audioonly"}));
           var vidIDforSearch = getVideoId(server.queue[0]).id;
           fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
-console.log(videoInfo.title);
-            
             var minutes = Math.floor(videoInfo.duration / 60);
             var seconds = videoInfo.duration - minutes * 60;
-            
 var oldDes = videoInfo.description;
 var normalDes = htmlToText.fromString(oldDes, {
   wordwrap: false
-});
-            
+});         
     if (normalDes.length > 50) {
     normalDes = normalDes.substr(0,50)+'[...(See more)]('+videoInfo.url+')';
 }
-            
+    let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
+           var phraseFooter = Math.floor(Math.random()*34);
+
 const embed = {
         "title": "nowPlaying() "+ "'"+videoInfo.title+ "'",
         "description": normalDes,
         "color": 9442302,
         "footer": {
-          "text": "dont be silly, protecc your willy"
+          "text": phraseObj.saying[phraseFooter]
         },
         "thumbnail": {
           "url": videoInfo.thumbnailUrl
@@ -397,6 +474,7 @@ message.channel.send({embed});
           var serverVol = guildConf.volume;
           server.dispatcher.setVolume(serverVol);
           server.queue.shift();
+          
           server.dispatcher.on("end", function() {
             if (server.queue[0]){
 
@@ -411,10 +489,6 @@ message.channel.sendMessage("i am playing the next song in the queue motherfucke
       }
     }
 
-//Used to send a picture of a wolf getting a hand job but that was alittle weird to host on the internet
-    if (command === "wolfjob") {
-      message.reply("because i started hosting this bot else where i feel that the image you require shouldn't be on the internet");
-    }
 
 //Sends the user a help embed
     if (command === "help") {
@@ -423,10 +497,10 @@ message.channel.sendMessage("i am playing the next song in the queue motherfucke
         "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is" + PREFIX + "which is the button next to the 1 without a modifier",
         "color": 9442302,
         "footer": {
-          "text": "thank you, love from james xoxo"
+          "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the `feedback command"
         },
         "thumbnail": {
-          "url": "https://www.jbhifi.com.au/FileLibrary/ProductResources/Images/217367-L-LO.jpg"
+          "url": "https://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2Fgreenaf.png?1521260734263"
         },
         "author": {
           "name": "hey, james here. have some help you fuck"
@@ -472,14 +546,6 @@ message.channel.sendMessage("i am playing the next song in the queue motherfucke
             "value": "kicks the bot from the fucking voice channel or if it fucking breaks"
           },
           {
-            "name": PREFIX + "sounds",
-            "value": "plays a sounds from the finest of fucking sounds (QUEUEING DOES NOT WORK HERE YETtm) (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine, 10:BUZZINGA"
-          },
-          {
-            "name": PREFIX + "wolfjob",
-            "value": "bestfriends.jpg"
-          },
-          {
             "name": PREFIX + "info",
             "value": "gives a little bit of info on the piece of shit that is this bot"
           },
@@ -493,11 +559,19 @@ message.channel.sendMessage("i am playing the next song in the queue motherfucke
           },
           {
             "name": PREFIX + "music",
-            "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '`music play https://youtu.be/1suebohSF1w'. probs gonna change it up to work like th others"
+            "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '`music play https://youtu.be/1suebohSF1w'."
           },
           {
             "name": PREFIX + "volume",
-            "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck."
+            "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck. ('`showvol' will show the volume"
+          },
+          {
+            "name": PREFIX + "halloween",
+            "value": "HOLY SHIT HALLOWEEN IS THIS YEAR"
+          },
+          {
+            "name": PREFIX + "funnysexthing",
+            "value": "this one time in the overwatch general chat in GGOZ..."
           }
         ]
       };
@@ -507,7 +581,7 @@ message.channel.sendMessage("i am playing the next song in the queue motherfucke
       });
     }
   }
-//}
+}
 });
 
 //Logs the bot in with a secret token
