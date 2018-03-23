@@ -43,7 +43,7 @@ const defaultSettings = {
 //When the bot joins a server, make a new server settings for that server
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
-  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot```"); 
+  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot```");
 });
 //When the bot leaves a server delete the server settings
 Bot.on("guildDelete", guild => {
@@ -61,112 +61,120 @@ var servers = {};
 Bot.on("message", async message => {
 
   //ignore embeds starting with ``
- if (message.content.startsWith("``")){
+  if (message.content.startsWith("``")) {
     return;
- }   
-  
-     //Ignore dms with a reply
+  }
+
+  //Ignore dms with a reply
   if (message.channel.type === "dm") {
     message.author.send("i dont work here and i never will, i am meant to be shared by the many");
     return;
   }
-  
-  
+
+
   //Setup the prefix, commands and args
   const guildConf = settings.get(message.guild.id);
   if (message.content.indexOf(PREFIX) !== 0) return;
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  
- 
+
+
 
   //Ignore all bots
   if (message.author.bot) return;
-  
+
   //yep
   if (message.content.startsWith("ur mom gay")) {
     message.channel.send("no u");
   } else {
 
-    
-    
+
+
     //ignore things that aren't a command
-    
+
     if (!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfw", "kelsey"].includes(command))) {
       message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
     } else {
-    
-      
-      if (command === "kelsey"){
-        message.channel.send("barb coo",{tts:true});
+
+
+      if (command === "kelsey") {
+        message.channel.send("barb coo", {
+          tts: true
+        });
       }
-      
+
       if (command === "nsfw") {
-    if (message.channel.nsfw || message.channel.name.includes ("nsfw")) {
-      if (!args[0]){
-      message.channel.send("add some words to search idiot");
-        return;
-      }else{
-      var searchTerm = args.join("_");
-      const Searcher = new Pornsearch(searchTerm);
- 
-Searcher.videos()
-  .then(function (videos) { 
-  var searchAmount = videos.length;
-  var oneToShow = Math.floor(Math.random()*searchAmount);
-          const embed = {
-                "title": "nowShowingPorn() " + "'" + videos[oneToShow].title + "'",
-                "color": 9442302,
-              
-                "thumbnail": {
-                  "url": videos[oneToShow].thumb
-                },
-                "fields": [{
-                    name: "how long this shit is",
-                    value: videos[oneToShow].duration
+        if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
+          if (!args[0]) {
+            message.channel.send("add some words to search idiot");
+            return;
+          } else {
+            var searchTerm = args.join("_");
+            const Searcher = new Pornsearch(searchTerm);
+
+            Searcher.videos()
+              .then(function (videos) {
+                var searchAmount = videos.length;
+                var oneToShow = Math.floor(Math.random() * searchAmount);
+                const embed = {
+                  "title": "nowShowingPorn() " + "'" + videos[oneToShow].title + "'",
+                  "color": 9442302,
+
+                  "thumbnail": {
+                    "url": videos[oneToShow].thumb
                   },
-                  {
-                    name: "linky link",
-                    value: videos[oneToShow].url
-                  }
-                ]
-              };
-        message.channel.send({embed});
-      });
-        
+                  "fields": [{
+                      name: "how long this shit is",
+                      value: videos[oneToShow].duration
+                    },
+                    {
+                      name: "linky link",
+                      value: videos[oneToShow].url
+                    }
+                  ]
+                };
+                message.channel.send({
+                  embed
+                });
+              });
+
+          }
+        } else {
+          message.channel.send("soz fam cant use that here. go do your weird shit in the nsfw channel. there might be kids watching");
+        }
       }
-    }else{
-      message.channel.send("soz fam cant use that here. go do your weird shit in the nsfw channel. there might be kids watching");
-    }
-      }
-      
-      
-      if (command === "poll"){
-      if (!args) return message.reply("You must have something to vote for!")
-    if (!message.content.includes("?")) return message.reply("Include a ? in your vote!")
+
+
+      if (command === "poll") {
+        if (!args) return message.reply("You must have something to vote for!")
+        if (!message.content.includes("?")) return message.reply("Include a ? in your vote!")
         message.channel.send(`:ballot_box:  ${message.author.username} started a vote! React to my next message to vote on it. :ballot_box: `);
         const pollTopic = await message.channel.send(message.content.slice(5));
         await pollTopic.react(`✅`);
         await pollTopic.react(`⛔`);
         const filteryes = (reaction) => reaction.emoji.name === '✅';
         const filterno = (reaction) => reaction.emoji.name === '⛔';
-        const collectoryes = pollTopic.createReactionCollector(filteryes, { time: 15000 });
-        const collectorno = pollTopic.createReactionCollector(filterno, { time: 15000 });
+        const collectoryes = pollTopic.createReactionCollector(filteryes, {
+          time: 15000
+        });
+        const collectorno = pollTopic.createReactionCollector(filterno, {
+          time: 15000
+        });
         collectoryes.on('collect', r => console.log(`Collected ${r.emoji.name}`));
         collectorno.on('collect', r => console.log(`Collected ${r.emoji.name}`));
         collectoryes.on('end', collectedyes => message.channel.send(` ✅ Collected ${collectedyes.size} items`));
         collectorno.on('end', collectedno => message.channel.send(` ⛔ Collected ${collectedno.size} items`));
-        
-    
+
+
       }
 
       //The famed eval command
       if (command === "eval") {
         const clean = text => {
-  if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-  else return text;
-}
+          if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+          else return text;
+        }
         if (message.author.id !== process.env.myID) {
           message.channel.send(message.author + " you dont have permission to use this and no one ever will");
           var badPerson = message.author;
@@ -196,7 +204,7 @@ Searcher.videos()
 
         var phraseSaying = Math.floor(Math.random() * 34);
         message.channel.send(phraseObj.saying[phraseSaying]);
-        
+
       }
 
       //Gives the amount of time to halloween
@@ -217,7 +225,7 @@ Searcher.videos()
           tts: true
         });
       }
-      
+
       //Changes the volume
       if (command === "volume") {
         const key = "volume";
