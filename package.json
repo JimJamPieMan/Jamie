@@ -12,7 +12,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.2.1",
+    "discord.js": "^11.3.2",
     "discord.js-commando": "^0.9.0",
     "enmap": "^0.4.6",
     "enmap-level": "^1.0.1",
@@ -22,18 +22,19 @@
     "get-video-id": "^3.0.0",
     "html-to-text": "^4.0.0",
     "node-opus": "^0.2.7",
-    "nodemailer": "^4.4.2",
+    "nodemailer": "^4.6.3",
+    "pornsearch": "^2.3.0",
     "random-cat": "^1.0.1",
     "random-puppy": "^1.1.0",
     "random-words": "^1.0.0",
-    "request": "^2.83.0",
+    "request": "^2.85.0",
     "syllarhyme": "^1.0.1",
-    "tar": "^4.3.2",
+    "tar": "^4.4.1",
     "to-unicode": "^1.0.2",
     "youtube-dl": "^1.12.2",
     "youtube-info": "^1.2.0",
     "youtube-search": "^1.0.10",
-    "ytdl-core": "^0.20.1"
+    "ytdl-core": "^0.20.2"
   },
   "devDependencies": {},
   "description": ""
