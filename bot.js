@@ -97,6 +97,27 @@ Bot.on("message", async message => {
       message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
     } else {
 
+      if (command === "unmute") {
+        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("You do not have enough permissions to mute someone.")
+        let member = message.mentions.members.first();
+        if (!member) return message.channel.send("Please mention a valid member of this server.");
+        if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I do not have enough permissions to mute someone. Make sure i have permissions to `Manage roles`.");
+        message.channel.overwritePermissions(member, { SEND_MESSAGES: true })
+          .then(updated => message.channel.send("`" + member.displayName + "` has been muted by `" + message.member.displayName + "`"))
+          .catch(er => message.channel.send("Unkown error when muting."));
+      }
+
+if (command ==="mute"){
+  if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("You do not have enough permissions to mute someone.")
+  let member = message.mentions.members.first();
+  if (!member) return message.channel.send("Please mention a valid member of this server.");
+  if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I do not have enough permissions to mute someone. Make sure i have permissions to `Manage roles`.");
+  message.channel.overwritePermissions(member, { SEND_MESSAGES: false })
+    .then(updated => message.channel.send("`" + member.displayName + "` has been muted by `" + message.member.displayName + "`"))
+    .catch(er => message.channel.send("Unkown error when muting."));
+}
+
+
 // kelsey
       if (command === "kelsey") {
         message.channel.send("barb coo", {
