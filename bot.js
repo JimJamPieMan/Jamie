@@ -97,13 +97,14 @@ Bot.on("message", async message => {
       message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
     } else {
 
-
+// kelsey
       if (command === "kelsey") {
         message.channel.send("barb coo", {
           tts: true
         });
       }
 
+      //wtf
       if (command === "nsfw") {
         if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
           if (!args[0]) {
@@ -145,7 +146,7 @@ Bot.on("message", async message => {
         }
       }
 
-
+//democracy in action
       if (command === "poll") {
         if (!args) return message.reply("You must have something to vote for!")
         if (!message.content.includes("?")) return message.reply("Include a ? in your vote!")
@@ -202,7 +203,7 @@ Bot.on("message", async message => {
       if (command === "funnysexthing") {
         let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
 
-        var phraseSaying = Math.floor(Math.random() * 34);
+        var phraseSaying = Math.floor(Math.random() * phraseObj.length);
         message.channel.send(phraseObj.saying[phraseSaying]);
 
       }
