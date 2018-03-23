@@ -1,5 +1,5 @@
 /*TODOlist
-- use case switch in nsfw for gifs and vids
+
 */
 
 //Setup the requirements
@@ -49,7 +49,7 @@ Bot.on("guildCreate", guild => {
 Bot.on("guildDelete", guild => {
   settings.delete(guild.id);
 });
-//When the bot is turned on, se the activity
+//When the bot is turned on, set the activity
 Bot.on('ready', () => {
   Bot.user.setUsername("James' bot");
   Bot.user.setActivity("type fucking `help " + "(" + Bot.guilds.size + ")");
