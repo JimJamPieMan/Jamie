@@ -1,5 +1,5 @@
 /*TODOlist
-
+- do more woth settings (i.e fuck and fuckoff need the rue brick role?, gte rid of the unwanted shit in the default settings)
 */
 
 //Setup the requirements
@@ -26,7 +26,12 @@ const getVideoId = require('get-video-id');
 const fetchVideoInfo = require('youtube-info');
 const htmlToText = require('html-to-text');
 const fs = require("fs");
-const Pornsearch = require('pornsearch').default;
+const Pornsearch = require('pornsearch');
+//var Jimp = require("jimp");
+
+
+
+
 
 
 // const maker = Bot.users.find("id", process.env.myID);
@@ -43,7 +48,7 @@ const defaultSettings = {
 //When the bot joins a server, make a new server settings for that server
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
-  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot```");
+  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot``` Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).");
 });
 //When the bot leaves a server delete the server settings
 Bot.on("guildDelete", guild => {
@@ -71,6 +76,15 @@ Bot.on("message", async message => {
     return;
   }
 
+  //yep
+  if (message.content.startsWith('ur mom gay')) {
+    message.channel.send("no u");
+  } 
+  if (message.content.startsWith('fuck me')) {
+    message.channel.send("only if you ask nicely");
+  } 
+
+
 
   //Setup the prefix, commands and args
   const guildConf = settings.get(message.guild.id);
@@ -82,39 +96,46 @@ Bot.on("message", async message => {
 
 
   //Ignore all bots
-  if (message.author.bot) return;
+  if (message.author.bot){
+    return;
+  }
 
-  //yep
-  if (message.content.startsWith("ur mom gay")) {
-    message.channel.send("no u");
-  } else {
+
+  
 
 
 
     //ignore things that aren't a command
 
-    if (!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfw", "kelsey", "mute","unmute"].includes(command))) {
+    if (!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute","unmute","nsfwgif","test"].includes(command))) {
       message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
     } else {
+      
+//       if (command === "test"){ 
+// // 
+
+//       }
 
       if (command === "unmute") {
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("You do not have enough permissions to mute someone.")
+         let myRole = message.guild.roles.find("name", "Rue brick");
+        if (!message.member.roles.has(myRole.id)) return message.channel.send("you need to get gooder to be able to do this you fucker");
         let member = message.mentions.members.first();
-        if (!member) return message.channel.send("Please mention a valid member of this server.");
-        if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I do not have enough permissions to mute someone. Make sure i have permissions to `Manage roles`.");
+        if (!member) return message.channel.send("i need someone to unmute bischhh");
+        if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("i need to get gooder to be able to do this");
         message.channel.overwritePermissions(member, { SEND_MESSAGES: true })
-          .then(updated => message.channel.send("`" + member.displayName + "` has been muted by `" + message.member.displayName + "`"))
-          .catch(er => message.channel.send("Unkown error when muting."));
+          .then(updated => message.channel.send("`" + member.displayName + "` has had their voice be heard `" + message.member.displayName + "`"))
+          .catch(er => message.channel.send("shit went up and fuck went down"));
       }
 
 if (command ==="mute"){
-  if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("You do not have enough permissions to mute someone.")
+  let myRole = message.guild.roles.find("name", "Rue brick");
+  if (!message.member.roles.has(myRole.id)) return message.channel.send("you need to get gooder to be able to do this you fucker");
   let member = message.mentions.members.first();
-  if (!member) return message.channel.send("Please mention a valid member of this server.");
-  if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I do not have enough permissions to mute someone. Make sure i have permissions to `Manage roles`.");
+  if (!member) return message.channel.send("i need someone to mute bischhh");
+  if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("i need to get gooder to be able to do this");
   message.channel.overwritePermissions(member, { SEND_MESSAGES: false })
-    .then(updated => message.channel.send("`" + member.displayName + "` has been muted by `" + message.member.displayName + "`"))
-    .catch(er => message.channel.send("Unkown error when muting."));
+    .then(updated => message.channel.send("`" + member.displayName + "` has had their opinion shut the fuck down `" + message.member.displayName + "`"))
+    .catch(er => message.channel.send("shit went up and fuck went down"));
 }
 
 
@@ -125,25 +146,70 @@ if (command ==="mute"){
         });
       }
 
+      if (command === "nsfwgif"){
+        if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
+          if (!args[0]) {
+            message.channel.send("add some words to search idiot");
+            return;
+          }else{
+            message.channel.startTyping();
+            var searchTerm = args.join(" ");
+            //console.log(searchTerm);
+            var driver;
+            const pornGif = new Pornsearch(searchTerm, driver = 'sex');
+pornGif.gifs()
+            .then(function (gifs){ 
+
+              var oneToShow = Math.floor(Math.random() * gifs.length);
+              // message.channel.send(gifs[oneToShow].title); 
+              // message.channel.send(gifs[oneToShow].url);
+message.channel.stopTyping();
+              const embed = {
+                  "title": "nowShowingPorngif() " + "'" + gifs[oneToShow].title+ "'",
+                  "color": 9442302,
+
+                  "image": {
+                    "url": gifs[oneToShow].url
+                  },
+                };
+                message.channel.send({
+                  embed
+                });
+            
+                                 }).catch(err => {
+          // handle err
+          message.reply("maybe try another search term for your sick gifs");
+  message.channel.stopTyping();
+        });
+                  }} else {
+          message.channel.send("soz fam cant use that here. go do your weird shit in the nsfw channel. there might be kids watching");
+                  }
+          
+        
+      }
+      
       //wtf
-      if (command === "nsfw") {
+      if (command === "nsfwvid") {
         if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
           if (!args[0]) {
             message.channel.send("add some words to search idiot");
             return;
           } else {
+            message.channel.startTyping();
             var searchTerm = args.join("_");
-            const Searcher = new Pornsearch(searchTerm);
+            var driver;
+            const Searcher = new Pornsearch(searchTerm, driver = 'pornhub');
 
             Searcher.videos()
               .then(function (videos) {
                 var searchAmount = videos.length;
                 var oneToShow = Math.floor(Math.random() * searchAmount);
+              message.channel.stopTyping();
                 const embed = {
-                  "title": "nowShowingPorn() " + "'" + videos[oneToShow].title + "'",
+                  "title": "nowShowingPornvid() " + "'" + videos[oneToShow].title + "'",
                   "color": 9442302,
 
-                  "thumbnail": {
+                  "image": {
                     "url": videos[oneToShow].thumb
                   },
                   "fields": [{
@@ -159,7 +225,11 @@ if (command ==="mute"){
                 message.channel.send({
                   embed
                 });
-              });
+              }).catch(err => {
+          // handle err
+          message.reply("maybe try another search term for your sick videos");
+              message.channel.stopTyping();
+        });
 
           }
         } else {
@@ -224,7 +294,8 @@ if (command ==="mute"){
       if (command === "funnysexthing") {
         let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
 
-        var phraseSaying = Math.floor(Math.random() * phraseObj.length);
+        var phraseSaying = Math.floor(Math.random() * phraseObj.saying.length);
+        
         message.channel.send(phraseObj.saying[phraseSaying]);
 
       }
@@ -265,8 +336,8 @@ if (command ==="mute"){
 
       //Shows the volume
       if (command === "showvol") {
-        var config = guildConf.volume;
-        message.channel.send(`this servers volume is fucking : \`\`\`${config}\`\`\``);
+        var configVol = guildConf.volume;
+        message.channel.send(`this servers volume is fucking : \`\`\`${configVol}\`\`\``);
       }
 
       //Sends a random pupper
@@ -343,6 +414,8 @@ if (command ==="mute"){
 
       //Moves you a predetermined channel
       if (command === "fuck") {
+         let myRole = message.guild.roles.find("name", "Rue brick");
+        if (!message.member.roles.has(myRole.id)) return message.channel.send("you need to get gooder to be able to do this you fucker");
         if (!message.member.voiceChannel) {
           message.channel.send("if i were to move you when your not in a voice channel the whole world would probably explode and we dont want that do we so maybe get in a channel, Dick!");
           return;
@@ -359,6 +432,8 @@ if (command ==="mute"){
 
       //moves someone else to another channel
       if (command === "fuckoff") {
+         let myRole = message.guild.roles.find("name", "Rue brick");
+        if (!message.member.roles.has(myRole.id)) return message.channel.send("you need to get gooder to be able to do this you fucker");
         var member = message.mentions.members.first();
         if (!message.member.voiceChannel) {
           message.channel.send("now that would be a little rude wouldn't it you fuck");
@@ -433,7 +508,7 @@ if (command ==="mute"){
 
       //Gives a little info on the bot
       if (command === "info") {
-        message.reply('i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "`help". thanks bicthesz');
+        message.reply('i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "`help". thanks bicthesz.');
       }
 
       //Sends 5 pictures of a random Indian man a friend found
@@ -485,7 +560,10 @@ if (command ==="mute"){
                   if (!message.guild.voiceConnection) {
                     message.member.voiceChannel.join().then(function (connection) {
                       play(connection, message);
-                    });
+                    }).catch(err => {
+          // handle err
+          message.reply("i cant join for some reason, hmm. (check if my permissions are okay)");
+        });;
                   }
                   break;
                 } else {
@@ -500,7 +578,11 @@ if (command ==="mute"){
                 args.shift();
                 var searchTerm = args.join("_");
                 search(searchTerm, opts, function (err, results) {
-                  if (err) return console.log(err);
+                  if (err){ 
+                    console.log(err);
+                    message.channel.send("maybe try a different search term");
+                    return;
+                          }
                   var searchUrl = results[0].link;
                   message.channel.send(searchUrl);
                   if (!servers[message.guild.id]) {
@@ -572,7 +654,10 @@ if (command ==="mute"){
                 normalDes = normalDes.substr(0, 50) + '[...(See more)](' + videoInfo.url + ')';
               }
               let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
-              var phraseFooter = Math.floor(Math.random() * 34);
+
+        var phraseFooter = Math.floor(Math.random() * phraseObj.saying.length);
+        
+        
 
               const embed = {
                 "title": "nowPlaying() " + "'" + videoInfo.title + "'",
@@ -581,7 +666,7 @@ if (command ==="mute"){
                 "footer": {
                   "text": phraseObj.saying[phraseFooter]
                 },
-                "thumbnail": {
+                "image": {
                   "url": videoInfo.thumbnailUrl
                 },
                 "fields": [{
@@ -618,7 +703,7 @@ if (command ==="mute"){
       if (command === "help") {
         const embed = {
           "title": "dont be  stupid in the discord server, read the help",
-          "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is" + PREFIX + "which is the button next to the 1 without a modifier",
+          "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is" + PREFIX + "which is the button next to the 1 without a modifier.",
           "color": 9442302,
           "footer": {
             "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the `feedback command"
@@ -667,7 +752,7 @@ if (command ==="mute"){
             },
             {
               "name": PREFIX + "gtfo",
-              "value": "kicks the bot from the fucking voice channel or if it fucking breaks"
+              "value": "kicks the bot from the fucking voice channel or if it fucking breaks. (requires a role called 'Rue brick' (case sensative))"
             },
             {
               "name": PREFIX + "info",
@@ -696,7 +781,31 @@ if (command ==="mute"){
             {
               "name": PREFIX + "funnysexthing",
               "value": "this one time in the overwatch general chat in GGOZ..."
-            }
+            },
+            {
+              "name": PREFIX + "poll",
+              "value": "fucking democracy in action"
+            },
+            {
+              "name": PREFIX + "nsfwvid",
+              "value": "you fucking degenerates"
+            },
+                     {
+              "name": PREFIX + "nsfwgif",
+              "value": "you fucking degenerates. But now in Gifs!"
+            },
+                     {
+              "name": PREFIX + "kelsey",
+              "value": "i dont know, this one just sorta happened"
+                     },
+                     {
+              "name": PREFIX + "mute",
+              "value": "mute a person from typing in a text channel. usage `mute @<user you want to mute> (requires a role called 'Rue brick' (case sensative))"
+                     },
+                     {
+              "name": PREFIX + "unmute",
+              "value": "unmute a person from typing in a text channel. usage `unmute @<user you want to unmute>(requires a role called 'Rue brick' (case sensative))"
+                     }
           ]
         };
         message.channel.send(message.author + " i slid right into your fucking dms");
@@ -705,7 +814,7 @@ if (command ==="mute"){
         });
       }
     }
-  }
+  
 });
 
 //Logs the bot in with a secret token
