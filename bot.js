@@ -154,15 +154,14 @@ if (command ==="mute"){
           }else{
             message.channel.startTyping();
             var searchTerm = args.join(" ");
-            //console.log(searchTerm);
+      
             var driver;
             const pornGif = new Pornsearch(searchTerm, driver = 'sex');
 pornGif.gifs()
             .then(function (gifs){ 
 
               var oneToShow = Math.floor(Math.random() * gifs.length);
-              // message.channel.send(gifs[oneToShow].title); 
-              // message.channel.send(gifs[oneToShow].url);
+          
 message.channel.stopTyping();
               const embed = {
                   "title": "nowShowingPorngif() " + "'" + gifs[oneToShow].title+ "'",
