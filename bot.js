@@ -27,7 +27,8 @@ const fetchVideoInfo = require('youtube-info');
 const htmlToText = require('html-to-text');
 const fs = require("fs");
 const Pornsearch = require('pornsearch');
-var Jimp = require("jimp");
+const request = require('snekfetch');
+
 
 // const maker = Bot.users.find("id", process.env.myID);
 
@@ -95,19 +96,27 @@ Bot.on("message", async message => {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
-         if (command === "test"){
-Jimp.read("https://images.sex.com/images/pinporn/2014/07/22/300/7089004.gif").then(function (lenna) {
-    return lenna.resize(256, 256)     // resize
-         .quality(60)                 // set JPEG quality
-         .greyscale()                 // set greyscale
-         .write("manip/lena-small-bw.jpg"); // save
-  
-}).catch(function (err) {
-    console.error(err);
-
+        if (command === "test"){
+          var Canvas = require('canvas')
+  , Image = Canvas.Image
+  , canvas = new Canvas(200, 200)
+  , ctx = canvas.getContext('2d');
+          request.get('https://s.gc.gy/o-SNAKES.jpg')
+  .pipe(fs.createWriteStream('img/download.jpg'));
+fs.readFile(__dirname + 'img/download.jpg', function(err, squid){
+  if (err) throw err;
+  var img = new Image;
+  img.src = squid;
+  ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
 });
-           message.channel.send("completed");
-          }
+message.channel.send({file:canvas.toBuffer()});
+        }
+            
+          
+                                                                              
+                                              
+                                               
+          
 
     if (command === "unmute") {
       let myRole = message.guild.roles.find("name", "Rue brick");

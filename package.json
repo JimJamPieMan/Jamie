@@ -12,6 +12,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "canvas": "^1.6.10",
     "discord.js": "^11.3.2",
     "discord.js-commando": "^0.9.0",
     "enmap": "^0.4.6",
@@ -29,6 +30,7 @@
     "random-puppy": "^1.1.0",
     "random-words": "^1.0.0",
     "request": "^2.85.0",
+    "snekfetch": "^3.6.4",
     "syllarhyme": "^1.0.1",
     "tar": "^4.4.1",
     "to-unicode": "^1.0.2",
