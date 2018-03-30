@@ -122,6 +122,8 @@ Bot.on("message", async message => {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
+    
+    
     //Command for changing prefix
     if (command === "prefix") {
       if (message.member.hasPermission('ADMINISTRATOR')) {
@@ -146,6 +148,8 @@ Bot.on("message", async message => {
       }
     }
 
+    
+    
     //Sends a message to all servers general chat
     if (command === "allserversmessage") {
       if (message.author.id !== process.env.myID) {
