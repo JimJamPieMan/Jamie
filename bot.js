@@ -4,6 +4,11 @@
 
 //Setup the requirements
 
+const express = require("express")
+const expressApp = express()
+expressApp.get("/", (req, res) => res.json("OK"))
+expressApp.listen(process.env.PORT)
+
 const Commando = require('discord.js');
 const Bot = new Commando.Client();
 const search = require('youtube-search');
@@ -14,7 +19,7 @@ const SyllaRhyme = require('syllarhyme');
 const randomWords = require('random-words');
 const getMemeUrls = require('get-meme-urls');
 const yt = require('ytdl-core');
-const PREFIX = "`";
+//const PREFIX = "`";
 const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
 const settings = new Enmap({
@@ -27,7 +32,10 @@ const fetchVideoInfo = require('youtube-info');
 const htmlToText = require('html-to-text');
 const fs = require("fs");
 const Pornsearch = require('pornsearch');
-const request = require('snekfetch');
+const faye = "428449205581774848";
+
+
+
 
 
 // const maker = Bot.users.find("id", process.env.myID);
@@ -35,16 +43,12 @@ const request = require('snekfetch');
 //Default Settings
 const defaultSettings = {
   prefix: "`",
-  modLogChannel: "mod-log",
-  modRole: "Moderator",
-  adminRole: "Administrator",
-  welcomeMessage: "Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D",
   volume: "10"
 }
 //When the bot joins a server, make a new server settings for that server
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
-  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot``` Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).");
+  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. '`' is the default prefix bu that can be changed. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot. (Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).```");
 });
 //When the bot leaves a server delete the server settings
 Bot.on("guildDelete", guild => {
@@ -52,15 +56,19 @@ Bot.on("guildDelete", guild => {
 });
 //When the bot is turned on, set the activity
 Bot.on('ready', () => {
-  Bot.user.setUsername("James' bot");
+  Bot.user.setUsername("Jamie");
   Bot.user.setActivity("type fucking `help " + "(" + Bot.guilds.size + ")");
 });
 //Setup the queue system for music
 var servers = {};
 
+
 //Meat and potatos
 Bot.on("message", async message => {
-
+const guildConf = settings.get(message.guild.id);
+  var serverPrefix = guildConf.prefix;
+  var PREFIX = serverPrefix;
+    
   //ignore embeds starting with ``
   if (message.content.startsWith("``")) {
     return;
@@ -72,6 +80,11 @@ Bot.on("message", async message => {
     return;
   }
 
+  if (message.content.startsWith("<@"+Bot.user.id+"> prefix")){
+    message.channel.send("this servers current prefix is " + "'"+guildConf.prefix+"'");
+    
+  }
+  
   //yep
   if (message.content.startsWith('ur mom gay')) {
     message.channel.send("no u");
@@ -80,36 +93,99 @@ Bot.on("message", async message => {
     message.channel.send("only if you ask nicely");
   }
 
-  //Setup the prefix, commands and args
-  const guildConf = settings.get(message.guild.id);
-  if (message.content.indexOf(PREFIX) !== 0) return;
-  const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
+
 
   //Ignore all bots
   if (message.author.bot) {
     return;
   }
 
+  //Setup the prefix, commands and args
+ 
+  if (message.content.indexOf(PREFIX) !== 0) return;
+  const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+  
   //ignore things that aren't a command
-  if (!(["volume", "showvol", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar","men","allserversmessage", "prefix"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
+    
+    
+    
+//     if (command === "banana"){
+//    let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
+//       var phraseSaying = Math.floor(Math.random() * phraseObj.banana);
+        
+  
+      
+    
+//     }
+     
+    
+    if (command === "prefix"){
+    if (message.member.hasPermission('ADMINISTRATOR')){
+       
+        
+      const key = "prefix";
+      if (!guildConf.hasOwnProperty(key)) return message.reply("well ill be fucked as to how you got this error");
+      var pre = args[0];
+      if (!args[0]) {
+        message.reply("could you try that again. *F O R  F U C K  S A K E*");
+        
+        return;
+      } 
+    
+      if (args.length >= 2){
+        message.channel.send("you can only set one prefix, cuck");
+        return;
+      } else {
+        guildConf[key] = pre;
+        settings.set(message.guild.id, guildConf);
+        message.channel.send("@everyone THE FUCKING PREFIX IS NOW " + pre);
+      }
+    }else{
+      message.channel.send("Who areeeeee you?");
+      
+    }
+    }
+     
+    
+      
+    
+    
+    if (command ==="allserversmessage"){
+      
+      if (message.author.id !== process.env.myID) {
+        message.channel.send(message.author + " you dont have permission to use this and no one ever will");
+        var badPerson = message.author;
+        Bot.fetchUser(process.env.myID)
+          .then(user => {
+            user.send("Someone tried to use the allserversmessage command. They were warned " + badPerson + " in " + message.guild.name)
+          })
+        return;
+      }
+       message.author.send("allserversmessage command used by you");
+      var guildList = Bot.guilds.array();
+        try {
+          var messageToSend = args.join(" ");
+            guildList.forEach(guild => guild.channels.find("name", "general").send(messageToSend));
+        } catch (err) {
+            console.log("Could not send message to a server");
+        }
+    }
 
-        if (command === "test"){
-          var Canvas = require('canvas')
-  , Image = Canvas.Image
-  , canvas = new Canvas(200, 200)
-  , ctx = canvas.getContext('2d');
-          request.get('https://s.gc.gy/o-SNAKES.jpg')
-  .pipe(fs.createWriteStream('img/download.jpg'));
-fs.readFile(__dirname + 'img/download.jpg', function(err, squid){
-  if (err) throw err;
-  var img = new Image;
-  img.src = squid;
-  ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
-});
-message.channel.send({file:canvas.toBuffer()});
+        if (command === "avatar"){
+        
+        if (message.mentions.members.first()){
+          message.channel.send("https://cdn.discordapp.com/avatars/"+message.mentions.users.first().id+"/"+message.mentions.users.first().avatar+".jpg?size=256");
+          
+          
+        }else{
+          
+         message.channel.send("https://cdn.discordapp.com/avatars/"+message.author.id+"/"+message.author.avatar+".jpg?size=256");
+        }
+          
         }
             
           
@@ -152,6 +228,7 @@ message.channel.send({file:canvas.toBuffer()});
     }
 
     if (command === "nsfwgif") {
+     
       if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
         if (!args[0]) {
           message.channel.send("add some words to search idiot");
@@ -185,10 +262,12 @@ message.channel.send({file:canvas.toBuffer()});
       } else {
         message.channel.send("soz fam cant use that here. go do your weird shit in the nsfw channel. there might be kids watching");
       }
+      
     }
 
     //wtf
     if (command === "nsfwvid") {
+      
       if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
         if (!args[0]) {
           message.channel.send("add some words to search idiot");
@@ -232,6 +311,7 @@ message.channel.send({file:canvas.toBuffer()});
       } else {
         message.channel.send("soz fam cant use that here. go do your weird shit in the nsfw channel. there might be kids watching");
       }
+      
     }
 
     //democracy in action
@@ -321,14 +401,16 @@ message.channel.send({file:canvas.toBuffer()});
       } else {
         guildConf[key] = vol;
         settings.set(message.guild.id, guildConf);
-        message.channel.send(`THE FUCKING VOLUME IS NOW \n\`${vol}\``);
+        message.channel.send("THE FUCKING PREFIX IS NOW " + vol);
       }
     }
 
     //Shows the volume
-    if (command === "showvol") {
+    if (command === "showconf") {
       var configVol = guildConf.volume;
+      var configPre = guildConf.prefix;
       message.channel.send(`this servers volume is fucking : \`\`\`${configVol}\`\`\``);
+      message.channel.send(`this servers prefix is fucking : \`\`\`${configPre}\`\`\``);
     }
 
     //Sends a random pupper
@@ -498,17 +580,26 @@ message.channel.send({file:canvas.toBuffer()});
 
     //Gives a little info on the bot
     if (command === "info") {
-      message.reply('i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "`help". thanks bicthesz.');
+      message.reply('i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "'+guildConf.prefix+'help". thanks bicthesz.');
     }
 
+    
+    if (command === "men") {
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+    }
     //Sends 5 pictures of a random Indian man a friend found
     if (command === "manesh") {
-      message.channel.send("https://imgur.com/a/5yIzw");
-      message.channel.send("https://imgur.com/a/5yIzw");
-      message.channel.send("https://imgur.com/a/5yIzw");
-      message.channel.send("https://imgur.com/a/5yIzw");
-      message.channel.send("https://imgur.com/a/5yIzw");
-      message.channel.send("https://imgur.com/a/5yIzw");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
     }
 
     //Sends a meme
@@ -524,7 +615,7 @@ message.channel.send({file:canvas.toBuffer()});
     //Plays music, pretty simple
     if (command === "music") {
       if (!args[0]) {
-        message.reply("maybe you should learn how to bot bitch {usage '`music play <url> || stop || skip || pause || resume}");
+        message.reply("maybe you should learn how to bot bitch {usage "+guildConf.prefix+"music play <url> || stop || skip || pause || resume}");
       } else {
         switch (args[0]) {
           case "play":
@@ -533,7 +624,7 @@ message.channel.send({file:canvas.toBuffer()});
               return;
             }
             if (!args[1]) {
-              message.reply("i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage '`music play <url> || <searchterm> || stop || skip || pause || resume)");
+              message.reply("i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage "+guildConf.prefix+"music play <url> || <searchterm> || stop || skip || pause || resume)");
               return;
             }
             if (message.content.includes("http://") || message.content.includes("https://")) {
@@ -553,7 +644,7 @@ message.channel.send({file:canvas.toBuffer()});
                   }).catch(err => {
                     // handle err
                     message.reply("i cant join for some reason, hmm. (check if my permissions are okay)");
-                  });;
+                  });
                 }
                 break;
               } else {
@@ -696,7 +787,7 @@ message.channel.send({file:canvas.toBuffer()});
         "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is" + PREFIX + "which is the button next to the 1 without a modifier.",
         "color": 9442302,
         "footer": {
-          "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the `feedback command"
+          "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the "+guildConf.prefix+"feedback command"
         },
         "thumbnail": {
           "url": "https://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2Fgreenaf.png?1521260734263"
@@ -758,11 +849,11 @@ message.channel.send({file:canvas.toBuffer()});
           },
           {
             "name": PREFIX + "music",
-            "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '`music play https://youtu.be/1suebohSF1w'."
+            "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '"+guildConf.prefix+"music play https://youtu.be/1suebohSF1w'."
           },
           {
             "name": PREFIX + "volume",
-            "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck. ('`showvol' will show the volume)"
+            "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck."
           },
           {
             "name": PREFIX + "halloween",
@@ -790,12 +881,24 @@ message.channel.send({file:canvas.toBuffer()});
           },
           {
             "name": PREFIX + "mute",
-            "value": "mute a person from typing in a text channel. usage `mute @<user you want to mute> (requires a role called 'Rue brick' (case sensative))"
+            "value": "mute a person from typing in a text channel. usage "+guildConf.prefix+"mute @<user you want to mute> (requires a role called 'Rue brick' (case sensative))"
           },
           {
             "name": PREFIX + "unmute",
-            "value": "unmute a person from typing in a text channel. usage `unmute @<user you want to unmute>(requires a role called 'Rue brick' (case sensative))"
-          }
+            "value": "unmute a person from typing in a text channel. usage "+guildConf.prefix+"unmute @<user you want to unmute>(requires a role called 'Rue brick' (case sensative))"
+          },
+                   {
+            "name": PREFIX + "prefix + <new prefix>",
+            "value": "changes the server prefix to what ever you want, it can be anything with out spaces"
+          },
+                   {
+            "name": PREFIX + "avatar",
+            "value": "gets the avatar of yourself or a tagged person"
+                   },
+                   {
+            "name": "prefix",
+            "value": "if you '@' me and say prefix i will tell you the current prefix for the server"
+                   }
         ]
       };
       message.channel.send(message.author + " i slid right into your fucking dms");
