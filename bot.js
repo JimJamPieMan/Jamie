@@ -141,6 +141,10 @@ Bot.on("message", async message => {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
   
+    if(command === "birthday"){
+      var birthPerson = args[0];
+      var birthDate = args[1];
+    }
     
     if (command ==="test"){
       message.channel.send("this does nothing");
