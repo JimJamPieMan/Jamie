@@ -33,6 +33,10 @@ const htmlToText = require('html-to-text');
 const fs = require("fs");
 const Pornsearch = require('pornsearch');
 const faye = "428449205581774848";
+const Kaori = require('kaori');
+const moreSites = require('./moreSites');
+const getJSON = require('get-json');
+ 
 // const maker = Bot.users.find("id", process.env.myID);
 
 
@@ -47,7 +51,7 @@ const defaultSettings = {
 //When the bot joins a server, make a new server settings for that server
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
-  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. '`' is the default prefix bu that can be changed. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot. (Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).```");
+  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. '`' is the default prefix but that can be changed. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot. (Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).```");
 });
 
 
@@ -70,22 +74,28 @@ var servers = {};
 
 //Meat and potatos
 Bot.on("message", async message => {
+  //Ignore dms with a reply
+   if (message.channel.type === 'dm') {
+    message.author.send("nope not here, sorry");
+   return;
+   }
+  
   const guildConf = settings.get(message.guild.id);
   var serverPrefix = guildConf.prefix;
   var PREFIX = serverPrefix;
 
+  
 
   //ignore embeds starting with ``
   if (message.content.startsWith("``")) {
     return;
   }
-
-
-  //Ignore dms with a reply
-  if (message.channel.type === "dm") {
-    message.author.send("i dont work here and i never will, i am meant to be shared by the many");
+  if (message.content.endsWith("`")) {
     return;
   }
+
+
+  
 
 
   //Makes it so when the bot is tagged with the word prefix after it send the guilds prefix
@@ -118,10 +128,74 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
+  //   if (!(["beep"].includes(command))) {
+  //   message.channel.send(message.author + " its april fools fam");
+  // } else {
+    
+    if (command ==="test"){
+      message.channel.send("this does nothing");
+    }
+    
+    if (command === "botfriends"){
+      message.channel.send("i have friends, i just dont have their deats yet @faye");
+    }
 
+    
+    if (command === "rule34"){
+      if (message.channel.nsfw || message.channel.name.includes("nsfw")) {
+        if (!args[0]) {
+          message.channel.send("add some words to search idiot. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there");
+          return;
+        } else {
+          message.channel.startTyping();
+          
+            
+        
+          
+const kaori = new Kaori(moreSites);
+ 
+kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: false })
+    .then( function (images){ 
+  
+  var randomOne = Math.floor(Math.random()*images.length);
+  
+  const embed = {
+                "title": "randomSearchResult("+args[0]+ ", "+args[1]+", "+args[2]+")",
+                "color": 9442302,
+                "footer":{
+                  "text":"score '"+images[randomOne].score+"'"
+                },
+                    
+
+                "image": {
+                  "url": images[randomOne].file_url
+                },
+              };
+              message.channel.send({
+                embed
+              });
+ 
+
+  message.channel.stopTyping();
+})
+    .catch(function (err){
+  console.error(err);
+  message.channel.send("hey that doesn't work, sorry");
+  message.channel.stopTyping();
+  
+});
+
+        
+      
+      }
+        }else{
+      message.channel.send("***nope not here family bamily***");
+          }
+   
+    }
     
     
     //Command for changing prefix
@@ -137,10 +211,14 @@ Bot.on("message", async message => {
         if (args.length >= 2) {
           message.channel.send("you can only set one prefix, cuck");
           return;
-        } else {
+        } 
+        if (pre === "<@" + Bot.user.id + ">"){
+          message.channel.send("hey. stop that. you cant sent the prefix that man");
+          return;
+        }else {
           guildConf[key] = pre;
           settings.set(message.guild.id, guildConf);
-          message.channel.send("@everyone THE FUCKING PREFIX IS NOW " + pre);
+          message.channel.send(" THE FUCKING PREFIX IS NOW " + pre);
         }
       } else {
         message.channel.send("Who areeeeee you?");
@@ -411,11 +489,35 @@ Bot.on("message", async message => {
 
     //Sends a random pupper
     if (command === "pupper") {
-      randomPuppy()
-        .then(url => {
-          message.reply("here is you dogger " + url);
-        })
+
+      
+      
+      
+      
+      getJSON('https://random.dog/woof.json?filter=mp4,webm', function(error, response){
+        if (response){
+          var pupperUrl = response.url;
+          const embed = {
+                "title": "nowShowingDogger()",
+                "color": 9442302,
+                "image": {
+                  "url": pupperUrl
+                }
+                };
+              message.channel.send({
+                embed
+              });
+              }
+         if(error){
+          console.log(error);
+        }
+ 
+}
+      );
     }
+      
+     
+          
 
 
     //Sends a random kitty
@@ -591,23 +693,23 @@ Bot.on("message", async message => {
 
     //Men
     if (command === "men") {
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/two-and-a-half-men-movie-poster-2003-1020478794.jpg");
+      message.channel.send("https://imgur.com/189DJI3");
+      message.channel.send("https://imgur.com/189DJI3");
+      message.channel.send("https://imgur.com/189DJI3");
+      message.channel.send("https://imgur.com/189DJI3");
+      message.channel.send("https://imgur.com/189DJI3");
+      message.channel.send("https://imgur.com/189DJI3");
     }
     
 
     //Sends 5 pictures of a random Indian man a friend found
     if (command === "manesh") {
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
-      message.channel.send("https://raw.githubusercontent.com/JimJamPieMan/james-bot/glitch/manip/YZp0vDp%20-%20Imgur.jpg");
+      message.channel.send("https://imgur.com/YZp0vDp");
+      message.channel.send("https://imgur.com/YZp0vDp");
+      message.channel.send("https://imgur.com/YZp0vDp");
+      message.channel.send("https://imgur.com/YZp0vDp");
+      message.channel.send("https://imgur.com/YZp0vDp");
+      message.channel.send("https://imgur.com/YZp0vDp");
     }
 
 
@@ -742,7 +844,7 @@ Bot.on("message", async message => {
             if (normalDes.length > 50) {
               normalDes = normalDes.substr(0, 50) + '[...(See more)](' + videoInfo.url + ')';
             }
-            let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
+             let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
             var phraseFooter = Math.floor(Math.random() * phraseObj.saying.length);
             const embed = {
               "title": "nowPlaying() " + "'" + videoInfo.title + "'",
@@ -803,7 +905,7 @@ Bot.on("message", async message => {
         },
         "fields": [{
             "name": PREFIX + "pupper",
-            "value": "finds a random pupper"
+            "value": "finds a random pupper (thanks @kelsey)"
           },
           {
             "name": PREFIX + "kitty",
@@ -820,10 +922,6 @@ Bot.on("message", async message => {
           {
             "name": PREFIX + "elf",
             "value": "the elf on the shelf meme but shit"
-          },
-          {
-            "name": PREFIX + "pupper",
-            "value": "sned as a random pupper"
           },
           {
             "name": PREFIX + "freedom",
@@ -901,6 +999,15 @@ Bot.on("message", async message => {
             "name": PREFIX + "avatar",
             "value": "gets the avatar of yourself or a tagged person"
           },
+                   {
+            "name": PREFIX + "rule34",
+            "value": "i think we all know what this one does"
+          },
+                   {
+            "name": PREFIX + "botfriends",
+            "value": "shows you all my friends who are bots"
+          },
+                   
           {
             "name": "prefix",
             "value": "if you '@' me and say prefix i will tell you the current prefix for the server"
