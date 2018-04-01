@@ -102,6 +102,11 @@ Bot.on("message", async message => {
   if (message.content.startsWith("<@" + Bot.user.id + "> prefix")) {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
   }
+  
+//   if (message.content.startsWith("@soeone")) {
+//      var guildUsers = message.guild.members.map(m=>m.user.id);
+//     message.channel.send(guildUsers);
+//   }
 
 
   //yep
@@ -114,6 +119,10 @@ Bot.on("message", async message => {
     message.channel.send("only if you ask nicely");
   }
 
+  //yep 3.0
+  if (message.content.startsWith('hmm')) {
+    message.channel.send("https://imgur.com/Kj6GH8C");
+  }
 
   //Ignore all bots
   if (message.author.bot) {
@@ -129,7 +138,7 @@ Bot.on("message", async message => {
 
   //ignore things that aren't a command
   if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","test"].includes(command))) {
-    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
+    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
   //   if (!(["beep"].includes(command))) {
   //   message.channel.send(message.author + " its april fools fam");
@@ -1001,7 +1010,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
           },
                    {
             "name": PREFIX + "rule34",
-            "value": "i think we all know what this one does"
+            "value": "i think we all know what this one does. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there"
           },
                    {
             "name": PREFIX + "botfriends",
