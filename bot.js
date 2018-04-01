@@ -148,6 +148,10 @@ Bot.on("message", async message => {
       message.channel.send("this does nothing");
     }
     
+    if (command === "invite"){
+      message.channel.send("heres my number. call me! https://discordapp.com/oauth2/authorize?client_id=354163126947807242&scope=bot&permissions=288545856")
+    }
+
     if (command === "github"){
       message.channel.send("I exist on github so you can copy my guts and do what ever you want. (if you do, just a little credit will do)");
       message.channel.send("https://github.com/JimJamPieMan/james-bot");
