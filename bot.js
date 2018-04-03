@@ -36,6 +36,9 @@ const faye = "428449205581774848";
 const Kaori = require('kaori');
 const moreSites = require('./moreSites');
 const getJSON = require('get-json');
+const appendjson = require('appendjson');
+const GoogleImages = require('google-images');
+
  
 // const maker = Bot.users.find("id", process.env.myID);
 
@@ -51,7 +54,11 @@ const defaultSettings = {
 //When the bot joins a server, make a new server settings for that server
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
-  guild.channels.find("name", "announcements").send("```Holy shit what fuck is up guys, its ya boi James' bot. '`' is the default prefix but that can be changed. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot. (Dear server owner, you must create a special role called 'Rue brick'. its case sensative and will give people more commands (see help command).```");
+  
+  guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
+
+ 
+  guild.owner.send("Hey there, based on my masters code, your the server owner of "+guild.name+". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff, gtfo. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I hope you enjoy my existance. Thanks");
 });
 
 
@@ -103,10 +110,11 @@ Bot.on("message", async message => {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
   }
   
-//   if (message.content.startsWith("@soeone")) {
-//      var guildUsers = message.guild.members.map(m=>m.user.id);
-//     message.channel.send(guildUsers);
-//   }
+  if (message.content.startsWith("@some1")) {
+     var guildUsers = message.guild.members.map(m=>m.user.id);
+    var randomUser = Math.floor(Math.random()*guildUsers.length);
+    message.channel.send(message.author + " has fallen and can't get up and needs @someone. ("+"<@"+guildUsers[randomUser]+">"+")");
+  }
 
 
   //yep
@@ -123,6 +131,7 @@ Bot.on("message", async message => {
   if (message.content.startsWith('hmm')) {
     message.channel.send("https://imgur.com/Kj6GH8C");
   }
+  
 
   //Ignore all bots
   if (message.author.bot) {
@@ -137,33 +146,69 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","shopper","img","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
   
-    if(command === "birthday"){
-      var sampleObject = {
-        a: 1,
-        b: 2,
-        c: {
-          x: 11,
-          y: 22
-        }
-      };
 
-      fs.writeFile("./birthday.json", JSON.stringify(sampleObject), (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        };
-        console.log("File has been created");
-      });
-
-    }
     
     if (command ==="test"){
-      message.channel.send("this does nothing");
+  
     }
+    if (command ==="img"){
+       message.channel.startTyping();
+      const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
+      var searchTerm = args.join(" ");
+client.search(searchTerm)
+    .then(images => {
+  var randomOne = Math.floor(Math.random()*images.length);
+      const embed = {
+                "title": "Images()",
+                "color": 9442302,
+                "footer":{
+                  "text":images[randomOne].type
+                },
+                    
+
+                "image": {
+                  "url": images[randomOne].url
+                },
+              };
+              message.channel.send({
+                embed
+              });
+ 
+
+  message.channel.stopTyping();
+});
+         }
+     if (command ==="shopper"){
+       message.channel.startTyping();
+      const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
+client.search('people shopping')
+    .then(images => {
+  var randomOne = Math.floor(Math.random()*images.length);
+      const embed = {
+                "title": "randomShopper()",
+                "color": 9442302,
+                "footer":{
+                  "text":images[randomOne].type
+                },
+                    
+
+                "image": {
+                  "url": images[randomOne].url
+                },
+              };
+              message.channel.send({
+                embed
+              });
+ 
+
+  message.channel.stopTyping();
+});
+       
+         }
     
     if (command === "invite"){
       message.channel.send("heres my number. call me! https://discordapp.com/oauth2/authorize?client_id=354163126947807242&scope=bot&permissions=288545856")
@@ -237,10 +282,10 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     if (command === "prefix") {
       if (message.member.hasPermission('ADMINISTRATOR')) {
         const key = "prefix";
-        if (!guildConf.hasOwnProperty(key)) return message.reply("well ill be fucked as to how you got this error");
+        if (!guildConf.hasOwnProperty(key)) return message.channel.send(message.author+" well ill be fucked as to how you got this error");
         var pre = args[0];
         if (!args[0]) {
-          message.reply("could you try that again. *F O R  F U C K  S A K E*");
+          message.channel.send(message.author+" could you try that again. *F O R  F U C K  S A K E*");
           return;
         }
         if (args.length >= 2) {
@@ -407,7 +452,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
                 embed
               });
             }).catch(err => {
-              message.reply("maybe try another search term for your sick videos");
+              message.channel.send(message.author+" maybe try another search term for your sick videos");
               message.channel.stopTyping();
             });
         }
@@ -419,8 +464,8 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
 
     //democracy in action
     if (command === "poll") {
-      if (!args) return message.reply("You must have something to vote for!")
-      if (!message.content.includes("?")) return message.reply("Include a ? in your vote!")
+      if (!args) return message.channel.send(message.author+" You must have something to vote for!")
+      if (!message.content.includes("?")) return message.channel.send(message.author+ " Include a ? in your vote!")
       message.channel.send(`:ballot_box:  ${message.author.username} started a vote! React to my next message to vote on it. :ballot_box: `);
       const pollTopic = await message.channel.send(message.content.slice(5));
       await pollTopic.react(`✅`);
@@ -501,10 +546,10 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     //Changes the volume
     if (command === "volume") {
       const key = "volume";
-      if (!guildConf.hasOwnProperty(key)) return message.reply("well ill be fucked as to how you got this error");
+      if (!guildConf.hasOwnProperty(key)) return message.channel.send(message.author+" well ill be fucked as to how you got this error");
       var vol = args[0];
       if (!args[0] || isNaN(args[0])) {
-        message.reply("could you try that again. *F O R  F U C K  S A K E*");
+        message.channel.send(message.author+" could you try that again. *F O R  F U C K  S A K E*");
       } else {
         guildConf[key] = vol;
         settings.set(message.guild.id, guildConf);
@@ -558,7 +603,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     //Sends a random kitty
     if (command === "kitty") {
       var url = randomCat.get();
-      message.reply("here the fuck is is your kitty " + url + " (this is the actual shittest api ever)");
+      message.channel.send(message.author+" here the fuck is is your kitty " + url + " (this is the actual shittest api ever)");
     }
 
 
@@ -573,7 +618,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
       });
       var emailsender = message.author.username;
       if (!args[0]) {
-        message.reply('you might want to add some fucking text you fuck');
+        message.channel.send(message.author+" you might want to add some fucking text you fuck");
         console.log('message didnt send');
       } else {
         message.channel.startTyping();
@@ -587,10 +632,10 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.log(error);
-            message.reply('well fuck it didnt work maybe gove it another fucking hot');
+            message.channel.send(message.author+" well fuck it didnt work maybe gove it another fucking hot");
             message.channel.stopTyping();
           } else {
-            message.reply('Your fucking feedback was sent so thats fucking great');
+            message.channel.send(message.author+" Your fucking feedback was sent so thats fucking great");
             message.channel.stopTyping();
           }
         });
@@ -600,7 +645,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
 
     //Sends a picture of bob the builder
     if (command === "bob") {
-      message.reply("pls sned bob" + " https://imgur.com/a/iCv7s");
+      message.channel.send(message.author+" pls sned bob " +"https://imgur.com/a/iCv7s");
     }
 
 
@@ -611,14 +656,14 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
         var words = sr.rhymes(rword);
         var randomAnswer1 = words[Math.floor(Math.random() * words.length)];
         var randomAnswer2 = words[Math.floor(Math.random() * words.length)];
-        message.reply("You've heard of elf on a shelf. Now get ready for " + randomAnswer1 + " on a " + randomAnswer2);
+        message.channel.send(message.author+" You've heard of elf on a shelf. Now get ready for " + randomAnswer1 + " on a " + randomAnswer2);
       })
     }
 
 
     //Sends the declaration of independance
     if (command === "freedom") {
-      message.reply("<FREEDOM>'MURICA</FREEDOM>", {
+      message.channel.send(message.author+" <FREEDOM>'MURICA</FREEDOM>", {
         file: "freedom.txt"
       });
     }
@@ -639,7 +684,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
       var voicechan = Math.floor(Math.random() * channelTogo.length);
       var finalChannel = channelTogo[voicechan];
       message.member.setVoiceChannel(finalChannel);
-      message.reply('Seeya you fuck');
+      message.channel.send(message.author+" Seeya you fuck");
     }
 
 
@@ -676,7 +721,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
       if (message.member.roles.has(myRole.id)) {
         var voiceChannel = message.member.voiceChannel;
         if (!voiceChannel) {
-          return message.reply("why the fuck would you want me to leave if you aren't in a chat you fuck leave me the fuck alone");
+          return message.channel.send(message.author+" why the fuck would you want me to leave if you aren't in a chat you fuck leave me the fuck alone");
         } else {
           voiceChannel.leave();
         }
@@ -722,7 +767,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
 
     //Gives a little info on the bot
     if (command === "info") {
-      message.reply('i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "' + guildConf.prefix + 'help". thanks bicthesz.');
+      message.channel.send(message.author+' i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "' + guildConf.prefix + 'help". thanks bicthesz.');
     }
 
 
@@ -750,10 +795,23 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
 
     //Sends a meme
     if (command === "meme") {
-      getMemeUrls(args[0]).then(result => {
-        message.reply(result[0] + " i am not gonna lie, this is a fucking shit meme, i havent even seen it i just fucking know");
+      var searchTerm = args.join(" ");
+      message.channel.startTyping();
+      getMemeUrls(searchTerm).then(result => {
+        var randomOne = Math.floor(Math.random()*result.length);
+        const embed = {
+                "title": "nowShowingMeme()",
+                "color": 9442302,
+                "image": {
+                  "url": result[randomOne]
+                }
+                };
+         message.channel.send({embed});
+        message.channel.stopTyping();
+
       }).catch(err => {
-        message.reply("whoops fuck went up and shit went down!");
+        message.channel.send(message.author+" whoops fuck went up and shit went down!");
+        message.channel.stopTyping();
       });
     }
 
@@ -761,7 +819,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     //Plays music, pretty simple
     if (command === "music") {
       if (!args[0]) {
-        message.reply("maybe you should learn how to bot bitch {usage " + guildConf.prefix + "music play <url> || stop || skip || pause || resume}");
+        message.channel.send(message.author+"maybe you should learn how to bot bitch {usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume}");
       } else {
         switch (args[0]) {
           case "play":
@@ -770,7 +828,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
               return;
             }
             if (!args[1]) {
-              message.reply("i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume)");
+              message.channel.send(message.author+ " i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume)");
               return;
             }
             if (message.content.includes("http://") || message.content.includes("https://")) {
@@ -789,12 +847,12 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
                     play(connection, message);
                   }).catch(err => {
                     // handle err
-                    message.reply("i cant join for some reason, hmm. (check if my permissions are okay)");
+                    message.channel.send(message.author+" i cant join for some reason, hmm. (check if my permissions are okay)");
                   });
                 }
                 break;
               } else {
-                message.reply('only youtube links are allowed you fucking fucccck');
+                message.channel.send(message.author+' only youtube links are allowed you fucking fucccck');
               }
             } else {
               var opts = {
@@ -912,7 +970,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             if (server.queue[0]) {
               setTimeout(() => play(connection, message), 200)
               message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
-            } else {
+            } else{
               connection.disconnect();
               message.channel.send("k. done");
             }
@@ -1028,7 +1086,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
           },
           {
             "name": PREFIX + "prefix + <new prefix>",
-            "value": "changes the server prefix to what ever you want, it can be anything with out spaces"
+            "value": "changes the server prefix to what ever you want, it can be anything with out spaces. While the default prefix is '`', it can not be set back to this. its this way so it doesnt conflict with embeds"
           },
           {
             "name": PREFIX + "avatar",
@@ -1046,8 +1104,23 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "name": PREFIX + "github",
             "value": "gIvEs a lInK To tHe gItHuB PaGe fOr tHe bOt"
           },
-                   
-          {
+                   {
+            "name": PREFIX + "botfriends",
+            "value": "shows my friends, it not fucking rocket science"
+          },   
+                   {
+            "name": PREFIX + "shopper",
+            "value": "one of my friends wanted a random shopper command"
+          }, 
+                   {
+            "name": PREFIX + "img",
+            "value": "searches the googles for an imageles"
+          }, 
+                    {
+            "name": "@some1",
+            "value": "remember that time discord released that acid trip of a video explaining the @someone change for april fools. Well. WEll. WELl. WELL. (it has the be @soeone because the @someone thing still exists)(btw this one actually tags the person)"
+          }, 
+                   {
             "name": "prefix",
             "value": "if you '@' me and say prefix i will tell you the current prefix for the server"
           }
