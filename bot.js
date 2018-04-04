@@ -1,4 +1,6 @@
 /*TODOlist
+-- rewrite music command
+-- there was somehting else but i forgot so thats great
 
 */
 
@@ -81,6 +83,10 @@ var servers = {};
 
 //Meat and potatos
 Bot.on("message", async message => {
+  //Ignore all bots
+  if (message.author.bot) {
+    return;
+  }
   //Ignore dms with a reply
    if (message.channel.type === 'dm') {
     message.author.send("nope not here, sorry");
@@ -106,11 +112,11 @@ Bot.on("message", async message => {
 
 
   //Makes it so when the bot is tagged with the word prefix after it send the guilds prefix
-  if (message.content.startsWith("<@" + Bot.user.id + "> prefix")) {
+  if (message.content.toLowerCase().startsWith("<@" + Bot.user.id + "> prefix")) {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
   }
   
-  if (message.content.startsWith("@some1")) {
+  if (message.content.toLowerCase().startsWith("@someone")) {
      var guildUsers = message.guild.members.map(m=>m.user.id);
     var randomUser = Math.floor(Math.random()*guildUsers.length);
     message.channel.send(message.author + " has fallen and can't get up and needs @someone. ("+"<@"+guildUsers[randomUser]+">"+")");
@@ -118,25 +124,25 @@ Bot.on("message", async message => {
 
 
   //yep
-  if (message.content.startsWith('ur mom gay')) {
+  if (message.content.toLowerCase().startsWith('ur mom gay')) {
     message.channel.send("no u");
   }
 
   //yep 2.0
-  if (message.content.startsWith('fuck me')) {
+  if (message.content.toLowerCase().startsWith('fuck me')) {
     message.channel.send("only if you ask nicely");
   }
 
   //yep 3.0
-  if (message.content.startsWith('hmm')) {
+  if (message.content.toLowerCase().startsWith('hmm')) {
     message.channel.send("https://imgur.com/Kj6GH8C");
   }
-  
-
-  //Ignore all bots
-  if (message.author.bot) {
-    return;
+  //yep, the return
+  if (message.content.toLowerCase().startsWith('haha')) {
+    message.channel.send("https://imgur.com/b0NbvBR");
   }
+
+  
 
 
   //Setup the prefix, commands and args
@@ -146,7 +152,7 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","shopper","img","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","shopper","img","ping","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
   
@@ -155,6 +161,12 @@ Bot.on("message", async message => {
     if (command ==="test"){
   
     }
+      if(command === "ping") {
+    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
+    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
+    const m = await message.channel.send("Ping?");
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(Bot.ping)}ms`);
+  }
     if (command ==="img"){
        message.channel.startTyping();
       const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
@@ -1116,8 +1128,12 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "name": PREFIX + "img",
             "value": "searches the googles for an imageles"
           }, 
+                   {
+            "name": PREFIX + "ping",
+            "value": "ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping"
+          }, 
                     {
-            "name": "@some1",
+            "name": "@someone",
             "value": "remember that time discord released that acid trip of a video explaining the @someone change for april fools. Well. WEll. WELl. WELL. (it has the be @soeone because the @someone thing still exists)(btw this one actually tags the person)"
           }, 
                    {
