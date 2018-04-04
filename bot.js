@@ -37,7 +37,7 @@ const Pornsearch = require('pornsearch');
 const faye = "428449205581774848";
 const Kaori = require('kaori');
 const moreSites = require('./moreSites');
-const getJSON = require('get-json');
+var getJSON = require('get-json');
 const appendjson = require('appendjson');
 const GoogleImages = require('google-images');
 
@@ -582,7 +582,6 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     //Sends a random pupper
     if (command === "pupper") {
 
-      
       
       
       
