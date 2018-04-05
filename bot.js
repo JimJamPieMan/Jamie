@@ -56,7 +56,7 @@ const defaultSettings = {
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
   guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
-  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff, gtfo. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I very much recommend that you use the help command in order to understand which ones need Rue brick and whioch ones don't. I hope you enjoy my existance. Thanks");
+  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I very much recommend that you use the help command in order to understand which ones need Rue brick and whioch ones don't. I hope you enjoy my existance. Thanks");
 });
 
 
@@ -147,8 +147,8 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "test"].includes(command))) {
-    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh","play","skip","stop","pause","resume","queue","test"].includes(command))) {
+    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '"+command+"' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
 
@@ -768,25 +768,18 @@ Bot.on("message", async message => {
 
     //Makes the bot leave
     if (command === "gtfo") {
-      let myRole = message.guild.roles.find("name", "Rue brick");
-      if (message.member.roles.has(myRole.id)) {
-        var voiceChannel = message.member.voiceChannel;
-        if (!voiceChannel) {
-          return message.channel.send(message.author + " why the fuck would you want me to leave if you aren't in a chat you fuck leave me the fuck alone");
-        } else {
-          voiceChannel.leave();
-        }
-      } else {
-        var channels = message.guild.channels.filter(channel => channel.type === 'voice');
-        var channelcount = message.guild.channels.size
-        var guildname = message.guild.name;
-        var channelTogo = channels.map(channel => channel.id);
-        var voicechan = Math.floor(Math.random() * channelTogo.length);
-        var finalChannel = channelTogo[voicechan];
-        message.member.setVoiceChannel(finalChannel);
-        message.say("HOW FUCKIN DARE YOU TRY TO KICK ME");
-      }
-    }
+      
+      if (!message.member.voiceChannel){
+        message.channel.send("nah not happening");
+        return;
+      }      
+        if (message.guild.voiceConnection) {
+              message.guild.voiceConnection.disconnect();
+            }else
+              message.channel.send("I ain't even in a channel and u tryna kick me. maaan fuck you");
+              
+      } 
+    
 
     //Used to play local mp3 files from the server before it was moved to a different hosting service
     // if (command === "sounds") {
@@ -861,113 +854,14 @@ Bot.on("message", async message => {
           embed
         });
         message.channel.stopTyping();
-
       }).catch(err => {
         message.channel.send(message.author + " whoops fuck went up and shit went down!");
         message.channel.stopTyping();
       });
     }
 
-
-    //Plays music, pretty simple
-    if (command === "play"){
-      if (!message.member.voiceChannel) {
-        message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
-        return;
-      }
-      if (!args[1]) {
-        message.channel.send(message.author + " i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume)");
-        return;
-      }
-      if (message.content.includes("http://") || message.content.includes("https://")) {
-        if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
-          if (!servers[message.guild.id]) {
-            servers[message.guild.id] = {
-              queue: []
-            }
-          }
-          var server = servers[message.guild.id];
-          server.queue.push(args[1]);
-          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
-
-          if (!message.guild.voiceConnection) {
-            message.member.voiceChannel.join().then(function (connection) {
-              play(connection, message);
-            }).catch(err => {
-              // handle err
-              message.channel.send(message.author + " i cant join for some reason, hmm. (check if my permissions are okay)");
-            });
-          }
-          break;
-        } else {
-          message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
-        }
-      } else {
-        var opts = {
-          maxResults: 1,
-          key: process.env.youtubeapi,
-          type: 'video'
-        };
-        args.shift();
-        var searchTerm = args.join("_");
-        search(searchTerm, opts, function (err, results) {
-          if (err) {
-            console.log(err);
-            message.channel.send("maybe try a different search term");
-            return;
-          }
-          var searchUrl = results[0].link;
-          message.channel.send(searchUrl);
-          if (!servers[message.guild.id]) {
-            servers[message.guild.id] = {
-              queue: []
-            }
-          }
-          var server = servers[message.guild.id];
-          server.queue.push(searchUrl);
-          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
-
-          if (!message.guild.voiceConnection) {
-            message.member.voiceChannel.join().then(function (connection) {
-              play(connection, message);
-            });
-          }
-        });
-      }
-    }
-
-    if (command === "skip"){
-      var server = servers[message.guild.id];
-      if (server.dispatcher) {
-        server.dispatcher.end();
-        message.channel.send("i skipped that bitch just like skipping in primary school");
-      }
-
-    }
-    if (command === "stop"){
-      var server = servers[message.guild.id];
-      if (message.guild.voiceConnection) {
-        message.guild.voiceConnection.disconnect();
-      }
-    }
-    if (command === "pause"){
-      var server = servers[message.guild.id];
-      if (server.dispatcher) {
-        server.dispatcher.pause();
-        message.channel.send("paused mother fukaaaaaaa");
-      }
-    }
-    if (command === "resume"){
-      var server = servers[message.guild.id];
-      if (server.dispatcher) {
-        server.dispatcher.resume();
-        message.channel.send("resumed mother fukaaaaaaa");
-      }
-    }
-    if (command === "queue"){
-      message.channel.send("```"+server.queue+"```");
-    }
-
+  
+  //music function
     function play(connection, message) {
       var server = servers[message.guild.id];
       server.dispatcher = connection.playStream(yt(server.queue[0], {
@@ -1026,6 +920,117 @@ Bot.on("message", async message => {
 
 
 
+    //Plays music, pretty simple
+    if (command === "play"){
+      if (!message.member.voiceChannel) {
+        message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
+        return;
+      }
+      if (!args[0]) {
+        message.channel.send(message.author + " ***FEED ME either a youtube url or search term***");
+        return;
+      }
+      if (message.content.includes("http://") || message.content.includes("https://")) {
+        if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
+          if (!servers[message.guild.id]) {
+            servers[message.guild.id] = {
+              queue: []
+            }
+          }
+          var server = servers[message.guild.id];
+          server.queue.push(args[0]);
+          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
+
+          if (!message.guild.voiceConnection) {
+            message.member.voiceChannel.join().then(function (connection) {
+              play(connection, message);
+            }).catch(err => {
+              console.log(err);
+              message.channel.send(message.author + " i cant play for some reason, hmm. (check if my permissions are okay)");
+            });
+          }
+          
+        } else {
+          message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
+        }
+      } else {
+        var opts = {
+          maxResults: 1,
+          key: process.env.youtubeapi,
+          type: 'video'
+        };
+        args.shift();
+        var searchTerm = args.join("_");
+        search(searchTerm, opts, function (err, results) {
+          if (err) {
+            console.log(err);
+            message.channel.send("maybe try a different search term");
+            return;
+          }
+          var searchUrl = results[0].link;
+          message.channel.send(searchUrl);
+          if (!servers[message.guild.id]) {
+            servers[message.guild.id] = {
+              queue: []
+            }
+          }
+          var server = servers[message.guild.id];
+          server.queue.push(searchUrl);
+          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
+
+          if (!message.guild.voiceConnection) {
+            message.member.voiceChannel.join().then(function (connection) {
+              play(connection, message);
+            });
+          }
+        });
+      }
+    }
+
+  //skips music
+    if (command === "skip"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.end();
+        message.channel.send("i skipped that bitch just like skipping in primary school");
+      }
+
+    }
+  
+  //stops music
+    if (command === "stop"){
+      var server = servers[message.guild.id];
+      if (message.guild.voiceConnection) {
+        message.guild.voiceConnection.disconnect();
+      }
+    }
+  
+  //pauses music
+    if (command === "pause"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.pause();
+        message.channel.send("paused mother fukaaaaaaa");
+      }
+    }
+  
+  //resumes music
+    if (command === "resume"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.resume();
+        message.channel.send("resumed mother fukaaaaaaa");
+      }
+    }
+  
+  //sows the queueueueu
+    if (command === "queue"){
+      message.channel.send("```"+server.queue+"```");
+    }
+
+    
+
+
     //Sends the user a help embed
     if (command === "help") {
       message.channel.send(message.author + " i slid right into your fucking dms");
@@ -1074,7 +1079,7 @@ Bot.on("message", async message => {
             },
             {
               "name": PREFIX + "gtfo",
-              "value": "kicks the bot from the fucking voice channel or if it fucking breaks. (!!REQUIRES 'Rue brick' ROLE!!)"
+              "value": "kicks the bot from the fucking voice channel or if it fucking breaks. its just like my leave command. "
             },
             {
               "name": PREFIX + "info",
@@ -1087,10 +1092,6 @@ Bot.on("message", async message => {
             {
               "name": PREFIX + "meme <can be left blank or use a search term>",
               "value": "gets a meme but yet again another shit api"
-            },
-            {
-              "name": PREFIX + "music play <youtube url or searchterm> || stop || skip || pause || resume",
-              "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '" + guildConf.prefix + "music play https://youtu.be/1suebohSF1w'."
             },
             {
               "name": PREFIX + "volume <number>",
@@ -1162,6 +1163,26 @@ Bot.on("message", async message => {
               "value": "our server got weird there for sec"
             },
             {
+              "name": PREFIX + "play <searchterm || youtube url>",
+              "value": "our server got weird there for sec"
+            },
+            {
+              "name": PREFIX + "pause",
+              "value": "pauses the music currently playing"
+            },
+            {
+              "name": PREFIX + "resume",
+              "value": "resumes the music currently playing"
+            },
+            {
+              "name": PREFIX + "skip",
+              "value": "skips to the next song in the queue"
+            },
+            {
+              "name": PREFIX + "stop",
+              "value": "stop, rop and leave the channel"
+            },
+            {
               "name": PREFIX + "github",
               "value": "gIvEs a lInK To tHe gItHuB PaGe fOr tHe bOt"
             },
@@ -1201,6 +1222,7 @@ Bot.on("message", async message => {
 
 
   }
+       
 });
 
 
