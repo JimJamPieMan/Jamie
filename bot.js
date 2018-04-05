@@ -1,7 +1,5 @@
 /*TODOlist
--- rewrite music command
--- there was somehting else but i forgot so thats great
-
+-- rewrite music command so you dont need to word music before everything cos thats annoying @james
 */
 
 //Sets up thr uptimerobot keeper upper
@@ -37,9 +35,13 @@ const Pornsearch = require('pornsearch');
 const faye = "428449205581774848";
 const Kaori = require('kaori');
 const moreSites = require('./moreSites');
-var getJSON = require('get-json');
+const getJSON = require('get-json');
 const appendjson = require('appendjson');
 const GoogleImages = require('google-images');
+var figlet = require('figlet');
+ 
+
+
 
  
 // const maker = Bot.users.find("id", process.env.myID);
@@ -48,6 +50,7 @@ const GoogleImages = require('google-images');
 
 //Default Settings
 const defaultSettings = {
+  nonPrefixed: true,
   prefix: "`",
   volume: "10"
 }
@@ -60,8 +63,8 @@ Bot.on("guildCreate", guild => {
   guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
 
  
-  guild.owner.send("Hey there, based on my masters code, your the server owner of "+guild.name+". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff, gtfo. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I hope you enjoy my existance. Thanks");
-});
+  guild.owner.send("Hey there, based on my masters code, your the server owner of "+guild.name+". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff, gtfo. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I very much recommend that you use the help command in order to understand which ones need Rue brick and whioch ones don't. I hope you enjoy my existance. Thanks");
+ });
 
 
 //When the bot leaves a server delete the server settings
@@ -108,9 +111,6 @@ Bot.on("message", async message => {
   }
 
 
-  
-
-
   //Makes it so when the bot is tagged with the word prefix after it send the guilds prefix
   if (message.content.toLowerCase().startsWith("<@" + Bot.user.id + "> prefix")) {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
@@ -123,6 +123,7 @@ Bot.on("message", async message => {
   }
 
 
+  if (guildConf.nonPrefixed === true){
   //yep
   if (message.content.toLowerCase().startsWith('ur mom gay')) {
     message.channel.send("no u");
@@ -141,6 +142,7 @@ Bot.on("message", async message => {
   if (message.content.toLowerCase().startsWith('haha')) {
     message.channel.send("https://imgur.com/b0NbvBR");
   }
+  }
 
   
 
@@ -152,14 +154,84 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","shopper","img","ping","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "music", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix","rule34","botfriends","github","invite","shopper","img","ping","texttoascii","nonptoggle","enmaprefresh","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (that command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
   
+if (command ==="test"){
+  message.channel.send("beep boop");
+    }
+    
+    
+    
+    if (command ==="enmaprefresh"){
+       if (message.author.id !== process.env.myID) {
+        message.channel.send(message.author + " ***woah, dude this is a serious command***");
+        var badPerson = message.author;
+        Bot.fetchUser(process.env.myID)
+          .then(user => {
+            user.send("Someone tried to use the enmaprefresh command. They were warned " + badPerson + " in " + message.guild.name)
+          })
+        return;
+      }
+      message.author.send("enmaprefresh command used by you");
+      Bot.guilds.forEach(guild=>{
+        settings.delete(guild.id);
+      });
+      
+      setTimeout(function(){
+         Bot.guilds.forEach(guild=>{
+           settings.set(guild.id, defaultSettings);
+         });
+        message.channel.send("***Enmap refreshed on all "+Bot.guilds.size+" servers***");
+      }, 1000);
+    }
+    
+    
+    
+    
+    if (command === "nonptoggle"){
+        let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+      const key = "nonPrefixed";
+      
+      if (guildConf.nonPrefixed === true){
+        guildConf[key] = false;
+          settings.set(message.guild.id, guildConf);
+        message.channel.send("toggled that shit off");
+        return;
+      }
+      
+      if (guildConf.nonPrefixed === false){
+        guildConf[key] = true;
+          settings.set(message.guild.id, guildConf);
+        message.channel.send("toggled that shit on");
+        return;
+      }
+        }else{
+          message.channel.send("***HEY you cant push my buttons, only more powerdul people can***");
+        }
+       
+    }
 
     
-    if (command ==="test"){
-  
+    if (command ==="texttoascii"){
+      var text = args.join(" ");
+      if (text.length > 21){
+        message.channel.send("hey man soz but that aint gonna work, its gonna have to be less than 21 characters. your last one was " +text.length+". so just cut it down a bit and about now i realised this was a really long error message so i just kept going ahhahaahahahhah i need help");
+      }else{
+figlet(text, function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+      message.channel.send("***WHOOPS***");
+        console.dir(err);
+        return;
+    }
+    message.channel.send("```"+data+"```");
+});
+
+      }
+
     }
       if(command === "ping") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
@@ -292,7 +364,8 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     
     //Command for changing prefix
     if (command === "prefix") {
-      if (message.member.hasPermission('ADMINISTRATOR')) {
+      let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
         const key = "prefix";
         if (!guildConf.hasOwnProperty(key)) return message.channel.send(message.author+" well ill be fucked as to how you got this error");
         var pre = args[0];
@@ -565,7 +638,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
       } else {
         guildConf[key] = vol;
         settings.set(message.guild.id, guildConf);
-        message.channel.send("THE FUCKING PREFIX IS NOW " + vol);
+        message.channel.send("THE FUCKING VOLUME IS NOW " + vol);
       }
     }
 
@@ -682,8 +755,6 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
 
     //Moves you a predetermined channel
     if (command === "fuck") {
-      let myRole = message.guild.roles.find("name", "Rue brick");
-      if (!message.member.roles.has(myRole.id)) return message.channel.send("you need to get gooder to be able to do this you fucker");
       if (!message.member.voiceChannel) {
         message.channel.send("if i were to move you when your not in a voice channel the whole world would probably explode and we dont want that do we so maybe get in a channel, Dick!");
         return;
@@ -994,15 +1065,13 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
     
     //Sends the user a help embed
     if (command === "help") {
-      const embed = {
+      message.channel.send(message.author + " i slid right into your fucking dms");
+      message.author.send("a whhhholllle lotta help for you", {embed: {
         "title": "dont be  stupid in the discord server, read the help",
-        "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is" + PREFIX + "which is the button next to the 1 without a modifier.",
+        "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is '" + PREFIX + "'.",
         "color": 9442302,
-        "footer": {
-          "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the " + guildConf.prefix + "feedback command"
-        },
         "thumbnail": {
-          "url": "https://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2Fgreenaf.png?1521260734263"
+          "url": "https://cdn.discordapp.com/avatars/354163126947807242/73d0840f852ea62a6409f2b23b95173d.jpg?size=256"
         },
         "author": {
           "name": "hey, james here. have some help you fuck"
@@ -1016,7 +1085,7 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "value": "everytime you type it you get a cat but its the shittest api ever"
           },
           {
-            "name": PREFIX + "feedback",
+            "name": PREFIX + "feedback <write things here>",
             "value": "sends james some feedback to his personal email adress ~~hahahahahahahahahahah~~whoops"
           },
           {
@@ -1036,12 +1105,12 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "value": "moves youto another fucking channel"
           },
           {
-            "name": PREFIX + "fuckoff",
-            "value": "moves a person you tagged to another fucking channel"
+            "name": PREFIX + "fuckoff <@person>",
+            "value": "moves a person you tagged to another fucking channel (!!REQUIRES 'Rue brick' ROLE!!)"
           },
           {
             "name": PREFIX + "gtfo",
-            "value": "kicks the bot from the fucking voice channel or if it fucking breaks. (requires a role called 'Rue brick' (case sensative))"
+            "value": "kicks the bot from the fucking voice channel or if it fucking breaks. (!!REQUIRES 'Rue brick' ROLE!!)"
           },
           {
             "name": PREFIX + "info",
@@ -1052,15 +1121,15 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "value": "manesh^5"
           },
           {
-            "name": PREFIX + "meme",
+            "name": PREFIX + "meme <can be left blank or use a search term>",
             "value": "gets a meme but yet again another shit api"
           },
           {
-            "name": PREFIX + "music",
+            "name": PREFIX + "music play <youtube url or searchterm> || stop || skip || pause || resume",
             "value": "okay so this one was a right little bitch to do and requried to redo the entire command system on the bot. the command is music followed by either play or stop or skip or pause or resume. after the play command MUST be a youtube link, search might be coming soon, we will see. for example '" + guildConf.prefix + "music play https://youtu.be/1suebohSF1w'."
           },
           {
-            "name": PREFIX + "volume",
+            "name": PREFIX + "volume <number>",
             "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck."
           },
           {
@@ -1072,15 +1141,15 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "value": "this one time in the overwatch general chat in GGOZ..."
           },
           {
-            "name": PREFIX + "poll",
+            "name": PREFIX + "poll <question ending in?>",
             "value": "fucking democracy in action"
           },
           {
-            "name": PREFIX + "nsfwvid",
+            "name": PREFIX + "nsfwvid <searchterm>",
             "value": "you fucking degenerates"
           },
           {
-            "name": PREFIX + "nsfwgif",
+            "name": PREFIX + "nsfwgif <searchterm>",
             "value": "you fucking degenerates. But now in Gifs!"
           },
           {
@@ -1088,67 +1157,84 @@ kaori.search('rule34', { tags: [args[0],args[1],args[2]],limit:1000, random: fal
             "value": "i dont know, this one just sorta happened"
           },
           {
-            "name": PREFIX + "mute",
-            "value": "mute a person from typing in a text channel. usage " + guildConf.prefix + "mute @<user you want to mute> (requires a role called 'Rue brick' (case sensative))"
+            "name": PREFIX + "mute <@person>",
+            "value": "mute a person from typing in a text channel. usage " + guildConf.prefix + "mute @<user you want to mute> (!!REQUIRES 'Rue brick' ROLE!!)"
           },
           {
-            "name": PREFIX + "unmute",
-            "value": "unmute a person from typing in a text channel. usage " + guildConf.prefix + "unmute @<user you want to unmute>(requires a role called 'Rue brick' (case sensative))"
+            "name": PREFIX + "unmute <@person>",
+            "value": "unmute a person from typing in a text channel. usage " + guildConf.prefix + "unmute @<user you want to unmute> (!!REQUIRES 'Rue brick' ROLE!!)"
           },
           {
             "name": PREFIX + "prefix + <new prefix>",
-            "value": "changes the server prefix to what ever you want, it can be anything with out spaces. While the default prefix is '`', it can not be set back to this. its this way so it doesnt conflict with embeds"
+            "value": "changes the server prefix to what ever you want, it can be anything with out spaces. While the default prefix is '`', it can not be set back to this. its this way so it doesnt conflict with embeds. !!REQUIRES 'Rue brick' ROLE!!)"
           },
           {
-            "name": PREFIX + "avatar",
+            "name": PREFIX + "avatar <either leave this blank for your own or tag someone>",
             "value": "gets the avatar of yourself or a tagged person"
           },
-                   {
-            "name": PREFIX + "rule34",
+          {
+            "name": PREFIX + "rule34 <tag1> <tag2> <tag3>",
             "value": "i think we all know what this one does. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there"
           },
-                   {
+          
+        ]
+      }
+                           
+      
+    });
+     
+      message.author.send({
+        embed:{
+          "color": 9442302,
+          "footer": {
+          "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the " + guildConf.prefix + "feedback command"
+        },
+          fields:[{
             "name": PREFIX + "botfriends",
             "value": "shows you all my friends who are bots"
           },
-                   {
+          {
             "name": PREFIX + "github",
             "value": "gIvEs a lInK To tHe gItHuB PaGe fOr tHe bOt"
-          },
-                   {
-            "name": PREFIX + "botfriends",
-            "value": "shows my friends, it not fucking rocket science"
-          },   
-                   {
+          },  
+          {
             "name": PREFIX + "shopper",
             "value": "one of my friends wanted a random shopper command"
           }, 
-                   {
-            "name": PREFIX + "img",
+          {
+            "name": PREFIX + "img <searchterm>",
             "value": "searches the googles for an imageles"
           }, 
-                   {
+          {
             "name": PREFIX + "ping",
             "value": "ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping"
           }, 
-                    {
-            "name": "@someone",
-            "value": "remember that time discord released that acid trip of a video explaining the @someone change for april fools. Well. WEll. WELl. WELL. (it has the be @soeone because the @someone thing still exists)(btw this one actually tags the person)"
+          {
+            "name": PREFIX + "texttoascii <whatever you want to ascii>",
+            "value": "I WAS TRYNA DO AN IMAGE TO ASCII BUT IT DIDNT WORK SO I SETTLED FOR THIS"
           }, 
-                   {
+          {
+            "name": "@someone",
+            "value": "remember that time discord released that acid trip of a video explaining the @someone change for april fools. Well. WEll. WELl. WELL."
+          }, 
+          {
+            "name": PREFIX + "nonptoggle",
+            "value": "***stops dem annoying non-prefixed commands*** (hmm, haha, fuck me, ur mom gay) (!!REQUIRES 'Rue brick' ROLE!!)"
+          }, 
+          {
             "name": "prefix",
             "value": "if you '@' me and say prefix i will tell you the current prefix for the server"
           }
-        ]
-      };
-      message.channel.send(message.author + " i slid right into your fucking dms");
-      message.author.send("a whhhholllle lotta help for you", {
-        embed
+                       ]
+        }
       });
+      
     }
+  
+                           
   }
-
 });
+    
 
 //Logs the bot in with a secret token
 Bot.login(process.env.TOKEN);
