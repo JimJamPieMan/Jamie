@@ -870,167 +870,158 @@ Bot.on("message", async message => {
 
 
     //Plays music, pretty simple
-    if (command === "music") {
-      if (!args[0]) {
-        message.channel.send(message.author + "maybe you should learn how to bot bitch {usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume}");
-      } else {
-        switch (args[0]) {
-          case "play":
-            if (!message.member.voiceChannel) {
-              message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
-              return;
-            }
-            if (!args[1]) {
-              message.channel.send(message.author + " i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume)");
-              return;
-            }
-            if (message.content.includes("http://") || message.content.includes("https://")) {
-              if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
-                if (!servers[message.guild.id]) {
-                  servers[message.guild.id] = {
-                    queue: []
-                  }
-                }
-                var server = servers[message.guild.id];
-                server.queue.push(args[1]);
-                message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
-
-                if (!message.guild.voiceConnection) {
-                  message.member.voiceChannel.join().then(function (connection) {
-                    play(connection, message);
-                  }).catch(err => {
-                    // handle err
-                    message.channel.send(message.author + " i cant join for some reason, hmm. (check if my permissions are okay)");
-                  });
-                }
-                break;
-              } else {
-                message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
-              }
-            } else {
-              var opts = {
-                maxResults: 1,
-                key: process.env.youtubeapi,
-                type: 'video'
-              };
-              args.shift();
-              var searchTerm = args.join("_");
-              search(searchTerm, opts, function (err, results) {
-                if (err) {
-                  console.log(err);
-                  message.channel.send("maybe try a different search term");
-                  return;
-                }
-                var searchUrl = results[0].link;
-                message.channel.send(searchUrl);
-                if (!servers[message.guild.id]) {
-                  servers[message.guild.id] = {
-                    queue: []
-                  }
-                }
-                var server = servers[message.guild.id];
-                server.queue.push(searchUrl);
-                message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
-
-                if (!message.guild.voiceConnection) {
-                  message.member.voiceChannel.join().then(function (connection) {
-                    play(connection, message);
-                  });
-                }
-              });
-            }
-            break;
-          case "skip":
-            var server = servers[message.guild.id];
-            if (server.dispatcher) {
-              server.dispatcher.end();
-              message.channel.send("i skipped that bitch just like skipping in primary school");
-            }
-            break;
-
-          case "stop":
-            var server = servers[message.guild.id];
-            if (message.guild.voiceConnection) {
-              message.guild.voiceConnection.disconnect();
-            }
-            break;
-
-          case "pause":
-            var server = servers[message.guild.id];
-            if (server.dispatcher) {
-              server.dispatcher.pause();
-              message.channel.send("paused mother fukaaaaaaa");
-            }
-            break;
-
-          case "resume":
-            var server = servers[message.guild.id];
-            if (server.dispatcher) {
-              server.dispatcher.resume();
-              message.channel.send("resumed mother fukaaaaaaa");
-            }
-            break;
-
-          case "queue":
-            var server = servers[message.guild.id];
-        }
-
-        function play(connection, message) {
-          var server = servers[message.guild.id];
-          server.dispatcher = connection.playStream(yt(server.queue[0], {
-            filter: "audioonly"
-          }));
-          var vidIDforSearch = getVideoId(server.queue[0]).id;
-          fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
-            var minutes = Math.floor(videoInfo.duration / 60);
-            var seconds = videoInfo.duration - minutes * 60;
-            var oldDes = videoInfo.description;
-            var normalDes = htmlToText.fromString(oldDes, {
-              wordwrap: false
-            });
-            if (normalDes.length > 50) {
-              normalDes = normalDes.substr(0, 50) + '[...(See more)](' + videoInfo.url + ')';
-            }
-            let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
-            var phraseFooter = Math.floor(Math.random() * phraseObj.saying.length);
-            const embed = {
-              "title": "nowPlaying() " + "'" + videoInfo.title + "'",
-              "description": normalDes,
-              "color": 9442302,
-              "footer": {
-                "text": phraseObj.saying[phraseFooter]
-              },
-              "image": {
-                "url": videoInfo.thumbnailUrl
-              },
-              "fields": [{
-                  name: "how long this shit is",
-                  value: minutes + "m" + seconds + "s"
-                },
-                {
-                  name: "linky link",
-                  value: videoInfo.url
-                }
-              ]
-            };
-            message.channel.send({
-              embed
-            });
-          });
-          var serverVol = guildConf.volume;
-          server.dispatcher.setVolume(serverVol);
-          server.queue.shift();
-          server.dispatcher.on("end", function () {
-            if (server.queue[0]) {
-              setTimeout(() => play(connection, message), 200)
-              message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
-            } else {
-              connection.disconnect();
-              message.channel.send("k. done");
-            }
-          });
-        }
+    if (command === "play"){
+      if (!message.member.voiceChannel) {
+        message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
+        return;
       }
+      if (!args[1]) {
+        message.channel.send(message.author + " i need a youtube link to play nothing else works(FUCK YEAH SEARCH IS HERE BITCHHHHHH) (usage " + guildConf.prefix + "music play <url> || <searchterm> || stop || skip || pause || resume)");
+        return;
+      }
+      if (message.content.includes("http://") || message.content.includes("https://")) {
+        if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
+          if (!servers[message.guild.id]) {
+            servers[message.guild.id] = {
+              queue: []
+            }
+          }
+          var server = servers[message.guild.id];
+          server.queue.push(args[1]);
+          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
+
+          if (!message.guild.voiceConnection) {
+            message.member.voiceChannel.join().then(function (connection) {
+              play(connection, message);
+            }).catch(err => {
+              // handle err
+              message.channel.send(message.author + " i cant join for some reason, hmm. (check if my permissions are okay)");
+            });
+          }
+          break;
+        } else {
+          message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
+        }
+      } else {
+        var opts = {
+          maxResults: 1,
+          key: process.env.youtubeapi,
+          type: 'video'
+        };
+        args.shift();
+        var searchTerm = args.join("_");
+        search(searchTerm, opts, function (err, results) {
+          if (err) {
+            console.log(err);
+            message.channel.send("maybe try a different search term");
+            return;
+          }
+          var searchUrl = results[0].link;
+          message.channel.send(searchUrl);
+          if (!servers[message.guild.id]) {
+            servers[message.guild.id] = {
+              queue: []
+            }
+          }
+          var server = servers[message.guild.id];
+          server.queue.push(searchUrl);
+          message.channel.send("i added that bitch to the queueueueuueueueueuueueueueu");
+
+          if (!message.guild.voiceConnection) {
+            message.member.voiceChannel.join().then(function (connection) {
+              play(connection, message);
+            });
+          }
+        });
+      }
+    }
+
+    if (command === "skip"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.end();
+        message.channel.send("i skipped that bitch just like skipping in primary school");
+      }
+
+    }
+    if (command === "stop"){
+      var server = servers[message.guild.id];
+      if (message.guild.voiceConnection) {
+        message.guild.voiceConnection.disconnect();
+      }
+    }
+    if (command === "pause"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.pause();
+        message.channel.send("paused mother fukaaaaaaa");
+      }
+    }
+    if (command === "resume"){
+      var server = servers[message.guild.id];
+      if (server.dispatcher) {
+        server.dispatcher.resume();
+        message.channel.send("resumed mother fukaaaaaaa");
+      }
+    }
+    if (command === "queue"){
+      message.channel.send("```"+server.queue+"```");
+    }
+
+    function play(connection, message) {
+      var server = servers[message.guild.id];
+      server.dispatcher = connection.playStream(yt(server.queue[0], {
+        filter: "audioonly"
+      }));
+      var vidIDforSearch = getVideoId(server.queue[0]).id;
+      fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
+        var minutes = Math.floor(videoInfo.duration / 60);
+        var seconds = videoInfo.duration - minutes * 60;
+        var oldDes = videoInfo.description;
+        var normalDes = htmlToText.fromString(oldDes, {
+          wordwrap: false
+        });
+        if (normalDes.length > 50) {
+          normalDes = normalDes.substr(0, 50) + '[...(See more)](' + videoInfo.url + ')';
+        }
+        let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
+        var phraseFooter = Math.floor(Math.random() * phraseObj.saying.length);
+        const embed = {
+          "title": "nowPlaying() " + "'" + videoInfo.title + "'",
+          "description": normalDes,
+          "color": 9442302,
+          "footer": {
+            "text": phraseObj.saying[phraseFooter]
+          },
+          "image": {
+            "url": videoInfo.thumbnailUrl
+          },
+          "fields": [{
+            name: "how long this shit is",
+            value: minutes + "m" + seconds + "s"
+          },
+          {
+            name: "linky link",
+            value: videoInfo.url
+          }
+          ]
+        };
+        message.channel.send({
+          embed
+        });
+      });
+      var serverVol = guildConf.volume;
+      server.dispatcher.setVolume(serverVol);
+      server.queue.shift();
+      server.dispatcher.on("end", function () {
+        if (server.queue[0]) {
+          setTimeout(() => play(connection, message), 200)
+          message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
+        } else {
+          connection.disconnect();
+          message.channel.send("k. done");
+        }
+      });
     }
 
 
