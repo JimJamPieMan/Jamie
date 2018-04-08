@@ -1,5 +1,23 @@
 /*TODOlist
--- rewrite music command so you dont need to word music before everything cos thats annoying @james
+--Birthday command, yep, i know but its cool and it should be done
+^^Json files with the id of the guild
+^^that way in future if anything wants to be added it can
+^^put the date in there as a date then when the bot turn on or off what ever it reculculates the seconds till that time. 
+^^its gonna go off american time but oh well
+
+bitrthdays,
+          reminder channel:
+              name:
+              date,
+                day:
+                month:
+             
+Other data in the future
+
+
+--make the img results paginate so jack doesnt get angry
+
+
 */
 
 //Sets up thr uptimerobot keeper upper
@@ -48,7 +66,7 @@ var figlet = require('figlet');
 const defaultSettings = {
   nonPrefixed: true,
   prefix: "`",
-  volume: "10"
+  volume: "0.5"
 }
 
 
@@ -56,7 +74,13 @@ const defaultSettings = {
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
   guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
-  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, just give the people that you want to be able to do those things need it. I very much recommend that you use the help command in order to understand which ones need Rue brick and whioch ones don't. I hope you enjoy my existance. Thanks");
+  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, give it to the people that you regard as admins. For convinience I created the roles when I joined so you just gotta add it to people. I very much recommend that you use the help command in order to understand which ones need Rue brick and which ones don't. I hope you enjoy my existance. Thanks");
+  guild.createRole({
+  name: 'Rue brick',
+  color: 'BLACK',
+})
+  .then(role => console.log(`Created new role with name ${role.name} and color ${role.color} in ${guild.name}`))
+  .catch(console.error)
 });
 
 
@@ -147,7 +171,7 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh","play","skip","stop","pause","resume","queue","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh","play","skip","stop","pause","resume","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '"+command+"' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
@@ -237,9 +261,13 @@ Bot.on("message", async message => {
       message.channel.startTyping();
       const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
       var searchTerm = args.join(" ");
+    
       client.search(searchTerm)
+     
         .then(images => {
-          var randomOne = Math.floor(Math.random() * images.length);
+   
+  
+       var randomOne = Math.floor(Math.random() * images.length);
           const embed = {
             "title": "Images()",
             "color": 9442302,
@@ -250,11 +278,37 @@ Bot.on("message", async message => {
               "url": images[randomOne].url
             },
           };
-          message.channel.send({
-            embed
-          });
-          message.channel.stopTyping();
-        });
+        message.channel.send({embed});  
+        
+     
+          
+      
+        
+         
+      });
+//       const refresh = await message.channel.send("beep boop");
+//       await refresh.react(`🔄`);
+    
+//       const filterref = (reaction) => reaction.emoji.name === '🔄';
+      
+//       const collectorref = refresh.createReactionCollector(filterref, {
+//         time: 15000
+//       });
+     
+//       collectorref.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+     
+      
+      //collectorref.on('end', );
+      
+      
+      
+         message.channel.stopTyping();
+    
+       
+      
+      
+      
+      
     }
 
     //random shopper
@@ -294,7 +348,7 @@ Bot.on("message", async message => {
 
     //shows you all my friends, just waiting on an oauth2
     if (command === "botfriends") {
-      message.channel.send("i have friends, i just dont have their deats yet @faye");
+      message.channel.send("i have friends, i just dont have their deets yet @faye");
     }
 
     //hmmmmmm
@@ -900,9 +954,9 @@ Bot.on("message", async message => {
           }
           ]
         };
-        message.channel.send({
-          embed
-        });
+        if (!command ==="stop"){
+          message.channel.send({embed});
+        }
       });
       var serverVol = guildConf.volume;
       server.dispatcher.setVolume(serverVol);
@@ -910,7 +964,9 @@ Bot.on("message", async message => {
       server.dispatcher.on("end", function () {
         if (server.queue[0]) {
           setTimeout(() => play(connection, message), 200)
+          if (!command ==="stop"){
           message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
+          }
         } else {
           connection.disconnect();
           message.channel.send("k. done");
@@ -1001,6 +1057,7 @@ Bot.on("message", async message => {
     if (command === "stop"){
       var server = servers[message.guild.id];
       if (message.guild.voiceConnection) {
+        server.queue = [];
         message.guild.voiceConnection.disconnect();
       }
     }
@@ -1023,10 +1080,6 @@ Bot.on("message", async message => {
       }
     }
   
-  //sows the queueueueu
-    if (command === "queue"){
-      message.channel.send("```"+server.queue+"```");
-    }
 
     
 
@@ -1111,11 +1164,11 @@ Bot.on("message", async message => {
             },
             {
               "name": PREFIX + "nsfwvid <searchterm>",
-              "value": "you fucking degenerates"
+              "value": "you fucking degenerates (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
             },
             {
               "name": PREFIX + "nsfwgif <searchterm>",
-              "value": "you fucking degenerates. But now in Gifs!"
+              "value": "you fucking degenerates. But now in Gifs! (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
             },
             {
               "name": PREFIX + "kelsey",
@@ -1139,7 +1192,7 @@ Bot.on("message", async message => {
             },
             {
               "name": PREFIX + "rule34 <tag1> <tag2> <tag3>",
-              "value": "i think we all know what this one does. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there"
+              "value": "i think we all know what this one does. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
             },
 
           ]
@@ -1164,7 +1217,7 @@ Bot.on("message", async message => {
             },
             {
               "name": PREFIX + "play <searchterm || youtube url>",
-              "value": "our server got weird there for sec"
+              "value": "plays da music ya feeded it"
             },
             {
               "name": PREFIX + "pause",
