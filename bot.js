@@ -11,7 +11,6 @@ bitrthdays,
               date,
                 day:
                 month:
-             
 Other data in the future
 
 
@@ -76,11 +75,11 @@ Bot.on("guildCreate", guild => {
   guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
   guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, give it to the people that you regard as admins. For convinience I created the roles when I joined so you just gotta add it to people. I very much recommend that you use the help command in order to understand which ones need Rue brick and which ones don't. I hope you enjoy my existance. Thanks");
   guild.createRole({
-  name: 'Rue brick',
-  color: 'BLACK',
-})
-  .then(role => console.log(`Created new role with name ${role.name} and color ${role.color} in ${guild.name}`))
-  .catch(console.error)
+      name: 'Rue brick',
+      color: 'BLACK',
+    })
+    .then(role => console.log(`Created new role with name ${role.name} and color ${role.color} in ${guild.name}`))
+    .catch(console.error)
 });
 
 
@@ -171,8 +170,8 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh","play","skip","stop","pause","resume","test"].includes(command))) {
-    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '"+command+"' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "test"].includes(command))) {
+    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
 
@@ -250,8 +249,6 @@ Bot.on("message", async message => {
 
     //ping pong but with discord
     if (command === "ping") {
-      // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-      // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
       const m = await message.channel.send("Ping?");
       m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(Bot.ping)}ms`);
     }
@@ -261,13 +258,9 @@ Bot.on("message", async message => {
       message.channel.startTyping();
       const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
       var searchTerm = args.join(" ");
-    
       client.search(searchTerm)
-     
         .then(images => {
-   
-  
-       var randomOne = Math.floor(Math.random() * images.length);
+          var randomOne = Math.floor(Math.random() * images.length);
           const embed = {
             "title": "Images()",
             "color": 9442302,
@@ -278,37 +271,19 @@ Bot.on("message", async message => {
               "url": images[randomOne].url
             },
           };
-        message.channel.send({embed});  
-        
-     
-          
-      
-        
-         
-      });
-//       const refresh = await message.channel.send("beep boop");
-//       await refresh.react(`🔄`);
-    
-//       const filterref = (reaction) => reaction.emoji.name === '🔄';
-      
-//       const collectorref = refresh.createReactionCollector(filterref, {
-//         time: 15000
-//       });
-     
-//       collectorref.on('collect', r => console.log(`Collected ${r.emoji.name}`));
-     
-      
+          message.channel.send({
+            embed
+          });
+        });
+      //       const refresh = await message.channel.send("beep boop");
+      //       await refresh.react(`🔄`);
+      //       const filterref = (reaction) => reaction.emoji.name === '🔄';
+      //       const collectorref = refresh.createReactionCollector(filterref, {
+      //         time: 15000
+      //       });
+      //       collectorref.on('collect', r => console.log(`Collected ${r.emoji.name}`));
       //collectorref.on('end', );
-      
-      
-      
-         message.channel.stopTyping();
-    
-       
-      
-      
-      
-      
+      message.channel.stopTyping();
     }
 
     //random shopper
@@ -822,18 +797,18 @@ Bot.on("message", async message => {
 
     //Makes the bot leave
     if (command === "gtfo") {
-      
-      if (!message.member.voiceChannel){
+
+      if (!message.member.voiceChannel) {
         message.channel.send("nah not happening");
         return;
-      }      
-        if (message.guild.voiceConnection) {
-              message.guild.voiceConnection.disconnect();
-            }else
-              message.channel.send("I ain't even in a channel and u tryna kick me. maaan fuck you");
-              
-      } 
-    
+      }
+      if (message.guild.voiceConnection) {
+        message.guild.voiceConnection.disconnect();
+      } else
+        message.channel.send("I ain't even in a channel and u tryna kick me. maaan fuck you");
+
+    }
+
 
     //Used to play local mp3 files from the server before it was moved to a different hosting service
     // if (command === "sounds") {
@@ -914,8 +889,8 @@ Bot.on("message", async message => {
       });
     }
 
-  
-  //music function
+
+    //music function
     function play(connection, message) {
       var server = servers[message.guild.id];
       server.dispatcher = connection.playStream(yt(server.queue[0], {
@@ -945,17 +920,19 @@ Bot.on("message", async message => {
             "url": videoInfo.thumbnailUrl
           },
           "fields": [{
-            name: "how long this shit is",
-            value: minutes + "m" + seconds + "s"
-          },
-          {
-            name: "linky link",
-            value: videoInfo.url
-          }
+              name: "how long this shit is",
+              value: minutes + "m" + seconds + "s"
+            },
+            {
+              name: "linky link",
+              value: videoInfo.url
+            }
           ]
         };
-        if (!command ==="stop"){
-          message.channel.send({embed});
+        if (!command === "stop") {
+          message.channel.send({
+            embed
+          });
         }
       });
       var serverVol = guildConf.volume;
@@ -964,8 +941,8 @@ Bot.on("message", async message => {
       server.dispatcher.on("end", function () {
         if (server.queue[0]) {
           setTimeout(() => play(connection, message), 200)
-          if (!command ==="stop"){
-          message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
+          if (!command === "stop") {
+            message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
           }
         } else {
           connection.disconnect();
@@ -977,7 +954,7 @@ Bot.on("message", async message => {
 
 
     //Plays music, pretty simple
-    if (command === "play"){
+    if (command === "play") {
       if (!message.member.voiceChannel) {
         message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
         return;
@@ -1005,7 +982,7 @@ Bot.on("message", async message => {
               message.channel.send(message.author + " i cant play for some reason, hmm. (check if my permissions are okay)");
             });
           }
-          
+
         } else {
           message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
         }
@@ -1043,8 +1020,8 @@ Bot.on("message", async message => {
       }
     }
 
-  //skips music
-    if (command === "skip"){
+    //skips music
+    if (command === "skip") {
       var server = servers[message.guild.id];
       if (server.dispatcher) {
         server.dispatcher.end();
@@ -1052,36 +1029,36 @@ Bot.on("message", async message => {
       }
 
     }
-  
-  //stops music
-    if (command === "stop"){
+
+    //stops music
+    if (command === "stop") {
       var server = servers[message.guild.id];
       if (message.guild.voiceConnection) {
         server.queue = [];
         message.guild.voiceConnection.disconnect();
       }
     }
-  
-  //pauses music
-    if (command === "pause"){
+
+    //pauses music
+    if (command === "pause") {
       var server = servers[message.guild.id];
       if (server.dispatcher) {
         server.dispatcher.pause();
         message.channel.send("paused mother fukaaaaaaa");
       }
     }
-  
-  //resumes music
-    if (command === "resume"){
+
+    //resumes music
+    if (command === "resume") {
       var server = servers[message.guild.id];
       if (server.dispatcher) {
         server.dispatcher.resume();
         message.channel.send("resumed mother fukaaaaaaa");
       }
     }
-  
 
-    
+
+
 
 
     //Sends the user a help embed
@@ -1275,7 +1252,7 @@ Bot.on("message", async message => {
 
 
   }
-       
+
 });
 
 
