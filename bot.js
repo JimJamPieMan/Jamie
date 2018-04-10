@@ -17,6 +17,9 @@ Other data in the future
 --make the img results paginate so jack doesnt get angry
 
 
+
+-- grantable roles woth enmap, get array, add role then set it back
+--errors for google shit
 */
 
 //Sets up thr uptimerobot keeper upper
@@ -37,13 +40,13 @@ const SyllaRhyme = require('syllarhyme');
 const randomWords = require('random-words');
 const getMemeUrls = require('get-meme-urls');
 const yt = require('ytdl-core');
-const Enmap = require('enmap');
-const EnmapLevel = require('enmap-level');
-const settings = new Enmap({
-  provider: new EnmapLevel({
-    name: "settings"
-  })
-});
+//const Enmap = require('enmap');
+//const EnmapLevel = require('enmap-level');
+//const settings = new Enmap({
+  //provider: new EnmapLevel({
+   // name: "settings"
+  //})
+//});
 const getVideoId = require('get-video-id');
 const fetchVideoInfo = require('youtube-info');
 const htmlToText = require('html-to-text');
@@ -63,6 +66,7 @@ var figlet = require('figlet');
 
 //Default Settings
 const defaultSettings = {
+  grantableRoles:[],
   nonPrefixed: true,
   prefix: "`",
   volume: "0.5"
@@ -93,6 +97,7 @@ Bot.on("guildDelete", guild => {
 Bot.on('ready', () => {
   Bot.user.setUsername("Jamie");
   Bot.user.setActivity("type fucking `help " + "(" + Bot.guilds.size + ")");
+  //Bot.user.setActivity("Now with roles!");
 });
 
 
@@ -170,16 +175,241 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
-
-    //test
-    if (command === "test") {
+//test
+    if (command ==="test"){
       message.channel.send("beep boop");
     }
+    
+    //sbubby
+    if (command === "sbubby") {
+      message.channel.startTyping();
+      getJSON('https://www.reddit.com/r/sbubby/.json', function (error, response) {
+        if (response) {
+          var randomOne = Math.floor(Math.random()*response.data.children.length);
+          
+         const embed = {
+            "title": "nowShowingSbubby("+response.data.children[randomOne].data.title+")",
+            "color": 9442302,
+            "image": {
+              "url": response.data.children[randomOne].data.url
+            },
+           "footer":{
+           "text":"🔼 "+ response.data.children[randomOne].data.ups}
+           
+          };
+          message.channel.send({
+            embed
+          });
+          message.channel.stopTyping();
+          
+          //console.log(response.data.children[randomOne].data.url);
+          
+        // console.log(response.data.children[1]);
+        }
+        if (error) {
+          console.log(error);
+          message.channel.stopTyping();
+        }
+      });
+    }
+    
 
+    
+    if (command === "listroles"){
+      message.channel.send("```"+message.guild.roles.map(g => g.name).join("\n")+"```");
+    }
+    
+    
+    
+    if (command ==="addgrantablerole"){
+      
+        let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+     const key = "grantableRoles";
+      
+      let grantrole = message.mentions.roles.first();
+      var configRoles = guildConf.grantableRoles;
+      
+      guildConf[key] = configRoles + grantrole;
+          settings.set(message.guild.id, guildConf);
+      message.channel.send("added as a grantable");
+    }else {
+      message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
+    }
+    }
+    
+    
+    
+    
+    if (command === "removerole"){
+      
+      
+      
+      
+      
+      
+      
+      
+      let roleToRemove = message.mentions.roles.first();
+      
+      if(!roleToRemove){
+        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
+        return; 
+      }
+      
+      
+      if (!message.member.roles.has(roleToRemove.id)) {
+        message.channel.send("you dont got this role fam");
+        return;
+      }else{
+      
+    
+      message.member.removeRole(roleToRemove.id)
+ .then(function(){message.channel.send("woah dude nice removal of the role");
+                  return;}
+       )
+  .catch(function (){
+        var err = console.error;
+        message.channel.send("hey, that didnt work. (Perms?)");
+return;
+        });
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+
+    if (command === "rolecolours") {
+      message.channel.send("```"+['DEFAULT','AQUA','GREEN','BLUE','PURPLE', 'GOLD','ORANGE','RED','GREY','DARKER_GREY','NAVY','DARK_AQUA','DARK_GREEN','DARK_BLUE','DARK_PURPLE','DARK_GOLD','DARK_ORANGE','DARK_RED','DARK_GREY','LIGHT_GREY','DARK_NAVY','RANDOM'].join("\n")+"```");
+    }
+    if (command === "createrole"){
+      let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+        
+        if (!message.guild.roles.map(g => g.name).includes(args[0])){
+          
+        if (args[1].startsWith("#") || (['DEFAULT','AQUA','GREEN','BLUE','PURPLE','GOLD', 'ORANGE', 'RED','GREY','DARKER_GREY','NAVY','DARK_AQUA','DARK_GREEN','DARK_BLUE','DARK_PURPLE','DARK_GOLD','DARK_ORANGE',  'DARK_RED','DARK_GREY','LIGHT_GREY','DARK_NAVY','RANDOM',]).includes(args[1])){
+      message.guild.createRole({
+  name: args[0],
+  color: args[1],
+        mentionable:true
+})
+  .then(role => message.channel.send(`Created new role with name ${role.name} and color ${role.color}`))
+  .catch(console.error)
+        
+        }else{
+          message.channel.send("whoa okay so um will colours can either be "+PREFIX+"rolecolours or hex values. use this site to help you be smart. https://www.hexcolortool.com/");
+        }
+        }else{
+          message.channel.send("i think that one already exists");
+        }
+      }else{
+        message.channel.send("***who are youuuuuu***");
+      }
+    }
+    
+    
+    if (command ==="addroll"){
+      
+      
+        let roleToAdd = message.mentions.roles.first();
+      
+      if(!roleToAdd){
+        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
+        return; 
+      }
+      
+      
+      if (message.member.roles.has(roleToAdd.id)) {
+        message.channel.send("you already got this on fam");
+        return;
+      }else{
+      
+    
+      message.member.addRole(roleToAdd.id)
+  .then(function(){message.channel.send("woah dude nice addition of the role");
+                  return;}
+       )
+  .catch(function (){
+        var err = console.error;
+        message.channel.send("hey, that didnt work. (Perms?)");
+return;
+        });
+      }
+      
+    }
+    
+    if (command ==="deleterole"){
+      let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+        
+        
+        if (!message.mentions.roles.first()){
+          message.channel.send("you might want to give me a role to delete (just tag it!)");
+          return;
+        }
+        
+        var roleToDelete = message.mentions.roles.first();
+        
+         
+      if(!roleToDelete){
+        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
+        return; 
+      }
+        
+        
+        message.channel.send("reply with either Yes or No to confirm. you've got ten seconds, GO QUICK BITCH (case sensitive)");
+        const filter = m => m.author.id === message.author.id;
+
+const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, { maxMatches: 1, time: 10000 });
+collector.on('collect', (msg, collected) => {
+  
+  if (msg.content == "Yes"){
+    message.channel.send("Yeah alright i can do that i can delete " + roleToDelete +" for you.");
+    
+    setTimeout(function(){roleToDelete.delete();},100);
+   
+    
+  }else if (msg.content == "No"){
+    message.channel.send("all g fam i know exactly how it feels not wanting to delete something. i wont delete "+ roleToDelete);
+  }
+   
+});
+
+
+collector.on('end', collected => {
+  if (collected.find("content","Yes")){
+message.channel.send("just confirming you deleted "+roleToDelete);
+  }else if (collected.find("content","No")){
+    message.channel.send("time ran out i think "+roleToDelete);
+  }else{
+    message.channel.send("time ranout bitch, better luck next time");
+  }
+  
+  
+});
+    
+  }else{
+        message.channel.send("***who are youuuuuu***");
+    
+      }
+      
+      
+      
+ 
+      
+      
+      
+    } 
 
     //Refresh enmap settings without having to leave and rejoin a guild
     if (command === "enmaprefresh") {
@@ -225,7 +455,7 @@ Bot.on("message", async message => {
           return;
         }
       } else {
-        message.channel.send("***HEY you cant push my buttons, only more powerdul people can***");
+        message.channel.send("***HEY you cant push my buttons, only more powerful people can***");
       }
     }
 
@@ -233,7 +463,7 @@ Bot.on("message", async message => {
     if (command === "texttoascii") {
       var text = args.join(" ");
       if (text.length > 21) {
-        message.channel.send("hey man soz but that aint gonna work, its gonna have to be less than 21 characters. your last one was " + text.length + ". so just cut it down a bit and about now i realised this was a really long error message so i just kept going ahhahaahahahhah i need help");
+        message.channel.send("hey man soz but that aint gonna work, its gonna have to be less than 21 characters. your last one was " + text.length + ". so just cut it down a bit and about now i realised this was a really long error message so i just kept going ahhahaahahahhah i need help because this command is actually broke af");
       } else {
         figlet(text, function (err, data) {
           if (err) {
@@ -653,13 +883,16 @@ Bot.on("message", async message => {
     if (command === "showconf") {
       var configVol = guildConf.volume;
       var configPre = guildConf.prefix;
+      var configRoles = guildConf.grantableRoles;
       message.channel.send(`this servers volume is fucking : \`\`\`${configVol}\`\`\``);
       message.channel.send(`this servers prefix is fucking : \`\`\`${configPre}\`\`\``);
+      message.channel.send(`this servers prefix is fucking : \`\`\`${configRoles}\`\`\``);
     }
 
 
     //Sends a random pupper
     if (command === "pupper") {
+      message.channel.startTyping();
       getJSON('https://random.dog/woof.json?filter=mp4,webm', function (error, response) {
         if (response) {
           var pupperUrl = response.url;
@@ -673,9 +906,13 @@ Bot.on("message", async message => {
           message.channel.send({
             embed
           });
+          
+          message.channel.stopTyping();
         }
         if (error) {
           console.log(error);
+          message.channel.send("***ERRORRORRRORRORRRRR***");
+          message.channel.stopTyping();
         }
       });
     }
@@ -684,8 +921,29 @@ Bot.on("message", async message => {
 
     //Sends a random kitty
     if (command === "kitty") {
-      var url = randomCat.get();
-      message.channel.send(message.author + " here the fuck is is your kitty " + url + " (this is the actual shittest api ever)");
+      message.channel.startTyping();
+      getJSON('http://aws.random.cat/meow', function (error, response) {
+        if (response) {
+          var catUrl = response.file;
+          const embed = {
+            "title": "nowShowingKitty()",
+            "color": 9442302,
+            "image": {
+              "url": catUrl
+            }
+          };
+          message.channel.send({
+            embed
+          });
+          
+          message.channel.stopTyping();
+        }
+        if (error) {
+          console.log(error);
+          message.channel.send("***ERRORRORRRORRORRRRR*** (yes i am well aware this is broken)");
+          message.channel.stopTyping();
+        }
+      });
     }
 
 
@@ -1081,7 +1339,7 @@ Bot.on("message", async message => {
             },
             {
               "name": PREFIX + "kitty",
-              "value": "everytime you type it you get a cat but its the shittest api ever"
+              "value": "everytime you type it you get a cat but its the shittest api ever but now its a little better"
             },
             {
               "name": PREFIX + "feedback <write things here>",
@@ -1231,6 +1489,34 @@ Bot.on("message", async message => {
             {
               "name": PREFIX + "texttoascii <whatever you want to ascii>",
               "value": "I WAS TRYNA DO AN IMAGE TO ASCII BUT IT DIDNT WORK SO I SETTLED FOR THIS"
+            },
+                   {
+              "name": PREFIX + "rolecolours",
+              "value": "shows all the colours that roles can be. of course you can also use hex values"
+            },
+                   {
+              "name": PREFIX + "createrole <rolename> <colour word ("+PREFIX+"rolecolours) || hex value> ",
+              "value": "creates a role based on values given (!!REQUIRES 'Rue brick' ROLE!!)"
+            },
+                   {
+              "name": PREFIX + "addroll <@roll>",
+              "value": "adds the user to a roll given"
+            },
+                   {
+              "name": PREFIX + "deleterole <@role>",
+              "value": "deletes given role (!!REQUIRES 'Rue brick' ROLE!!)"
+            },
+                   {
+              "name": PREFIX + "removerole <@role>",
+              "value": "removes the role given."
+            },
+                   {
+              "name": PREFIX + "listroles",
+              "value": "gets a list of roles in the server."
+            },
+                   {
+              "name": PREFIX + "sbubby",
+              "value": "Eef Freef"
             },
             {
               "name": "@someone",
