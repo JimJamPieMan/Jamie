@@ -40,13 +40,13 @@ const SyllaRhyme = require('syllarhyme');
 const randomWords = require('random-words');
 const getMemeUrls = require('get-meme-urls');
 const yt = require('ytdl-core');
-//const Enmap = require('enmap');
-//const EnmapLevel = require('enmap-level');
-//const settings = new Enmap({
-  //provider: new EnmapLevel({
-   // name: "settings"
-  //})
-//});
+const Enmap = require('enmap');
+const EnmapLevel = require('enmap-level');
+const settings = new Enmap({
+  provider: new EnmapLevel({
+   name: "settings"
+  })
+});
 const getVideoId = require('get-video-id');
 const fetchVideoInfo = require('youtube-info');
 const htmlToText = require('html-to-text');
@@ -77,7 +77,7 @@ const defaultSettings = {
 Bot.on("guildCreate", guild => {
   settings.set(guild.id, defaultSettings);
   guild.channels.find("name", "general").send("```Holy shit what fuck is up guys, its ya boi Jamie. '`' is the default prefix but that can be changed. If you forget the prefix just '@' me and say 'prefix'. If you want to know what I do just type `help and ill help you. BE FOREWARNED, I swear a lot.```");
-  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, give it to the people that you regard as admins. For convinience I created the roles when I joined so you just gotta add it to people. I very much recommend that you use the help command in order to understand which ones need Rue brick and which ones don't. I hope you enjoy my existance. Thanks");
+  guild.owner.send("Hey there, based on my masters code, your the server owner of " + guild.name + ". There are a few things to note. I have/need a special role called 'Rue brick', it allows for the use of the mute, unmute, fuck, fuckoff. It doesn't need any special permissions, give it to the people that you regard as admins. For convinience I created the roles when I joined so you just gotta add it to people. Its up to you but i wouldn't make the Rue brick role grantable because shit could go heywire pretty fucking quick. I very much recommend that you use the help command in order to understand which ones need Rue brick and which ones don't. I hope you enjoy my existance. Thanks");
   guild.createRole({
       name: 'Rue brick',
       color: 'BLACK',
@@ -175,7 +175,7 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
@@ -220,7 +220,12 @@ Bot.on("message", async message => {
 
     
     if (command === "listroles"){
-      message.channel.send("```"+message.guild.roles.map(g => g.name).join("\n")+"```");
+      var configRoles = guildConf.grantableRoles;
+      if (configRoles.length<=0){
+        message.channel.send("TEHRE REA NOEN AHEHAHHAHAHAHHAH");
+      }else{
+      message.channel.send(configRoles);
+      }
     }
     
     
@@ -229,14 +234,60 @@ Bot.on("message", async message => {
       
         let myRole = message.guild.roles.find("name", "Rue brick");
       if (message.member.roles.has(myRole.id)) {
+        let addgrantrole = message.mentions.roles.first();
+        
+        if (!addgrantrole){
+          message.channel.send("either i cant see it (perms) or it just plain old doesnt exist");
+          return;
+        }
+        
+        
+        
+        var configRoles = guildConf.grantableRoles;
+        if (configRoles.includes(addgrantrole.id)){
+          message.channel.send("that ones already there fam, use "+PREFIX+"listroles to get a list of grantable roles");
+          return;
+        }
+        
      const key = "grantableRoles";
       
-      let grantrole = message.mentions.roles.first();
+      
       var configRoles = guildConf.grantableRoles;
       
-      guildConf[key] = configRoles + grantrole;
+      guildConf[key] = configRoles + addgrantrole;
           settings.set(message.guild.id, guildConf);
-      message.channel.send("added as a grantable");
+      message.channel.send("added as a grantable role");
+    }else {
+      message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
+    }
+    }
+    
+     if (command ==="removegrantablerole"){
+      
+        let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+        let removegrantrole = message.mentions.roles.first();
+        
+        if (!removegrantrole){
+          message.channel.send("either i cant see it (perms) or it just plain old doesnt exist");
+          return;
+        }
+        
+        var configRoles = guildConf.grantableRoles;
+        if (!configRoles.includes(removegrantrole.id)){
+          message.channel.send("that ones already not there fam, use "+PREFIX+"listroles to get a list of grantable roles");
+          return;
+        }
+        
+     const key = "grantableRoles";
+      
+      
+      var configRoles = guildConf.grantableRoles;
+      var editedConfigRoles = configRoles.replace("<@&"+removegrantrole.id+">","");
+      
+      guildConf[key] = editedConfigRoles;
+          settings.set(message.guild.id, guildConf);
+      message.channel.send("removed as a grantable role");
     }else {
       message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
     }
@@ -328,6 +379,12 @@ return;
         return; 
       }
       
+       var configRoles = guildConf.grantableRoles;
+        if (!configRoles.includes(roleToAdd.id)){
+          message.channel.send("yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah thats not on the list, use "+PREFIX+"listroles to get a list of grantable roles");
+          return;
+        }
+      
       
       if (message.member.roles.has(roleToAdd.id)) {
         message.channel.send("you already got this on fam");
@@ -367,7 +424,7 @@ return;
       }
         
         
-        message.channel.send("reply with either Yes or No to confirm. you've got ten seconds, GO QUICK BITCH (case sensitive)");
+        message.channel.send("reply with either Yes or No to confirm, This role will also be removed from the grantable roles list. you've got ten seconds, GO QUICK BITCH (case sensitive)");
         const filter = m => m.author.id === message.author.id;
 
 const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, { maxMatches: 1, time: 10000 });
@@ -375,7 +432,14 @@ collector.on('collect', (msg, collected) => {
   
   if (msg.content == "Yes"){
     message.channel.send("Yeah alright i can do that i can delete " + roleToDelete +" for you.");
-    
+    const key = "grantableRoles";
+      
+      
+      var configRoles = guildConf.grantableRoles;
+      var editedConfigRoles = configRoles.replace("<@&"+roleToDelete.id+">","");
+      
+      guildConf[key] = editedConfigRoles;
+          settings.set(message.guild.id, guildConf);
     setTimeout(function(){roleToDelete.delete();},100);
    
     
@@ -883,10 +947,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     if (command === "showconf") {
       var configVol = guildConf.volume;
       var configPre = guildConf.prefix;
-      var configRoles = guildConf.grantableRoles;
+      
       message.channel.send(`this servers volume is fucking : \`\`\`${configVol}\`\`\``);
       message.channel.send(`this servers prefix is fucking : \`\`\`${configPre}\`\`\``);
-      message.channel.send(`this servers prefix is fucking : \`\`\`${configRoles}\`\`\``);
+ 
     }
 
 
@@ -1097,9 +1161,9 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
 
     //Gives a little info on the bot
-    if (command === "info") {
-      message.channel.send(message.author + ' i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "' + guildConf.prefix + 'help". thanks bicthesz.');
-    }
+    // if (command === "info") {
+    //   message.channel.send(message.author + ' i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "' + guildConf.prefix + 'help". thanks bicthesz.');
+    // }
 
 
     //Men
@@ -1500,7 +1564,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             },
                    {
               "name": PREFIX + "addroll <@roll>",
-              "value": "adds the user to a roll given"
+              "value": "adds the user to a roll given and the grantableroles list"
             },
                    {
               "name": PREFIX + "deleterole <@role>",
@@ -1512,7 +1576,15 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             },
                    {
               "name": PREFIX + "listroles",
-              "value": "gets a list of roles in the server."
+              "value": "gets a list of grantable roles in the server."
+            },
+                    {
+              "name": PREFIX + "addgrantablerole",
+              "value": "adds a created role to a list of roles addable by a user (!!REQUIRES 'Rue brick' ROLE!!)"
+            },
+                    {
+              "name": PREFIX + "removegrantablerole",
+              "value": "removes a created role to a list of roles addable by a user (!!REQUIRES 'Rue brick' ROLE!!)"
             },
                    {
               "name": PREFIX + "sbubby",
