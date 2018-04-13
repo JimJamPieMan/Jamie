@@ -20,6 +20,8 @@ Other data in the future
 
 -- grantable roles woth enmap, get array, add role then set it back
 --errors for google shit
+-- help page
+
 */
 
 //Sets up thr uptimerobot keeper upper
@@ -58,7 +60,14 @@ const moreSites = require('./moreSites');
 const getJSON = require('get-json');
 const appendjson = require('appendjson');
 const GoogleImages = require('google-images');
-var figlet = require('figlet');
+const figlet = require('figlet');
+var Twitter = require('twitter');
+var Tclient = new Twitter({
+  consumer_key: process.env.consumer_key,
+  consumer_secret: process.env.consumer_secret,
+  access_token_key: process.env.access_token_key,
+  access_token_secret: process.env.access_token_secret
+});
 
 
 // const maker = Bot.users.find("id", process.env.myID);
@@ -165,6 +174,11 @@ Bot.on("message", async message => {
     if (message.content.toLowerCase().startsWith('haha')) {
       message.channel.send("https://imgur.com/b0NbvBR");
     }
+    
+    // if (message.content.toLowerCase() === "yeem" || "meey" || "yeet" || "ye" || "teey" ||"ey"){
+    //   message.delete();
+    //   message.channel.send("FUCK OFFFFFF");
+    // }
   }
 
 
@@ -175,13 +189,35 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
-//test
-    if (command ==="test"){
+    
+    //test
+    if(command === "test"){
       message.channel.send("beep boop");
+    }
+    
+    
+//tweet
+    if (command ==="tweet"){
+      
+      if (!(message.guild.id == process.env.JACKsserver)){
+        message.channel.send("sorry, in the interest of something important it only works in a specific server.");
+        return;
+      }
+      var tweet = args.join(" ");
+      Tclient.post('statuses/update', {status: tweet}, function(error, tweet, response) {
+  if (!error) {
+    
+    message.channel.send("***i stuffed your tweet through the tubes and it has arrived at the end***");
+    }else if (error){
+      console.log(error);
+      message.channel.send("soz fam couldnt sendddddd itttt");
+      message.channel.send("``` Code:" +error[0].code + " Message:"+error[0].message+"```");
+    }
+});
     }
     
     //sbubby
@@ -344,6 +380,7 @@ return;
     }
     if (command === "createrole"){
       let myRole = message.guild.roles.find("name", "Rue brick");
+
       if (message.member.roles.has(myRole.id)) {
         
         if (!message.guild.roles.map(g => g.name).includes(args[0])){
@@ -899,12 +936,49 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
     }
 
+    
+    //Bentley
+     if (command === "bentley") {
+      let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+      var dataBentley = Math.floor(Math.random() * dataObj.bentley.length);
+       
+       
+       const embed = {
+                "title": "nowShowingBentley()",
+                "color": 9442302,
+
+                "image": {
+                  "url": dataObj.bentley[dataBentley]
+                },
+              };
+              message.channel.send({
+                embed
+              });
+    }
+    
+    
+    //Maggie
+     if (command === "maggie") {
+      let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+      var dataMaggie = Math.floor(Math.random() * dataObj.maggie.length);
+      const embed = {
+                "title": "nowShowingMaggie()",
+                "color": 9442302,
+
+                "image": {
+                  "url": dataObj.maggie[dataMaggie]
+                },
+              };
+              message.channel.send({
+                embed
+              });
+    }
 
     //Gives a random sex thing (idk)
     if (command === "funnysexthing") {
-      let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
-      var phraseSaying = Math.floor(Math.random() * phraseObj.saying.length);
-      message.channel.send(phraseObj.saying[phraseSaying]);
+      let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+      var dataSaying = Math.floor(Math.random() * dataObj.saying.length);
+      message.channel.send(dataObj.saying[dataSaying]);
     }
 
 
@@ -1229,14 +1303,14 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         if (normalDes.length > 50) {
           normalDes = normalDes.substr(0, 50) + '[...(See more)](' + videoInfo.url + ')';
         }
-        let phraseObj = JSON.parse(fs.readFileSync("./phrase.json", "utf8"));
-        var phraseFooter = Math.floor(Math.random() * phraseObj.saying.length);
+        let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+        var dataFooter = Math.floor(Math.random() * dataObj.saying.length);
         const embed = {
           "title": "nowPlaying() " + "'" + videoInfo.title + "'",
           "description": normalDes,
           "color": 9442302,
           "footer": {
-            "text": phraseObj.saying[phraseFooter]
+            "text": dataObj.saying[dataFooter]
           },
           "image": {
             "url": videoInfo.thumbnailUrl
@@ -1589,6 +1663,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
                    {
               "name": PREFIX + "sbubby",
               "value": "Eef Freef"
+            },
+                   {
+              "name": PREFIX + "tweet",
+              "value": "it sends a tweet from the account https://twitter.com/JamieBotTweets1. why? i actual have no fucking idea lol (only works in a specific server, sorry about that)"
             },
             {
               "name": "@someone",
