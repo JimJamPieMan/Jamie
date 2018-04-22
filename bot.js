@@ -14,13 +14,11 @@ bitrthdays,
 Other data in the future
 
 
---make the img results paginate so jack doesnt get angry
+-- make the img results paginate so jack doesnt get angry
 
 
 
--- grantable roles woth enmap, get array, add role then set it back
---errors for google shit
--- help page
+
 
 */
 
@@ -68,6 +66,10 @@ var Tclient = new Twitter({
   access_token_key: process.env.access_token_key,
   access_token_secret: process.env.access_token_secret
 });
+const pg = require('phrase-generator');
+
+ 
+
 
 
 // const maker = Bot.users.find("id", process.env.myID);
@@ -105,7 +107,9 @@ Bot.on("guildDelete", guild => {
 //When the bot is turned on, set the activity
 Bot.on('ready', () => {
   Bot.user.setUsername("Jamie");
-  Bot.user.setActivity("type fucking `help " + "(" + Bot.guilds.size + ")");
+  
+  setInterval(function(){ Bot.user.setActivity(pg.generate()+" || `help || ("+Bot.guilds.size+")"); }, 120000);
+  
   //Bot.user.setActivity("Now with roles!");
 });
 
@@ -130,6 +134,17 @@ Bot.on("message", async message => {
   var serverPrefix = guildConf.prefix;
   var PREFIX = serverPrefix;
 
+  
+//   if (message.content ==="yellow"){
+    
+//     if (!(message.guild.id == process.env.JACKsserver)){
+//         message.channel.send("sorry, in the interest of something important it only works in a specific server.");
+//         return;
+//       }
+//     message.member.kick();
+//     message.channel.send("yellow is illegal");
+//     message.author.send("https://discord.gg/2vt3PeF");
+//   }
 
   //ignore embeds starting with ``
   if (message.content.startsWith("``")) {
@@ -141,8 +156,21 @@ Bot.on("message", async message => {
 
 
   //Makes it so when the bot is tagged with the word prefix after it send the guilds prefix
-  if (message.content.toLowerCase().startsWith("<@" + Bot.user.id + "> prefix")) {
+  if (message.content.toLowerCase() === ("<@" + Bot.user.id + "> prefix")) {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
+  }
+  
+  if (message.content.toLowerCase() ===("<@" + Bot.user.id + "> prefixreset")) {
+     let myRole = message.guild.roles.find("name", "Rue brick");
+      if (message.member.roles.has(myRole.id)) {
+        const key = "prefix";
+        
+          guildConf[key] = '`';
+          settings.set(message.guild.id, guildConf);
+          message.channel.send(" THE FUCKING PREFIX IS NOW " + '`');
+        
+    
+      }
   }
 
   //HELP IVE FALLEN AND I NEED @SOMEONE
@@ -181,6 +209,10 @@ Bot.on("message", async message => {
     // }
   }
 
+  
+  // if (message.author.id === process.env.kelseyID){
+  //   message.channel.send("vroom vroom http://www.chevrolet.com/content/dam/chevrolet/na/us/english/index/vehicles/discontinued-vehicles/ss/01-images/2018-discontinued-ss-masthead-01.jpg?imwidth%5Cu003d1200");
+  // }
 
   //Setup the prefix, commands and args
   if (message.content.indexOf(PREFIX) !== 0) return;
@@ -198,8 +230,8 @@ Bot.on("message", async message => {
     if(command === "test"){
       message.channel.send("beep boop");
     }
-    
-    
+
+ 
     //jack
      if(command === "jack"){
       message.channel.send("sorry your not being "+message.channel.name +" enough could not be a degenerate shit");
@@ -547,6 +579,9 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     //toggle the nonprefixed commands
     if (command === "nonptoggle") {
       let myRole = message.guild.roles.find("name", "Rue brick");
+      
+      
+      
       if (message.member.roles.has(myRole.id)) {
         const key = "nonPrefixed";
 
@@ -596,8 +631,14 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       message.channel.startTyping();
       const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
       var searchTerm = args.join(" ");
+      
+      if (!args[0]){
+        message.channel.send("no search term? wow, you must be feeling lucky");
+        return;
+      }
       client.search(searchTerm)
-        .then(images => {
+        .then( function (images) {
+        
           var randomOne = Math.floor(Math.random() * images.length);
           const embed = {
             "title": "Images()",
@@ -612,7 +653,12 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           message.channel.send({
             embed
           });
-        });
+        
+        
+        }).catch(function (err){
+        console.log(err);
+        message.channel.send("shit got fucked up (your search term was shit)");
+      });
       //       const refresh = await message.channel.send("beep boop");
       //       await refresh.react(`🔄`);
       //       const filterref = (reaction) => reaction.emoji.name === '🔄';
@@ -645,7 +691,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             embed
           });
           message.channel.stopTyping();
-        });
+        }).catch(function (err){
+        console.log(err);
+        message.channel.send("shit got fucked up which is funny because its a hardcoded string but oh well");
+      });
     }
 
     //gives an invite for the bot
@@ -725,7 +774,14 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         if (pre === "<@" + Bot.user.id + ">") {
           message.channel.send("hey. stop that. you cant sent the prefix that man");
           return;
-        } else {
+        } 
+        let member = message.mentions.members.first();
+        
+      if (member) {
+     message.channel.send("it would be pretty shit if you did that now wouldnt it");
+        return;
+      }
+        else {
           guildConf[key] = pre;
           settings.set(message.guild.id, guildConf);
           message.channel.send(" THE FUCKING PREFIX IS NOW " + pre);
@@ -1249,23 +1305,54 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
     //Men
     if (command === "men") {
+      if (message.mentions.members.first().id === process.env.botID){
+        message.channel.send("***MY DMS ARE CLEAN AND DO NOT WANT THEM INFESTED WITH PEOPLE LIKE YOU, YOU DIRTY FUCKING FUCKER FUCKTARD***");
+        return;
+        
+      }
+      
+      if (message.mentions.members.first()) {
+        message.channel.send("you are most certainly an annoying fuck");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+        message.mentions.users.first().send("https://imgur.com/189DJI3");
+      } else {
+        message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
-      message.channel.send("https://imgur.com/189DJI3");
+      }
+      
     }
 
 
     //Sends 5 pictures of a random Indian man a friend found
     if (command === "manesh") {
+      
+      
+      
+      
+      if (message.mentions.members.first()) {
+        message.channel.send("you are most certainly an annoying fuck");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
+      } else {
+        message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
-      message.channel.send("https://imgur.com/YZp0vDp");
+      }
     }
 
 
@@ -1332,11 +1419,11 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             }
           ]
         };
-        if (!command === "stop") {
+    
           message.channel.send({
             embed
           });
-        }
+        
       });
       var serverVol = guildConf.volume;
       server.dispatcher.setVolume(serverVol);
@@ -1397,6 +1484,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         };
         args.shift();
         var searchTerm = args.join("_");
+        //console.log(searchTerm);
         search(searchTerm, opts, function (err, results) {
           if (err) {
             console.log(err);
@@ -1466,230 +1554,9 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
     //Sends the user a help embed
     if (command === "help") {
-      message.channel.send(message.author + " i slid right into your fucking dms");
-      message.author.send("a whhhholllle lotta help for you", {
-        embed: {
-          "title": "dont be  stupid in the discord server, read the help",
-          "description": "hey you wanted help so here are all the commands bitchhhhh. the prefix is '" + PREFIX + "'.",
-          "color": 9442302,
-          "thumbnail": {
-            "url": "https://cdn.discordapp.com/avatars/354163126947807242/73d0840f852ea62a6409f2b23b95173d.jpg?size=256"
-          },
-          "author": {
-            "name": "hey, james here. have some help you fuck"
-          },
-          "fields": [{
-              "name": PREFIX + "pupper",
-              "value": "finds a random pupper (thanks @kelsey)"
-            },
-            {
-              "name": PREFIX + "kitty",
-              "value": "everytime you type it you get a cat but its the shittest api ever but now its a little better"
-            },
-            {
-              "name": PREFIX + "feedback <write things here>",
-              "value": "sends james some feedback to his personal email adress ~~hahahahahahahahahahah~~whoops"
-            },
-            {
-              "name": PREFIX + "bob",
-              "value": "sneds a pic of bob the builder because why the fuck not"
-            },
-            {
-              "name": PREFIX + "elf",
-              "value": "the elf on the shelf meme but shit"
-            },
-            {
-              "name": PREFIX + "freedom",
-              "value": "FUCK YEAH FREEDOM 'MURICA"
-            },
-            {
-              "name": PREFIX + "fuck",
-              "value": "moves youto another fucking channel"
-            },
-            {
-              "name": PREFIX + "fuckoff <@person>",
-              "value": "moves a person you tagged to another fucking channel (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-            {
-              "name": PREFIX + "gtfo",
-              "value": "kicks the bot from the fucking voice channel or if it fucking breaks. its just like my leave command. "
-            },
-            {
-              "name": PREFIX + "info",
-              "value": "gives a little bit of info on the piece of shit that is this bot"
-            },
-            {
-              "name": PREFIX + "manesh",
-              "value": "manesh^5"
-            },
-            {
-              "name": PREFIX + "meme <can be left blank or use a search term>",
-              "value": "gets a meme but yet again another shit api"
-            },
-            {
-              "name": PREFIX + "volume <number>",
-              "value": "holy fuck, using the very latest in volume6969 tech-fucking-nology theres a fucking volume command. your probably thinking, 'FUCK'. i know, fuck."
-            },
-            {
-              "name": PREFIX + "halloween",
-              "value": "HOLY SHIT HALLOWEEN IS THIS YEAR"
-            },
-            {
-              "name": PREFIX + "funnysexthing",
-              "value": "this one time in the overwatch general chat in GGOZ..."
-            },
-            {
-              "name": PREFIX + "poll <question ending in?>",
-              "value": "fucking democracy in action"
-            },
-            {
-              "name": PREFIX + "nsfwvid <searchterm>",
-              "value": "you fucking degenerates (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
-            },
-            {
-              "name": PREFIX + "nsfwgif <searchterm>",
-              "value": "you fucking degenerates. But now in Gifs! (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
-            },
-            {
-              "name": PREFIX + "kelsey",
-              "value": "i dont know, this one just sorta happened"
-            },
-            {
-              "name": PREFIX + "mute <@person>",
-              "value": "mute a person from typing in a text channel. usage " + guildConf.prefix + "mute @<user you want to mute> (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-            {
-              "name": PREFIX + "unmute <@person>",
-              "value": "unmute a person from typing in a text channel. usage " + guildConf.prefix + "unmute @<user you want to unmute> (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-            {
-              "name": PREFIX + "prefix + <new prefix>",
-              "value": "changes the server prefix to what ever you want, it can be anything with out spaces. While the default prefix is '`', it can not be set back to this. its this way so it doesnt conflict with embeds. !!REQUIRES 'Rue brick' ROLE!!)"
-            },
-            {
-              "name": PREFIX + "avatar <either leave this blank for your own or tag someone>",
-              "value": "gets the avatar of yourself or a tagged person"
-            },
-            {
-              "name": PREFIX + "rule34 <tag1> <tag2> <tag3>",
-              "value": "i think we all know what this one does. (usage: rule34 <tag1> <tag2> <tag3>) tags 2 & 3 are optional but 1 must be there (!!CAN ONLY BE DONE IN A CHANNEL MARKED AS 'NSFW' OR CONTAINING THE WORD 'NSFW'!!)"
-            },
-
-          ]
-        }
-
-
-      });
-
-      message.author.send({
-        embed: {
-          "color": 9442302,
-          "footer": {
-            "text": "thank you, love from james xoxo (if you have a suggestion (cool api, cool command) use the " + guildConf.prefix + "feedback command"
-          },
-          fields: [{
-              "name": PREFIX + "botfriends",
-              "value": "shows you all my friends who are bots"
-            },
-            {
-              "name": PREFIX + "men",
-              "value": "our server got weird there for sec"
-            },
-            {
-              "name": PREFIX + "play <searchterm || youtube url>",
-              "value": "plays da music ya feeded it"
-            },
-            {
-              "name": PREFIX + "pause",
-              "value": "pauses the music currently playing"
-            },
-            {
-              "name": PREFIX + "resume",
-              "value": "resumes the music currently playing"
-            },
-            {
-              "name": PREFIX + "skip",
-              "value": "skips to the next song in the queue"
-            },
-            {
-              "name": PREFIX + "stop",
-              "value": "stop, rop and leave the channel"
-            },
-            {
-              "name": PREFIX + "github",
-              "value": "gIvEs a lInK To tHe gItHuB PaGe fOr tHe bOt"
-            },
-            {
-              "name": PREFIX + "shopper",
-              "value": "one of my friends wanted a random shopper command"
-            },
-            {
-              "name": PREFIX + "img <searchterm>",
-              "value": "searches the googles for an imageles"
-            },
-            {
-              "name": PREFIX + "ping",
-              "value": "ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping ping"
-            },
-            {
-              "name": PREFIX + "texttoascii <whatever you want to ascii>",
-              "value": "I WAS TRYNA DO AN IMAGE TO ASCII BUT IT DIDNT WORK SO I SETTLED FOR THIS"
-            },
-                   {
-              "name": PREFIX + "rolecolours",
-              "value": "shows all the colours that roles can be. of course you can also use hex values"
-            },
-                   {
-              "name": PREFIX + "createrole <rolename> <colour word ("+PREFIX+"rolecolours) || hex value> ",
-              "value": "creates a role based on values given (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-                   {
-              "name": PREFIX + "addroll <@roll>",
-              "value": "adds the user to a roll given and the grantableroles list"
-            },
-                   {
-              "name": PREFIX + "deleterole <@role>",
-              "value": "deletes given role (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-                   {
-              "name": PREFIX + "removerole <@role>",
-              "value": "removes the role given."
-            },
-                   {
-              "name": PREFIX + "listroles",
-              "value": "gets a list of grantable roles in the server."
-            },
-                    {
-              "name": PREFIX + "addgrantablerole",
-              "value": "adds a created role to a list of roles addable by a user (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-                    {
-              "name": PREFIX + "removegrantablerole",
-              "value": "removes a created role to a list of roles addable by a user (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-                   {
-              "name": PREFIX + "sbubby",
-              "value": "Eef Freef"
-            },
-                   {
-              "name": PREFIX + "tweet",
-              "value": "it sends a tweet from the account https://twitter.com/JamieBotTweets1. why? i actual have no fucking idea lol (only works in a specific server, sorry about that)"
-            },
-            {
-              "name": "@someone",
-              "value": "remember that time discord released that acid trip of a video explaining the @someone change for april fools. Well. WEll. WELl. WELL."
-            },
-            {
-              "name": PREFIX + "nonptoggle",
-              "value": "***stops dem annoying non-prefixed commands*** (hmm, haha, fuck me, ur mom gay) (!!REQUIRES 'Rue brick' ROLE!!)"
-            },
-            {
-              "name": "prefix",
-              "value": "if you '@' me and say prefix i will tell you the current prefix for the server"
-            }
-          ]
-        }
-      });
+    
+     
+    message.channel.send("heres all my commands for ya bitch, https://myywebsite.glitch.me/html/jamie.html");
 
     }
 
