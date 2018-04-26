@@ -255,10 +255,10 @@ Bot.on("message", async message => {
     
     //franklin meme maker
     if(command === "franklinmeme"){
-      if(args[0] = "help"){
-         message.channel.send("working on the help");
-        return;
-         }
+      // if(args[0] = "help"){
+      //    message.channel.send("working on the help");
+      //   return;
+      //    }
       
       
       
