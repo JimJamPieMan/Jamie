@@ -20,6 +20,8 @@ Other data in the future
 
 
 
+
+
 */
 
 //Sets up thr uptimerobot keeper upper
@@ -67,6 +69,14 @@ var Tclient = new Twitter({
   access_token_secret: process.env.access_token_secret
 });
 const pg = require('phrase-generator');
+var youtubeUrl = require("youtube-url");
+var Canvas = require('canvas');
+var Image = Canvas.Image;
+const http = require("http");
+var Request = require('pixl-request');
+const faceapp = require('faceapp');
+const superagent = require('superagent');
+
 
  
 
@@ -135,7 +145,7 @@ Bot.on("message", async message => {
   var PREFIX = serverPrefix;
 
   
-//   if (message.content ==="yellow"){
+//   if (message.content.toLowerCase() ==="yellow"){
     
 //     if (!(message.guild.id == process.env.JACKsserver)){
 //         message.channel.send("sorry, in the interest of something important it only works in a specific server.");
@@ -177,7 +187,7 @@ Bot.on("message", async message => {
   if (message.content.toLowerCase().startsWith("@someone")) {
     var guildUsers = message.guild.members.map(m => m.user.id);
     var randomUser = Math.floor(Math.random() * guildUsers.length);
-    message.channel.send(message.author + " has fallen and can't get up and needs @someone. (" + "<@" + guildUsers[randomUser] + ">" + ")");
+    message.channel.send(message.author + " has fallen and can't get up and cant get up and needs @someone. (" + "<@" + guildUsers[randomUser] + ">" + ")");
   }
 
 
@@ -202,17 +212,11 @@ Bot.on("message", async message => {
     if (message.content.toLowerCase().startsWith('haha')) {
       message.channel.send("https://imgur.com/b0NbvBR");
     }
-    
-    // if (message.content.toLowerCase() === "yeem" || "meey" || "yeet" || "ye" || "teey" ||"ey"){
-    //   message.delete();
-    //   message.channel.send("FUCK OFFFFFF");
-    // }
+    if (message.content.toLowerCase().startsWith('yep good')) {
+      message.channel.send("Yep good. Less than a week notice. This is how to organise. I guess you don't really realise that people have jobs and yknow can't just be like yo can't go to work every time someone didn't give them enough time to book off time");
+    }
   }
 
-  
-  // if (message.author.id === process.env.kelseyID){
-  //   message.channel.send("vroom vroom http://www.chevrolet.com/content/dam/chevrolet/na/us/english/index/vehicles/discontinued-vehicles/ss/01-images/2018-discontinued-ss-masthead-01.jpg?imwidth%5Cu003d1200");
-  // }
 
   //Setup the prefix, commands and args
   if (message.content.indexOf(PREFIX) !== 0) return;
@@ -221,15 +225,152 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","jack","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","jack","franklin","franklinmeme","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
     
-    //test
-    if(command === "test"){
-      message.channel.send("beep boop");
+    //NOTSOBOT LIKE FACE COMMANDS TESTING STAGE
+    
+    
+//     //test
+//     if(command ==="test"){
+      
+      
+      
+//       message.channel.fetchMessages({ limit: 10 })
+//   .then(messages => console.log(messages.attachments))
+//   .catch(console.error);
+      
+      
+      
+// //       var url = "https://www.taylorherring.com/blog/wp-content/uploads/2015/03/Archetypal-Male-Face-of-Beauty-embargoed-to-00.01hrs-30.03.15.jpg";
+// // let { body } = await superagent.get(url)
+// // let image = await faceapp.process(body, 'smile')
+// //       message.channel.send({files: [ {attachment: image, name: 'hot.png' } ] });
+      
+//     }
+    
+    
+    
+    //franklin meme maker
+    if(command === "franklinmeme"){
+      if(args[0] = "help"){
+         message.channel.send("working on the help");
+        return;
+         }
+      
+      
+      
+      
+      if(!args[0]||isNaN(args[0])){
+         message.channel.send("what format you want fam?");
+        return;
+         }
+   
+      message.channel.startTyping();
+      if (args[0]==1){
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2FfranklinStart.png?1524639941124";
+        var canvasSizex = 1512;
+         var canvasSizey =1720;
+           var textPosx = canvasSizex/2;
+             var textPosy =400;
+        var textSize=100;
+        
+      }else if (args[0]==2){
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F2.jpg?1524737776785";
+          var canvasSizex = 679;
+         var canvasSizey =768;
+           var textPosx =canvasSizex/2;
+             var textPosy =215
+                 var textSize=45;
+        
+      }else if (args[0]==3){
+        
+      var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F6.jpg?1524737777661";
+          var canvasSizex = 442;
+         var canvasSizey =500;
+           var textPosx =canvasSizex/2;
+             var textPosy =140
+             var textSize=30;
+        
+        
+      }else if (args[0]==4){
+            var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F3.jpg?1524737777791";
+          var canvasSizex = 528;
+         var canvasSizey =603;
+           var textPosx =(canvasSizex/2)+40;
+             var textPosy =150
+             var textSize=30;
+        
+    
+      }else if (args[0]==5){
+              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F5.jpg?1524737777932";
+          var canvasSizex = 595;
+         var canvasSizey =672;
+           var textPosx =canvasSizex/2;
+             var textPosy =185
+              var textSize=30;
+        
+        
+      }else if (args[0]==6){
+              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F4.jpg?1524737778067";
+          var canvasSizex = 595
+         var canvasSizey =673
+           var textPosx =(canvasSizex/2)+40;
+             var textPosy =180
+              var textSize=30;
+        
+        
+      }else if (args[0]==7){
+              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F1.jpg?1524737778383";
+          var canvasSizex = 595
+         var canvasSizey =877
+           var textPosx =canvasSizex/2;
+             var textPosy =240
+              var textSize=35;
+        
+        
+      }
+     
+     
+
+
+
+
+args.shift();
+var request = new Request();
+request.get( url, function(err, resp, data) {
+	if (err) throw err;
+	var img = new Image();
+	img.src = data;
+  var textToType = args.join(" ");
+	
+	var canvas = new Canvas(canvasSizex, canvasSizey);
+	var ctx = canvas.getContext('2d');
+	
+	ctx.drawImage(img, 0, 0, canvasSizex, canvasSizey);
+  ctx.fillStyle = 'rgba(39, 101, 142, 1)';
+
+  ctx.font = textSize+'px Serif';
+    var text = ctx.measureText(textToType);
+  
+  if(text.width >= 1100){
+      message.channel.stopTyping();
+    message.channel.send("thats too big for me if you know what i mean");
+    return;
+    
+  }
+  ctx.fillText(textToType, textPosx-(text.width/2), textPosy);
+  //var text = ctx.measureText(args.join(" "))
+  var img = canvas.toDataURL();
+var data = img.replace(/^data:image\/\w+;base64,/, "");
+var buf = new Buffer(data, 'base64');
+message.channel.send({files: [ {attachment: buf, name: 'franklin.png' } ] }); 
+    message.channel.stopTyping();
+});
     }
+               
 
  
     //jack
@@ -268,6 +409,38 @@ Bot.on("message", async message => {
           
          const embed = {
             "title": "nowShowingSbubby("+response.data.children[randomOne].data.title+")",
+            "color": 9442302,
+            "image": {
+              "url": response.data.children[randomOne].data.url
+            },
+           "footer":{
+           "text":"🔼 "+ response.data.children[randomOne].data.ups}
+           
+          };
+          message.channel.send({
+            embed
+          });
+          message.channel.stopTyping();
+          
+          //console.log(response.data.children[randomOne].data.url);
+          
+        // console.log(response.data.children[1]);
+        }
+        if (error) {
+          console.log(error);
+          message.channel.stopTyping();
+        }
+      });
+    }
+    
+    if (command === "franklin") {
+      message.channel.startTyping();
+      getJSON('https://www.reddit.com/r/franklinstories/.json', function (error, response) {
+        if (response) {
+          var randomOne = Math.floor(Math.random()*response.data.children.length);
+          
+         const embed = {
+            "title": "nowShowingFranklin("+response.data.children[randomOne].data.title+")",
             "color": 9442302,
             "image": {
               "url": response.data.children[randomOne].data.url
@@ -1305,54 +1478,28 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
     //Men
     if (command === "men") {
-      if (message.mentions.members.first().id === process.env.botID){
-        message.channel.send("***MY DMS ARE CLEAN AND DO NOT WANT THEM INFESTED WITH PEOPLE LIKE YOU, YOU DIRTY FUCKING FUCKER FUCKTARD***");
-        return;
-        
-      }
-      
-      if (message.mentions.members.first()) {
-        message.channel.send("you are most certainly an annoying fuck");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-        message.mentions.users.first().send("https://imgur.com/189DJI3");
-      } else {
+     
         message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
-      }
+      
       
     }
 
 
     //Sends 5 pictures of a random Indian man a friend found
     if (command === "manesh") {
-      
-      
-      
-      
-      if (message.mentions.members.first()) {
-        message.channel.send("you are most certainly an annoying fuck");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-        message.mentions.users.first().send("https://imgur.com/YZp0vDp");
-      } else {
+     
         message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
-      }
+      
     }
 
 
@@ -1384,7 +1531,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     function play(connection, message) {
       var server = servers[message.guild.id];
       server.dispatcher = connection.playStream(yt(server.queue[0], {
-        filter: "audioonly"
+        filter:"audioonly"
       }));
       var vidIDforSearch = getVideoId(server.queue[0]).id;
       fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
@@ -1455,6 +1602,12 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
       if (message.content.includes("http://") || message.content.includes("https://")) {
         if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
+
+    if (youtubeUrl.valid(args[0])==false){
+      message.channel.send("not a proper youtube link you bitch");
+      return;
+    }
+        
           if (!servers[message.guild.id]) {
             servers[message.guild.id] = {
               queue: []
@@ -1472,6 +1625,8 @@ message.channel.send("just confirming you deleted "+roleToDelete);
               message.channel.send(message.author + " i cant play for some reason, hmm. (check if my permissions are okay)");
             });
           }
+ 
+   
 
         } else {
           message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
@@ -1482,9 +1637,8 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           key: process.env.youtubeapi,
           type: 'video'
         };
-        args.shift();
+        
         var searchTerm = args.join("_");
-        //console.log(searchTerm);
         search(searchTerm, opts, function (err, results) {
           if (err) {
             console.log(err);
@@ -1547,6 +1701,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         message.channel.send("resumed mother fukaaaaaaa");
       }
     }
+    
 
 
 
