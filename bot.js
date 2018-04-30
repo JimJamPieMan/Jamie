@@ -77,6 +77,9 @@ var Request = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
 
+//Setup the queue system for music
+var servers = {};
+
 
  
 
@@ -119,13 +122,13 @@ Bot.on('ready', () => {
   Bot.user.setUsername("Jamie");
   
   setInterval(function(){ Bot.user.setActivity(pg.generate()+" || `help || ("+Bot.guilds.size+")"); }, 120000);
+
   
   //Bot.user.setActivity("Now with roles!");
 });
 
 
-//Setup the queue system for music
-var servers = {};
+
 
 
 //Meat and potatos
@@ -145,16 +148,29 @@ Bot.on("message", async message => {
   var PREFIX = serverPrefix;
 
   
-//   if (message.content.toLowerCase() ==="yellow"){
+  if (message.content.toLowerCase() ==="yellow"){
     
-//     if (!(message.guild.id == process.env.JACKsserver)){
-//         message.channel.send("sorry, in the interest of something important it only works in a specific server.");
-//         return;
-//       }
-//     message.member.kick();
-//     message.channel.send("yellow is illegal");
-//     message.author.send("https://discord.gg/2vt3PeF");
-//   }
+    if (!(message.guild.id == process.env.JACKsserver)){
+        message.channel.send("sorry, in the interest of something important it only works in a specific server.");
+        return;
+      }
+    message.member.kick();
+    message.channel.send("yellow is illegal");
+    message.author.send("https://discord.gg/2vt3PeF");
+  }
+  
+  if(message.content.toLowerCase().includes("dick")||message.content.toLowerCase().includes("penis")){
+     message.react("🍆");
+     }
+  if(message.content.toLowerCase().includes("arse")||message.content.toLowerCase().includes("bum")||message.content.toLowerCase().includes("ass")||message.content.toLowerCase().includes("anus")){
+     message.react("🍑");
+     }
+  if(message.content.toLowerCase().includes("smegma")){
+     message.react("🧀");
+     }
+  if(message.content.toLowerCase().includes("vagina")||message.content.toLowerCase().includes("pussy")){
+     message.react("🥑");
+     }
 
   //ignore embeds starting with ``
   if (message.content.startsWith("``")) {
@@ -225,31 +241,224 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","jack","franklin","franklinmeme","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","jack","franklin","franklinmeme","smile","smile2","hot","old","young","female2","female","male","pan","hitman","hollywood","heisenberg","impression","lion","goatee","hipster","bangs","glasses","wave","makeup","test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
     
+    
+    //test
+    if(command==="test"){
+
+//  console.log(message.channel.fetchMessages({ limit: 10 }).map(m => m.content))
+//   .catch(console.error);
+    }
+    
     //NOTSOBOT LIKE FACE COMMANDS TESTING STAGE
     
+     if(command ==="makeup"){
     
-//     //test
-//     if(command ==="test"){
       
       
       
-//       message.channel.fetchMessages({ limit: 10 })
-//   .then(messages => console.log(messages.attachments))
-//   .catch(console.error);
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'makeup')
+      message.channel.send({files: [ {attachment: image, name: 'makeup.png' } ] });
+      
+     } if(command ==="wave"){
+    
       
       
       
-// //       var url = "https://www.taylorherring.com/blog/wp-content/uploads/2015/03/Archetypal-Male-Face-of-Beauty-embargoed-to-00.01hrs-30.03.15.jpg";
-// // let { body } = await superagent.get(url)
-// // let image = await faceapp.process(body, 'smile')
-// //       message.channel.send({files: [ {attachment: image, name: 'hot.png' } ] });
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'wave')
+      message.channel.send({files: [ {attachment: image, name: 'wave.png' } ] });
       
-//     }
+     } if(command ==="glasses"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'glasses')
+      message.channel.send({files: [ {attachment: image, name: 'glasses.png' } ] });
+      
+     } if(command ==="bangs"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'bangs')
+      message.channel.send({files: [ {attachment: image, name: 'bangs.png' } ] });
+      
+     } if(command ==="hipster"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'hipster')
+      message.channel.send({files: [ {attachment: image, name: 'hipster.png' } ] });
+      
+     } if(command ==="goatee"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'goatee')
+      message.channel.send({files: [ {attachment: image, name: 'goatee.png' } ] });
+      
+     } if(command ==="lion"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'lion')
+      message.channel.send({files: [ {attachment: image, name: 'lion.png' } ] });
+      
+     } if(command ==="impression"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'impression')
+      message.channel.send({files: [ {attachment: image, name: 'impression.png' } ] });
+      
+     } if(command ==="heisenberg"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'heisenberg')
+      message.channel.send({files: [ {attachment: image, name: 'heisenberg.png' } ] });
+      
+     } if(command ==="hollywood"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'hollywood')
+      message.channel.send({files: [ {attachment: image, name: 'hollywood.png' } ] });
+      
+     } if(command ==="hitman"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'hitman')
+      message.channel.send({files: [ {attachment: image, name: 'hitman.png' } ] });
+      
+     } if(command ==="pan"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'pan')
+      message.channel.send({files: [ {attachment: image, name: 'pan.png' } ] });
+      
+     } if(command ==="male"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'male')
+      message.channel.send({files: [ {attachment: image, name: 'male.png' } ] });
+      
+     } if(command ==="female"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'female')
+      message.channel.send({files: [ {attachment: image, name: 'female.png' } ] });
+      
+     } if(command ==="female2"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'female_2')
+      message.channel.send({files: [ {attachment: image, name: 'female2.png' } ] });
+      
+     } if(command ==="young"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'young')
+      message.channel.send({files: [ {attachment: image, name: 'young.png' } ] });
+      
+     } if(command ==="old"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'old')
+      message.channel.send({files: [ {attachment: image, name: 'old.png' } ] });
+      
+     } if(command ==="hot"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'hot')
+      message.channel.send({files: [ {attachment: image, name: 'hot.png' } ] });
+      
+     } if(command ==="smile2"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'smile_2')
+      message.channel.send({files: [ {attachment: image, name: 'smile2.png' } ] });
+      
+     }
+    //test
+    if(command ==="smile"){
+    
+      
+      
+      
+      var url = args[0];
+let { body } = await superagent.get(url)
+let image = await faceapp.process(body, 'smile')
+      message.channel.send({files: [ {attachment: image, name: 'smile.png' } ] });
+      
+     }
     
     
     
@@ -1571,7 +1780,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             embed
           });
         
-      });
+          });
       var serverVol = guildConf.volume;
       server.dispatcher.setVolume(serverVol);
       server.queue.shift();
