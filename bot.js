@@ -13,14 +13,7 @@ bitrthdays,
                 month:
 Other data in the future
 
-
 -- make the img results paginate so jack doesnt get angry
-
-
-
-
-
-
 
 */
 
@@ -46,7 +39,7 @@ const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
 const settings = new Enmap({
   provider: new EnmapLevel({
-   name: "settings"
+    name: "settings"
   })
 });
 const getVideoId = require('get-video-id');
@@ -77,12 +70,9 @@ var Request = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
 
+
 //Setup the queue system for music
 var servers = {};
-
-
- 
-
 
 
 // const maker = Bot.users.find("id", process.env.myID);
@@ -90,7 +80,7 @@ var servers = {};
 
 //Default Settings
 const defaultSettings = {
-  grantableRoles:[],
+  grantableRoles: [],
   nonPrefixed: true,
   prefix: "`",
   volume: "0.5"
@@ -120,15 +110,10 @@ Bot.on("guildDelete", guild => {
 //When the bot is turned on, set the activity
 Bot.on('ready', () => {
   Bot.user.setUsername("Jamie");
-  
-  setInterval(function(){ Bot.user.setActivity(pg.generate()+" || `help || ("+Bot.guilds.size+")"); }, 120000);
-
-  
-  //Bot.user.setActivity("Now with roles!");
+  setInterval(function () {
+    Bot.user.setActivity(pg.generate() + " || `help || (" + Bot.guilds.size + ")");
+  }, 120000);
 });
-
-
-
 
 
 //Meat and potatos
@@ -137,40 +122,46 @@ Bot.on("message", async message => {
   if (message.author.bot) {
     return;
   }
+
+
   //Ignore dms with a reply
   if (message.channel.type === 'dm') {
     message.author.send("nope not here, sorry");
     return;
   }
 
+
+  //Get prefix for that guild
   const guildConf = settings.get(message.guild.id);
   var serverPrefix = guildConf.prefix;
   var PREFIX = serverPrefix;
 
-  
-  if (message.content.toLowerCase() ==="yellow"){
-    
-    if (!(message.guild.id == process.env.JACKsserver)){
-        message.channel.send("sorry, in the interest of something important it only works in a specific server.");
-        return;
-      }
+
+  //Dont say yellow
+  if (message.content.toLowerCase() === "yellow") {
+    if (!(message.guild.id == process.env.JACKsserver)) {
+      message.channel.send("sorry, in the interest of something important it only works in a specific server.");
+      return;
+    }
     message.member.kick();
     message.channel.send("yellow is illegal");
     message.author.send("https://discord.gg/2vt3PeF");
   }
-  
-  if(message.content.toLowerCase().includes("dick")||message.content.toLowerCase().includes("penis")){
-     message.react("🍆");
-     }
-  if(message.content.toLowerCase().includes("arse")||message.content.toLowerCase().includes("bum")||message.content.toLowerCase().includes("ass")||message.content.toLowerCase().includes("anus")){
-     message.react("🍑");
-     }
-  if(message.content.toLowerCase().includes("smegma")){
-     message.react("🧀");
-     }
-  if(message.content.toLowerCase().includes("vagina")||message.content.toLowerCase().includes("pussy")){
-     message.react("🥑");
-     }
+
+
+  //funny reaction
+  if (message.content.toLowerCase().includes("dick") || message.content.toLowerCase().includes("penis")) {
+    message.react("🍆");
+  }
+  if (message.content.toLowerCase().includes("arse") || message.content.toLowerCase().includes("bum") || message.content.toLowerCase().includes("ass") || message.content.toLowerCase().includes("anus")) {
+    message.react("🍑");
+  }
+  if (message.content.toLowerCase().includes("smegma")) {
+    message.react("🧀");
+  }
+  if (message.content.toLowerCase().includes("vagina") || message.content.toLowerCase().includes("pussy")) {
+    message.react("🥑");
+  }
 
   //ignore embeds starting with ``
   if (message.content.startsWith("``")) {
@@ -185,18 +176,16 @@ Bot.on("message", async message => {
   if (message.content.toLowerCase() === ("<@" + Bot.user.id + "> prefix")) {
     message.channel.send("this servers current prefix is " + "'" + guildConf.prefix + "'");
   }
-  
-  if (message.content.toLowerCase() ===("<@" + Bot.user.id + "> prefixreset")) {
-     let myRole = message.guild.roles.find("name", "Rue brick");
-      if (message.member.roles.has(myRole.id)) {
-        const key = "prefix";
-        
-          guildConf[key] = '`';
-          settings.set(message.guild.id, guildConf);
-          message.channel.send(" THE FUCKING PREFIX IS NOW " + '`');
-        
-    
-      }
+
+  //Prefix reset cos yep
+  if (message.content.toLowerCase() === ("<@" + Bot.user.id + "> prefixreset")) {
+    let myRole = message.guild.roles.find("name", "Rue brick");
+    if (message.member.roles.has(myRole.id)) {
+      const key = "prefix";
+      guildConf[key] = '`';
+      settings.set(message.guild.id, guildConf);
+      message.channel.send(" THE FUCKING PREFIX IS NOW " + '`');
+    }
   }
 
   //HELP IVE FALLEN AND I NEED @SOMEONE
@@ -207,7 +196,7 @@ Bot.on("message", async message => {
   }
 
 
-  //
+  //if the condition is true do them things
   if (guildConf.nonPrefixed === true) {
     //yep
     if (message.content.toLowerCase().startsWith('ur mom gay')) {
@@ -241,399 +230,457 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume","createrole","rolecolours" ,"addroll","deleterole","listroles","sbubby","removerole","addgrantablerole","removegrantablerole","tweet","bentley","maggie","jack","franklin","franklinmeme","smile","smile2","hot","old","young","female2","female","male","pan","hitman","hollywood","heisenberg","impression","lion","goatee","hipster","bangs","glasses","wave","makeup","test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "createrole", "rolecolours", "addroll", "deleterole", "listroles", "sbubby", "removerole", "addgrantablerole", "removegrantablerole", "tweet", "bentley", "maggie", "jack", "franklin", "franklinmeme", "smile", "smile2", "hot", "old", "young", "female2", "female", "male", "pan", "hitman", "hollywood", "heisenberg", "impression", "lion", "goatee", "hipster", "bangs", "glasses", "wave", "makeup", "test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
-    
-    
-    //test
-    if(command==="test"){
 
-//  console.log(message.channel.fetchMessages({ limit: 10 }).map(m => m.content))
-//   .catch(console.error);
-    }
-    
-    //NOTSOBOT LIKE FACE COMMANDS TESTING STAGE
-    
-     if(command ==="makeup"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'makeup')
-      message.channel.send({files: [ {attachment: image, name: 'makeup.png' } ] });
-      
-     } if(command ==="wave"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'wave')
-      message.channel.send({files: [ {attachment: image, name: 'wave.png' } ] });
-      
-     } if(command ==="glasses"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'glasses')
-      message.channel.send({files: [ {attachment: image, name: 'glasses.png' } ] });
-      
-     } if(command ==="bangs"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'bangs')
-      message.channel.send({files: [ {attachment: image, name: 'bangs.png' } ] });
-      
-     } if(command ==="hipster"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'hipster')
-      message.channel.send({files: [ {attachment: image, name: 'hipster.png' } ] });
-      
-     } if(command ==="goatee"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'goatee')
-      message.channel.send({files: [ {attachment: image, name: 'goatee.png' } ] });
-      
-     } if(command ==="lion"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'lion')
-      message.channel.send({files: [ {attachment: image, name: 'lion.png' } ] });
-      
-     } if(command ==="impression"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'impression')
-      message.channel.send({files: [ {attachment: image, name: 'impression.png' } ] });
-      
-     } if(command ==="heisenberg"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'heisenberg')
-      message.channel.send({files: [ {attachment: image, name: 'heisenberg.png' } ] });
-      
-     } if(command ==="hollywood"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'hollywood')
-      message.channel.send({files: [ {attachment: image, name: 'hollywood.png' } ] });
-      
-     } if(command ==="hitman"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'hitman')
-      message.channel.send({files: [ {attachment: image, name: 'hitman.png' } ] });
-      
-     } if(command ==="pan"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'pan')
-      message.channel.send({files: [ {attachment: image, name: 'pan.png' } ] });
-      
-     } if(command ==="male"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'male')
-      message.channel.send({files: [ {attachment: image, name: 'male.png' } ] });
-      
-     } if(command ==="female"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'female')
-      message.channel.send({files: [ {attachment: image, name: 'female.png' } ] });
-      
-     } if(command ==="female2"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'female_2')
-      message.channel.send({files: [ {attachment: image, name: 'female2.png' } ] });
-      
-     } if(command ==="young"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'young')
-      message.channel.send({files: [ {attachment: image, name: 'young.png' } ] });
-      
-     } if(command ==="old"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'old')
-      message.channel.send({files: [ {attachment: image, name: 'old.png' } ] });
-      
-     } if(command ==="hot"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'hot')
-      message.channel.send({files: [ {attachment: image, name: 'hot.png' } ] });
-      
-     } if(command ==="smile2"){
-    
-      
-      
-      
-      var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'smile_2')
-      message.channel.send({files: [ {attachment: image, name: 'smile2.png' } ] });
-      
-     }
     //test
-    if(command ==="smile"){
-    
-      
-      
-      
+    if (command === "test") {
+      message.channel.send("beep boop");
+    }
+
+
+    //notsobot face commmands
+    if (command === "makeup") {
       var url = args[0];
-let { body } = await superagent.get(url)
-let image = await faceapp.process(body, 'smile')
-      message.channel.send({files: [ {attachment: image, name: 'smile.png' } ] });
-      
-     }
-    
-    
-    
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'makeup')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'makeup.png'
+        }]
+      });
+    }
+
+
+    if (command === "wave") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'wave')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'wave.png'
+        }]
+      });
+    }
+
+
+    if (command === "glasses") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'glasses')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'glasses.png'
+        }]
+      });
+    }
+
+
+    if (command === "bangs") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'bangs')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'bangs.png'
+        }]
+      });
+    }
+
+
+    if (command === "hipster") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'hipster')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'hipster.png'
+        }]
+      });
+    }
+
+
+    if (command === "goatee") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'goatee')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'goatee.png'
+        }]
+      });
+    }
+
+
+    if (command === "lion") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'lion')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'lion.png'
+        }]
+      });
+    }
+
+
+    if (command === "impression") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'impression')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'impression.png'
+        }]
+      });
+    }
+
+
+    if (command === "heisenberg") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'heisenberg')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'heisenberg.png'
+        }]
+      });
+    }
+
+
+    if (command === "hollywood") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'hollywood')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'hollywood.png'
+        }]
+      });
+    }
+
+
+    if (command === "hitman") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'hitman')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'hitman.png'
+        }]
+      });
+    }
+
+
+    if (command === "pan") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'pan')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'pan.png'
+        }]
+      });
+    }
+
+
+    if (command === "male") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'male')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'male.png'
+        }]
+      });
+    }
+
+
+    if (command === "female") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'female')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'female.png'
+        }]
+      });
+    }
+
+
+    if (command === "female2") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'female_2')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'female2.png'
+        }]
+      });
+    }
+
+
+    if (command === "young") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'young')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'young.png'
+        }]
+      });
+    }
+
+
+    if (command === "old") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'old')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'old.png'
+        }]
+      });
+    }
+
+
+    if (command === "hot") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'hot')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'hot.png'
+        }]
+      });
+    }
+
+
+    if (command === "smile2") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'smile_2')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'smile2.png'
+        }]
+      });
+    }
+
+
+    if (command === "smile") {
+      var url = args[0];
+      let {
+        body
+      } = await superagent.get(url)
+      let image = await faceapp.process(body, 'smile')
+      message.channel.send({
+        files: [{
+          attachment: image,
+          name: 'smile.png'
+        }]
+      });
+    }
+
+
     //franklin meme maker
-    if(command === "franklinmeme"){
-      // if(args[0] = "help"){
-      //    message.channel.send("working on the help");
-      //   return;
-      //    }
-      
-      
-      
-      
-      if(!args[0]||isNaN(args[0])){
-         message.channel.send("what format you want fam?");
+    if (command === "franklinmeme") {
+      if (!args[0] || isNaN(args[0])){
+        message.channel.send("what format you want fam?");
         return;
-         }
-   
+      }
       message.channel.startTyping();
-      if (args[0]==1){
+      if (args[0] == 1) {
         var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2FfranklinStart.png?1524639941124";
         var canvasSizex = 1512;
-         var canvasSizey =1720;
-           var textPosx = canvasSizex/2;
-             var textPosy =400;
-        var textSize=100;
-        
-      }else if (args[0]==2){
+        var canvasSizey = 1720;
+        var textPosx = canvasSizex / 2;
+        var textPosy = 400;
+        var textSize = 100;
+      } else if (args[0] == 2) {
         var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F2.jpg?1524737776785";
-          var canvasSizex = 679;
-         var canvasSizey =768;
-           var textPosx =canvasSizex/2;
-             var textPosy =215
-                 var textSize=45;
-        
-      }else if (args[0]==3){
-        
-      var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F6.jpg?1524737777661";
-          var canvasSizex = 442;
-         var canvasSizey =500;
-           var textPosx =canvasSizex/2;
-             var textPosy =140
-             var textSize=30;
-        
-        
-      }else if (args[0]==4){
-            var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F3.jpg?1524737777791";
-          var canvasSizex = 528;
-         var canvasSizey =603;
-           var textPosx =(canvasSizex/2)+40;
-             var textPosy =150
-             var textSize=30;
-        
-    
-      }else if (args[0]==5){
-              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F5.jpg?1524737777932";
-          var canvasSizex = 595;
-         var canvasSizey =672;
-           var textPosx =canvasSizex/2;
-             var textPosy =185
-              var textSize=30;
-        
-        
-      }else if (args[0]==6){
-              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F4.jpg?1524737778067";
-          var canvasSizex = 595
-         var canvasSizey =673
-           var textPosx =(canvasSizex/2)+40;
-             var textPosy =180
-              var textSize=30;
-        
-        
-      }else if (args[0]==7){
-              var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F1.jpg?1524737778383";
-          var canvasSizex = 595
-         var canvasSizey =877
-           var textPosx =canvasSizex/2;
-             var textPosy =240
-              var textSize=35;
-        
-        
+        var canvasSizex = 679;
+        var canvasSizey = 768;
+        var textPosx = canvasSizex / 2;
+        var textPosy = 215
+        var textSize = 45;
+      } else if (args[0] == 3) {
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F6.jpg?1524737777661";
+        var canvasSizex = 442;
+        var canvasSizey = 500;
+        var textPosx = canvasSizex / 2;
+        var textPosy = 140
+        var textSize = 30;
+      } else if (args[0] == 4) {
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F3.jpg?1524737777791";
+        var canvasSizex = 528;
+        var canvasSizey = 603;
+        var textPosx = (canvasSizex / 2) + 40;
+        var textPosy = 150
+        var textSize = 30;
+      } else if (args[0] == 5) {
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F5.jpg?1524737777932";
+        var canvasSizex = 595;
+        var canvasSizey = 672;
+        var textPosx = canvasSizex / 2;
+        var textPosy = 185
+        var textSize = 30;
+      } else if (args[0] == 6) {
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F4.jpg?1524737778067";
+        var canvasSizex = 595
+        var canvasSizey = 673
+        var textPosx = (canvasSizex / 2) + 40;
+        var textPosy = 180
+        var textSize = 30;
+      } else if (args[0] == 7) {
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2F1.jpg?1524737778383";
+        var canvasSizex = 595
+        var canvasSizey = 877
+        var textPosx = canvasSizex / 2;
+        var textPosy = 240
+        var textSize = 35;
       }
-     
-     
-
-
-
-
-args.shift();
-var request = new Request();
-request.get( url, function(err, resp, data) {
-	if (err) throw err;
-	var img = new Image();
-	img.src = data;
-  var textToType = args.join(" ");
-	
-	var canvas = new Canvas(canvasSizex, canvasSizey);
-	var ctx = canvas.getContext('2d');
-	
-	ctx.drawImage(img, 0, 0, canvasSizex, canvasSizey);
-  ctx.fillStyle = 'rgba(39, 101, 142, 1)';
-
-  ctx.font = textSize+'px Serif';
-    var text = ctx.measureText(textToType);
-  
-  if(text.width >= 1100){
-      message.channel.stopTyping();
-    message.channel.send("thats too big for me if you know what i mean");
-    return;
-    
-  }
-  ctx.fillText(textToType, textPosx-(text.width/2), textPosy);
-  //var text = ctx.measureText(args.join(" "))
-  var img = canvas.toDataURL();
-var data = img.replace(/^data:image\/\w+;base64,/, "");
-var buf = new Buffer(data, 'base64');
-message.channel.send({files: [ {attachment: buf, name: 'franklin.png' } ] }); 
-    message.channel.stopTyping();
-});
+      args.shift();
+      var request = new Request();
+      request.get(url, function (err, resp, data) {
+        if (err) throw err;
+        var img = new Image();
+        img.src = data;
+        var textToType = args.join(" ");
+        var canvas = new Canvas(canvasSizex, canvasSizey);
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvasSizex, canvasSizey);
+        ctx.fillStyle = 'rgba(39, 101, 142, 1)';
+        ctx.font = textSize + 'px Serif';
+        var text = ctx.measureText(textToType);
+        if (text.width >= 1100) {
+          message.channel.stopTyping();
+          message.channel.send("thats too big for me if you know what i mean");
+          return;
+        }
+        ctx.fillText(textToType, textPosx - (text.width / 2), textPosy);
+        //var text = ctx.measureText(args.join(" "))
+        var img = canvas.toDataURL();
+        var data = img.replace(/^data:image\/\w+;base64,/, "");
+        var buf = new Buffer(data, 'base64');
+        message.channel.send({
+          files: [{
+            attachment: buf,
+            name: 'franklin.png'
+          }]
+        });
+        message.channel.stopTyping();
+      });
     }
-               
 
- 
+
+
     //jack
-     if(command === "jack"){
-      message.channel.send("sorry your not being "+message.channel.name +" enough could not be a degenerate shit");
+    if (command === "jack") {
+      message.channel.send("sorry your not being " + message.channel.name + " enough could not be a degenerate shit");
     }
-    
-    
-    
-//tweet
-    if (command ==="tweet"){
-      
-      if (!(message.guild.id == process.env.JACKsserver)){
+
+
+    //tweet
+    if (command === "tweet") {
+      if (!(message.guild.id == process.env.JACKsserver)) {
         message.channel.send("sorry, in the interest of something important it only works in a specific server.");
         return;
       }
       var tweet = args.join(" ");
-      Tclient.post('statuses/update', {status: tweet}, function(error, tweet, response) {
-  if (!error) {
-    
-    message.channel.send("***i stuffed your tweet through the tubes and it has arrived at the end***");
-    }else if (error){
-      console.log(error);
-      message.channel.send("soz fam couldnt sendddddd itttt");
-      message.channel.send("``` Code:" +error[0].code + " Message:"+error[0].message+"```");
+      Tclient.post('statuses/update', {
+        status: tweet
+      }, function (error, tweet, response) {
+        if (!error) {
+          message.channel.send("***i stuffed your tweet through the tubes and it has arrived at the end***");
+        } else if (error) {
+          console.log(error);
+          message.channel.send("soz fam couldnt sendddddd itttt");
+          message.channel.send("``` Code:" + error[0].code + " Message:" + error[0].message + "```");
+        }
+      });
     }
-});
-    }
-    
+
+
     //sbubby
     if (command === "sbubby") {
       message.channel.startTyping();
       getJSON('https://www.reddit.com/r/sbubby/.json', function (error, response) {
         if (response) {
-          var randomOne = Math.floor(Math.random()*response.data.children.length);
-          
-         const embed = {
-            "title": "nowShowingSbubby("+response.data.children[randomOne].data.title+")",
+          var randomOne = Math.floor(Math.random() * response.data.children.length);
+          const embed = {
+            "title": "nowShowingSbubby(" + response.data.children[randomOne].data.title + ")",
             "color": 9442302,
             "image": {
               "url": response.data.children[randomOne].data.url
             },
-           "footer":{
-           "text":"🔼 "+ response.data.children[randomOne].data.ups}
-           
+            "footer": {
+              "text": "🔼 " + response.data.children[randomOne].data.ups
+            }
           };
           message.channel.send({
             embed
           });
           message.channel.stopTyping();
-          
-          //console.log(response.data.children[randomOne].data.url);
-          
-        // console.log(response.data.children[1]);
         }
         if (error) {
           console.log(error);
@@ -641,31 +688,28 @@ message.channel.send({files: [ {attachment: buf, name: 'franklin.png' } ] });
         }
       });
     }
-    
+
+    //Franklin from reddit
     if (command === "franklin") {
       message.channel.startTyping();
       getJSON('https://www.reddit.com/r/franklinstories/.json', function (error, response) {
         if (response) {
-          var randomOne = Math.floor(Math.random()*response.data.children.length);
-          
-         const embed = {
-            "title": "nowShowingFranklin("+response.data.children[randomOne].data.title+")",
+          var randomOne = Math.floor(Math.random() * response.data.children.length);
+
+          const embed = {
+            "title": "nowShowingFranklin(" + response.data.children[randomOne].data.title + ")",
             "color": 9442302,
             "image": {
               "url": response.data.children[randomOne].data.url
             },
-           "footer":{
-           "text":"🔼 "+ response.data.children[randomOne].data.ups}
-           
+            "footer": {
+              "text": "🔼 " + response.data.children[randomOne].data.ups
+            }
           };
           message.channel.send({
             embed
           });
           message.channel.stopTyping();
-          
-          //console.log(response.data.children[randomOne].data.url);
-          
-        // console.log(response.data.children[1]);
         }
         if (error) {
           console.log(error);
@@ -673,265 +717,205 @@ message.channel.send({files: [ {attachment: buf, name: 'franklin.png' } ] });
         }
       });
     }
-    
 
-    
-    if (command === "listroles"){
+
+    //list roles
+    if (command === "listroles") {
       var configRoles = guildConf.grantableRoles;
-      if (configRoles.length<=0){
+      if (configRoles.length <= 0) {
         message.channel.send("TEHRE REA NOEN AHEHAHHAHAHAHHAH");
-      }else{
-      message.channel.send(configRoles);
+      } else {
+        message.channel.send(configRoles);
       }
     }
-    
-    
-    
-    if (command ==="addgrantablerole"){
-      
-        let myRole = message.guild.roles.find("name", "Rue brick");
+
+
+    //add role to the list of roles avalible
+    if (command === "addgrantablerole") {
+      let myRole = message.guild.roles.find("name", "Rue brick");
       if (message.member.roles.has(myRole.id)) {
         let addgrantrole = message.mentions.roles.first();
-        
-        if (!addgrantrole){
+        if (!addgrantrole) {
           message.channel.send("either i cant see it (perms) or it just plain old doesnt exist");
           return;
         }
-        
-        
-        
         var configRoles = guildConf.grantableRoles;
-        if (configRoles.includes(addgrantrole.id)){
-          message.channel.send("that ones already there fam, use "+PREFIX+"listroles to get a list of grantable roles");
+        if (configRoles.includes(addgrantrole.id)) {
+          message.channel.send("that ones already there fam, use " + PREFIX + "listroles to get a list of grantable roles");
           return;
         }
-        
-     const key = "grantableRoles";
-      
-      
-      var configRoles = guildConf.grantableRoles;
-      
-      guildConf[key] = configRoles + addgrantrole;
-          settings.set(message.guild.id, guildConf);
-      message.channel.send("added as a grantable role");
-    }else {
-      message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
+        const key = "grantableRoles";
+        var configRoles = guildConf.grantableRoles;
+        guildConf[key] = configRoles + addgrantrole;
+        settings.set(message.guild.id, guildConf);
+        message.channel.send("added as a grantable role");
+      } else {
+        message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
+      }
     }
-    }
-    
-     if (command ==="removegrantablerole"){
-      
-        let myRole = message.guild.roles.find("name", "Rue brick");
+
+
+    //remove role to the list of roles avalible
+    if (command === "removegrantablerole") {
+      let myRole = message.guild.roles.find("name", "Rue brick");
       if (message.member.roles.has(myRole.id)) {
         let removegrantrole = message.mentions.roles.first();
-        
-        if (!removegrantrole){
+        if (!removegrantrole) {
           message.channel.send("either i cant see it (perms) or it just plain old doesnt exist");
           return;
         }
-        
         var configRoles = guildConf.grantableRoles;
-        if (!configRoles.includes(removegrantrole.id)){
-          message.channel.send("that ones already not there fam, use "+PREFIX+"listroles to get a list of grantable roles");
+        if (!configRoles.includes(removegrantrole.id)) {
+          message.channel.send("that ones already not there fam, use " + PREFIX + "listroles to get a list of grantable roles");
           return;
         }
-        
-     const key = "grantableRoles";
-      
-      
-      var configRoles = guildConf.grantableRoles;
-      var editedConfigRoles = configRoles.replace("<@&"+removegrantrole.id+">","");
-      
-      guildConf[key] = editedConfigRoles;
-          settings.set(message.guild.id, guildConf);
-      message.channel.send("removed as a grantable role");
-    }else {
-      message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
-    }
-    }
-    
-    
-    
-    
-    if (command === "removerole"){
-      
-      
-      
-      
-      
-      
-      
-      
-      let roleToRemove = message.mentions.roles.first();
-      
-      if(!roleToRemove){
-        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
-        return; 
+        const key = "grantableRoles";
+        var configRoles = guildConf.grantableRoles;
+        var editedConfigRoles = configRoles.replace("<@&" + removegrantrole.id + ">", "");
+        guildConf[key] = editedConfigRoles;
+        settings.set(message.guild.id, guildConf);
+        message.channel.send("removed as a grantable role");
+      } else {
+        message.channel.send("YOUR FUCKING GAY AS FUCKING PENIS");
       }
-      
-      
+    }
+
+
+    //remove role from the user
+    if (command === "removerole") {
+      let roleToRemove = message.mentions.roles.first();
+      if (!roleToRemove) {
+        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
+        return;
+      }
       if (!message.member.roles.has(roleToRemove.id)) {
         message.channel.send("you dont got this role fam");
         return;
-      }else{
-      
-    
-      message.member.removeRole(roleToRemove.id)
- .then(function(){message.channel.send("woah dude nice removal of the role");
-                  return;}
-       )
-  .catch(function (){
-        var err = console.error;
-        message.channel.send("hey, that didnt work. (Perms?)");
-return;
-        });
+      } else {
+        message.member.removeRole(roleToRemove.id)
+          .then(function () {
+            message.channel.send("woah dude nice removal of the role");
+            return;
+          })
+          .catch(function () {
+            var err = console.error;
+            message.channel.send("hey, that didnt work. (Perms?)");
+            return;
+          });
       }
-      
-      
-      
-      
-      
-      
-      
-      
     }
 
+
+    //lost of role colours
     if (command === "rolecolours") {
-      message.channel.send("```"+['DEFAULT','AQUA','GREEN','BLUE','PURPLE', 'GOLD','ORANGE','RED','GREY','DARKER_GREY','NAVY','DARK_AQUA','DARK_GREEN','DARK_BLUE','DARK_PURPLE','DARK_GOLD','DARK_ORANGE','DARK_RED','DARK_GREY','LIGHT_GREY','DARK_NAVY','RANDOM'].join("\n")+"```");
+      message.channel.send("```" + ['DEFAULT', 'AQUA', 'GREEN', 'BLUE', 'PURPLE', 'GOLD', 'ORANGE', 'RED', 'GREY', 'DARKER_GREY', 'NAVY', 'DARK_AQUA', 'DARK_GREEN', 'DARK_BLUE', 'DARK_PURPLE', 'DARK_GOLD', 'DARK_ORANGE', 'DARK_RED', 'DARK_GREY', 'LIGHT_GREY', 'DARK_NAVY', 'RANDOM'].join("\n") + "```");
     }
-    if (command === "createrole"){
-      let myRole = message.guild.roles.find("name", "Rue brick");
 
+    
+    //create role
+    if (command === "createrole") {
+      let myRole = message.guild.roles.find("name", "Rue brick");
       if (message.member.roles.has(myRole.id)) {
-        
-        if (!message.guild.roles.map(g => g.name).includes(args[0])){
-          
-        if (args[1].startsWith("#") || (['DEFAULT','AQUA','GREEN','BLUE','PURPLE','GOLD', 'ORANGE', 'RED','GREY','DARKER_GREY','NAVY','DARK_AQUA','DARK_GREEN','DARK_BLUE','DARK_PURPLE','DARK_GOLD','DARK_ORANGE',  'DARK_RED','DARK_GREY','LIGHT_GREY','DARK_NAVY','RANDOM',]).includes(args[1])){
-      message.guild.createRole({
-  name: args[0],
-  color: args[1],
-        mentionable:true
-})
-  .then(role => message.channel.send(`Created new role with name ${role.name} and color ${role.color}`))
-  .catch(console.error)
-        
-        }else{
-          message.channel.send("whoa okay so um will colours can either be "+PREFIX+"rolecolours or hex values. use this site to help you be smart. https://www.hexcolortool.com/");
-        }
-        }else{
+        if (!message.guild.roles.map(g => g.name).includes(args[0])) {
+          if (args[1].startsWith("#") || (['DEFAULT', 'AQUA', 'GREEN', 'BLUE', 'PURPLE', 'GOLD', 'ORANGE', 'RED', 'GREY', 'DARKER_GREY', 'NAVY', 'DARK_AQUA', 'DARK_GREEN', 'DARK_BLUE', 'DARK_PURPLE', 'DARK_GOLD', 'DARK_ORANGE', 'DARK_RED', 'DARK_GREY', 'LIGHT_GREY', 'DARK_NAVY', 'RANDOM', ]).includes(args[1])) {
+            message.guild.createRole({
+                name: args[0],
+                color: args[1],
+                mentionable: true
+              })
+              .then(role => message.channel.send(`Created new role with name ${role.name} and color ${role.color}`))
+              .catch(console.error)
+
+          } else {
+            message.channel.send("whoa okay so um will colours can either be " + PREFIX + "rolecolours or hex values. use this site to help you be smart. https://www.hexcolortool.com/");
+          }
+        } else {
           message.channel.send("i think that one already exists");
         }
-      }else{
+      } else {
         message.channel.send("***who are youuuuuu***");
       }
     }
+
     
-    
-    if (command ==="addroll"){
-      
-      
-        let roleToAdd = message.mentions.roles.first();
-      
-      if(!roleToAdd){
+    //addrole to the user
+    if (command === "addroll") {
+      let roleToAdd = message.mentions.roles.first();
+      if (!roleToAdd) {
         message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
-        return; 
+        return;
       }
-      
-       var configRoles = guildConf.grantableRoles;
-        if (!configRoles.includes(roleToAdd.id)){
-          message.channel.send("yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah thats not on the list, use "+PREFIX+"listroles to get a list of grantable roles");
-          return;
-        }
-      
-      
+      var configRoles = guildConf.grantableRoles;
+      if (!configRoles.includes(roleToAdd.id)) {
+        message.channel.send("yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah yeah nah thats not on the list, use " + PREFIX + "listroles to get a list of grantable roles");
+        return;
+      }
       if (message.member.roles.has(roleToAdd.id)) {
         message.channel.send("you already got this on fam");
         return;
-      }else{
-      
-    
-      message.member.addRole(roleToAdd.id)
-  .then(function(){message.channel.send("woah dude nice addition of the role");
-                  return;}
-       )
-  .catch(function (){
-        var err = console.error;
-        message.channel.send("hey, that didnt work. (Perms?)");
-return;
-        });
+      } else {
+        message.member.addRole(roleToAdd.id)
+          .then(function () {
+            message.channel.send("woah dude nice addition of the role");
+            return;
+          })
+          .catch(function () {
+            var err = console.error;
+            message.channel.send("hey, that didnt work. (Perms?)");
+            return;
+          });
       }
-      
     }
-    
-    if (command ==="deleterole"){
+
+
+    //delete role from the guild
+    if (command === "deleterole") {
       let myRole = message.guild.roles.find("name", "Rue brick");
       if (message.member.roles.has(myRole.id)) {
-        
-        
-        if (!message.mentions.roles.first()){
+        if (!message.mentions.roles.first()) {
           message.channel.send("you might want to give me a role to delete (just tag it!)");
           return;
         }
-        
         var roleToDelete = message.mentions.roles.first();
-        
-         
-      if(!roleToDelete){
-        message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
-        return; 
-      }
-        
-        
+        if (!roleToDelete) {
+          message.channel.send("either that role doesnt exist or i dont have the perms to add to you either way, hope you die early");
+          return;
+        }
         message.channel.send("reply with either Yes or No to confirm, This role will also be removed from the grantable roles list. you've got ten seconds, GO QUICK BITCH (case sensitive)");
         const filter = m => m.author.id === message.author.id;
-
-const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, { maxMatches: 1, time: 10000 });
-collector.on('collect', (msg, collected) => {
-  
-  if (msg.content == "Yes"){
-    message.channel.send("Yeah alright i can do that i can delete " + roleToDelete +" for you.");
-    const key = "grantableRoles";
-      
-      
-      var configRoles = guildConf.grantableRoles;
-      var editedConfigRoles = configRoles.replace("<@&"+roleToDelete.id+">","");
-      
-      guildConf[key] = editedConfigRoles;
-          settings.set(message.guild.id, guildConf);
-    setTimeout(function(){roleToDelete.delete();},100);
-   
-    
-  }else if (msg.content == "No"){
-    message.channel.send("all g fam i know exactly how it feels not wanting to delete something. i wont delete "+ roleToDelete);
-  }
-   
-});
-
-
-collector.on('end', collected => {
-  if (collected.find("content","Yes")){
-message.channel.send("just confirming you deleted "+roleToDelete);
-  }else if (collected.find("content","No")){
-    message.channel.send("time ran out i think "+roleToDelete);
-  }else{
-    message.channel.send("time ranout bitch, better luck next time");
-  }
-  
-  
-});
-    
-  }else{
+        const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, {
+          maxMatches: 1,
+          time: 10000
+        });
+        collector.on('collect', (msg, collected) => {
+          if (msg.content == "Yes") {
+            message.channel.send("Yeah alright i can do that i can delete " + roleToDelete + " for you.");
+            const key = "grantableRoles";
+            var configRoles = guildConf.grantableRoles;
+            var editedConfigRoles = configRoles.replace("<@&" + roleToDelete.id + ">", "");
+            guildConf[key] = editedConfigRoles;
+            settings.set(message.guild.id, guildConf);
+            setTimeout(function () {
+              roleToDelete.delete();
+            }, 100);
+          } else if (msg.content == "No") {
+            message.channel.send("all g fam i know exactly how it feels not wanting to delete something. i wont delete " + roleToDelete);
+          }
+        });
+        collector.on('end', collected => {
+          if (collected.find("content", "Yes")) {
+            message.channel.send("just confirming you deleted " + roleToDelete);
+          } else if (collected.find("content", "No")) {
+            message.channel.send("time ran out i think " + roleToDelete);
+          } else {
+            message.channel.send("time ranout bitch, better luck next time");
+          }
+        });
+      } else {
         message.channel.send("***who are youuuuuu***");
-    
       }
-      
-      
-      
- 
-      
-      
-      
-    } 
+    }
+
 
     //Refresh enmap settings without having to leave and rejoin a guild
     if (command === "enmaprefresh") {
@@ -957,16 +941,11 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     }
 
 
-
     //toggle the nonprefixed commands
     if (command === "nonptoggle") {
       let myRole = message.guild.roles.find("name", "Rue brick");
-      
-      
-      
       if (message.member.roles.has(myRole.id)) {
         const key = "nonPrefixed";
-
         if (guildConf.nonPrefixed === true) {
           guildConf[key] = false;
           settings.set(message.guild.id, guildConf);
@@ -983,6 +962,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         message.channel.send("***HEY you cant push my buttons, only more powerful people can***");
       }
     }
+
 
     //transforms text to ascii
     if (command === "texttoascii") {
@@ -1002,25 +982,25 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
     }
 
+
     //ping pong but with discord
     if (command === "ping") {
       const m = await message.channel.send("Ping?");
       m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(Bot.ping)}ms`);
     }
 
+
     //yay google img search cos thats original
     if (command === "img") {
       message.channel.startTyping();
       const client = new GoogleImages(process.env.CSEID, process.env.youtubeapi);
       var searchTerm = args.join(" ");
-      
-      if (!args[0]){
+      if (!args[0]) {
         message.channel.send("no search term? wow, you must be feeling lucky");
         return;
       }
       client.search(searchTerm)
-        .then( function (images) {
-        
+        .then(function (images) {
           var randomOne = Math.floor(Math.random() * images.length);
           const embed = {
             "title": "Images()",
@@ -1035,12 +1015,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           message.channel.send({
             embed
           });
-        
-        
-        }).catch(function (err){
-        console.log(err);
-        message.channel.send("shit got fucked up (your search term was shit)");
-      });
+        }).catch(function (err) {
+          console.log(err);
+          message.channel.send("shit got fucked up (your search term was shit)");
+        });
       //       const refresh = await message.channel.send("beep boop");
       //       await refresh.react(`🔄`);
       //       const filterref = (reaction) => reaction.emoji.name === '🔄';
@@ -1051,6 +1029,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       //collectorref.on('end', );
       message.channel.stopTyping();
     }
+
 
     //random shopper
     if (command === "shopper") {
@@ -1073,16 +1052,18 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             embed
           });
           message.channel.stopTyping();
-        }).catch(function (err){
-        console.log(err);
-        message.channel.send("shit got fucked up which is funny because its a hardcoded string but oh well");
-      });
+        }).catch(function (err) {
+          console.log(err);
+          message.channel.send("shit got fucked up which is funny because its a hardcoded string but oh well");
+        });
     }
+
 
     //gives an invite for the bot
     if (command === "invite") {
       message.channel.send("heres my number. call me! https://discordapp.com/oauth2/authorize?client_id=354163126947807242&scope=bot&permissions=288545856")
     }
+
 
     //shows you my guts
     if (command === "github") {
@@ -1090,10 +1071,12 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       message.channel.send("https://github.com/JimJamPieMan/james-bot");
     }
 
+
     //shows you all my friends, just waiting on an oauth2
     if (command === "botfriends") {
       message.channel.send("i have friends, i just dont have their deets yet @faye");
     }
+
 
     //hmmmmmm
     if (command === "rule34") {
@@ -1156,14 +1139,12 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         if (pre === "<@" + Bot.user.id + ">") {
           message.channel.send("hey. stop that. you cant sent the prefix that man");
           return;
-        } 
+        }
         let member = message.mentions.members.first();
-        
-      if (member) {
-     message.channel.send("it would be pretty shit if you did that now wouldnt it");
-        return;
-      }
-        else {
+        if (member) {
+          message.channel.send("it would be pretty shit if you did that now wouldnt it");
+          return;
+        } else {
           guildConf[key] = pre;
           settings.set(message.guild.id, guildConf);
           message.channel.send(" THE FUCKING PREFIX IS NOW " + pre);
@@ -1173,7 +1154,6 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
       }
     }
-
 
 
     //Sends a message to all servers general chat
@@ -1381,42 +1361,42 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
     }
 
-    
+
     //Bentley
-     if (command === "bentley") {
+    if (command === "bentley") {
       let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
       var dataBentley = Math.floor(Math.random() * dataObj.bentley.length);
-       
-       
-       const embed = {
-                "title": "nowShowingBentley()",
-                "color": 9442302,
 
-                "image": {
-                  "url": dataObj.bentley[dataBentley]
-                },
-              };
-              message.channel.send({
-                embed
-              });
+
+      const embed = {
+        "title": "nowShowingBentley()",
+        "color": 9442302,
+
+        "image": {
+          "url": dataObj.bentley[dataBentley]
+        },
+      };
+      message.channel.send({
+        embed
+      });
     }
-    
-    
+
+
     //Maggie
-     if (command === "maggie") {
+    if (command === "maggie") {
       let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
       var dataMaggie = Math.floor(Math.random() * dataObj.maggie.length);
       const embed = {
-                "title": "nowShowingMaggie()",
-                "color": 9442302,
+        "title": "nowShowingMaggie()",
+        "color": 9442302,
 
-                "image": {
-                  "url": dataObj.maggie[dataMaggie]
-                },
-              };
-              message.channel.send({
-                embed
-              });
+        "image": {
+          "url": dataObj.maggie[dataMaggie]
+        },
+      };
+      message.channel.send({
+        embed
+      });
     }
 
     //Gives a random sex thing (idk)
@@ -1466,10 +1446,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     if (command === "showconf") {
       var configVol = guildConf.volume;
       var configPre = guildConf.prefix;
-      
+
       message.channel.send(`this servers volume is fucking : \`\`\`${configVol}\`\`\``);
       message.channel.send(`this servers prefix is fucking : \`\`\`${configPre}\`\`\``);
- 
+
     }
 
 
@@ -1489,7 +1469,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           message.channel.send({
             embed
           });
-          
+
           message.channel.stopTyping();
         }
         if (error) {
@@ -1518,7 +1498,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           message.channel.send({
             embed
           });
-          
+
           message.channel.stopTyping();
         }
         if (error) {
@@ -1638,7 +1618,6 @@ message.channel.send("just confirming you deleted "+roleToDelete);
 
     //Makes the bot leave
     if (command === "gtfo") {
-
       if (!message.member.voiceChannel) {
         message.channel.send("nah not happening");
         return;
@@ -1679,36 +1658,25 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     // }
 
 
-    //Gives a little info on the bot
-    // if (command === "info") {
-    //   message.channel.send(message.author + ' i was made by <@201669657105530880>. he made so i swear alot so thats fucking good. if you need some fucking help just type "' + guildConf.prefix + 'help". thanks bicthesz.');
-    // }
-
-
     //Men
     if (command === "men") {
-     
-        message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
       message.channel.send("https://imgur.com/189DJI3");
-      
-      
+      message.channel.send("https://imgur.com/189DJI3");
     }
 
 
     //Sends 5 pictures of a random Indian man a friend found
     if (command === "manesh") {
-     
-        message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
       message.channel.send("https://imgur.com/YZp0vDp");
-      
+      message.channel.send("https://imgur.com/YZp0vDp");
     }
 
 
@@ -1740,7 +1708,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     function play(connection, message) {
       var server = servers[message.guild.id];
       server.dispatcher = connection.playStream(yt(server.queue[0], {
-        filter:"audioonly"
+        filter: "audioonly"
       }));
       var vidIDforSearch = getVideoId(server.queue[0]).id;
       fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
@@ -1775,12 +1743,11 @@ message.channel.send("just confirming you deleted "+roleToDelete);
             }
           ]
         };
-    
-          message.channel.send({
-            embed
-          });
-        
-          });
+
+        message.channel.send({
+          embed
+        });
+      });
       var serverVol = guildConf.volume;
       server.dispatcher.setVolume(serverVol);
       server.queue.shift();
@@ -1798,7 +1765,6 @@ message.channel.send("just confirming you deleted "+roleToDelete);
     }
 
 
-
     //Plays music, pretty simple
     if (command === "play") {
       if (!message.member.voiceChannel) {
@@ -1812,11 +1778,10 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       if (message.content.includes("http://") || message.content.includes("https://")) {
         if (message.content.includes("youtube") || message.content.includes("youtu.be")) {
 
-    if (youtubeUrl.valid(args[0])==false){
-      message.channel.send("not a proper youtube link you bitch");
-      return;
-    }
-        
+          if (youtubeUrl.valid(args[0]) == false) {
+            message.channel.send("not a proper youtube link you bitch");
+            return;
+          }
           if (!servers[message.guild.id]) {
             servers[message.guild.id] = {
               queue: []
@@ -1834,8 +1799,8 @@ message.channel.send("just confirming you deleted "+roleToDelete);
               message.channel.send(message.author + " i cant play for some reason, hmm. (check if my permissions are okay)");
             });
           }
- 
-   
+
+
 
         } else {
           message.channel.send(message.author + ' only youtube links are allowed you fucking fucccck');
@@ -1846,7 +1811,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
           key: process.env.youtubeapi,
           type: 'video'
         };
-        
+
         var searchTerm = args.join("_");
         search(searchTerm, opts, function (err, results) {
           if (err) {
@@ -1893,6 +1858,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
     }
 
+
     //pauses music
     if (command === "pause") {
       var server = servers[message.guild.id];
@@ -1902,6 +1868,7 @@ message.channel.send("just confirming you deleted "+roleToDelete);
       }
     }
 
+
     //resumes music
     if (command === "resume") {
       var server = servers[message.guild.id];
@@ -1910,23 +1877,13 @@ message.channel.send("just confirming you deleted "+roleToDelete);
         message.channel.send("resumed mother fukaaaaaaa");
       }
     }
-    
-
-
-
 
 
     //Sends the user a help embed
     if (command === "help") {
-    
-     
-    message.channel.send("heres all my commands for ya bitch, https://myywebsite.glitch.me/html/jamie.html");
-
+      message.channel.send("heres all my commands for ya bitch, https://myywebsite.glitch.me/html/jamie.html");
     }
-
-
   }
-
 });
 
 
