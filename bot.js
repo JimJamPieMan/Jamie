@@ -69,6 +69,7 @@ const http = require("http");
 var Request = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
+//const imageToAscii = require("image-to-ascii");
 
 
 //Setup the queue system for music
@@ -116,10 +117,36 @@ Bot.on('ready', () => {
 });
 
 
+  
+    
+  Bot.on('guildMemberAdd', (guildMember) => {
+    
+if(guildMember.guild.id != process.env.SPITROASTid){
+       return; 
+}else{
+    guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Spit Roast"));
+    guildMember.guild.channels.find("name", "announcements").send("hey, send nudes " + guildMember);
+   guildMember.send("hey welcome to "+guildMember.guild.name+", make sure you read the rules plz. they are in <#440780606289477633>");
+
+}
+
+   
+      
+   
+});
+  
+
+
+
 //Meat and potatos
 Bot.on("message", async message => {
+   
+  
+  if (message.content.toLowerCase().startsWith("jamie say")){
+message.channel.send(message.content.replace("jamie say", ""));
+      }
   //Ignore all bots
-  if (message.author.bot) {
+  if (message.author.bot ) {
     return;
   }
 
@@ -143,9 +170,13 @@ Bot.on("message", async message => {
       message.channel.send("sorry, in the interest of something important it only works in a specific server.");
       return;
     }
+ 
     message.member.kick();
-    message.channel.send("yellow is illegal");
+      message.channel.send("yellow is illegal");
     message.author.send("https://discord.gg/2vt3PeF");
+
+
+
   }
 
 
@@ -220,6 +251,9 @@ Bot.on("message", async message => {
     if (message.content.toLowerCase().startsWith('yep good')) {
       message.channel.send("Yep good. Less than a week notice. This is how to organise. I guess you don't really realise that people have jobs and yknow can't just be like yo can't go to work every time someone didn't give them enough time to book off time");
     }
+    if (message.content.toLowerCase().startsWith('kpop')) {
+      message.channel.send("kpop is the definition of cheap computer generated music made by people who do not have any passion in music and are only concerned with the money and the publicity that comes along with it and it is insulting that people actually consider it to be something of quality when there is so much better stuff out there from people who are actually passionate and care about the music THEY ACTUALLY CREATE.");
+    }
   }
 
 
@@ -230,315 +264,482 @@ Bot.on("message", async message => {
 
 
   //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "createrole", "rolecolours", "addroll", "deleterole", "listroles", "sbubby", "removerole", "addgrantablerole", "removegrantablerole", "tweet", "bentley", "maggie", "jack", "franklin", "franklinmeme", "smile", "smile2", "hot", "old", "young", "female2", "female", "male", "pan", "hitman", "hollywood", "heisenberg", "impression", "lion", "goatee", "hipster", "bangs", "glasses", "wave", "makeup", "test"].includes(command))) {
+  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "createrole", "rolecolours", "addroll", "deleterole", "listroles", "sbubby", "removerole", "addgrantablerole", "removegrantablerole", "tweet", "bentley", "maggie", "jack", "franklin", "porncomments","franklinmeme", "smile", "smile2", "hot", "old", "young", "female2", "female", "male", "pan", "hitman", "hollywood", "heisenberg", "impression", "lion", "goatee", "hipster", "bangs", "glasses", "wave", "makeup", "test"].includes(command))) {
     message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
   } else {
 
 
     //test
-    if (command === "test") {
-      message.channel.send("beep boop");
-    }
+  //  if (command === "test") {
+   //   var request = new Request();
+   //   request.get(url, function (err, resp, data) {
+   //     imageToAscii(data, (err, converted) => {
+    //console.log(err || converted);
+//});
+    //  });
+    //}
 
 
     //notsobot face commmands
     if (command === "makeup") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
-      } = await superagent.get(url)
+      } = await superagent.get(url);
+      try{
       let image = await faceapp.process(body, 'makeup')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'makeup.png'
         }]
       });
+      }
+      catch(error){
+        message.channel.stopTyping();
+        message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+        
+    }
     }
 
 
     if (command === "wave") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+      try{
       let image = await faceapp.process(body, 'wave')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'wave.png'
         }]
       });
+      }catch(error){
+        message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "glasses") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+      try{
       let image = await faceapp.process(body, 'glasses')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'glasses.png'
         }]
       });
+        }catch(error){
+          message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "bangs") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'bangs')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'bangs.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "hipster") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'hipster')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'hipster.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "goatee") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'goatee')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'goatee.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "lion") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'lion')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'lion.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "impression") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'impression')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'impression.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "heisenberg") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'heisenberg')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'heisenberg.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "hollywood") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'hollywood')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'hollywood.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "hitman") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'hitman')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'hitman.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "pan") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+          try{
       let image = await faceapp.process(body, 'pan')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'pan.png'
         }]
       });
+            }catch(error){
+              message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "male") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'male')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'male.png'
         }]
       });
+           }catch(error){
+             message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "female") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'female')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'female.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "female2") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'female_2')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'female2.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "young") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'young')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'young.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "old") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'old')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'old.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "hot") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'hot')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'hot.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "smile2") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+            try{
       let image = await faceapp.process(body, 'smile_2')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'smile2.png'
         }]
       });
+              }catch(error){
+                message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
     if (command === "smile") {
+      message.channel.startTyping();
       var url = args[0];
       let {
         body
       } = await superagent.get(url)
+           try{
       let image = await faceapp.process(body, 'smile')
+      message.channel.stopTyping();
       message.channel.send({
         files: [{
           attachment: image,
           name: 'smile.png'
         }]
       });
+             }catch(error){
+               message.channel.stopTyping();
+       message.channel.send("hey your request was gay so i denied it (***NO FACE DETECTED***)");
+        return;
+      }
     }
 
 
@@ -604,6 +805,7 @@ Bot.on("message", async message => {
       request.get(url, function (err, resp, data) {
         if (err) throw err;
         var img = new Image();
+        console.log(data);
         img.src = data;
         var textToType = args.join(" ");
         var canvas = new Canvas(canvasSizex, canvasSizey);
@@ -642,10 +844,7 @@ Bot.on("message", async message => {
 
     //tweet
     if (command === "tweet") {
-      if (!(message.guild.id == process.env.JACKsserver)) {
-        message.channel.send("sorry, in the interest of something important it only works in a specific server.");
-        return;
-      }
+      
       var tweet = args.join(" ");
       Tclient.post('statuses/update', {
         status: tweet
@@ -660,6 +859,33 @@ Bot.on("message", async message => {
       });
     }
 
+     //sbubby
+    if (command === "porncomments") {
+      message.channel.startTyping();
+      getJSON('https://www.reddit.com/r/pornhubcomments/.json', function (error, response) {
+        if (response) {
+          var randomOne = Math.floor(Math.random() * response.data.children.length);
+          const embed = {
+            "title": "nowShowingFunnyComment(" + response.data.children[randomOne].data.title + ")",
+            "color": 9442302,
+            "image": {
+              "url": response.data.children[randomOne].data.url
+            },
+            "footer": {
+              "text": "🔼 " + response.data.children[randomOne].data.ups
+            }
+          };
+          message.channel.send({
+            embed
+          });
+          message.channel.stopTyping();
+        }
+        if (error) {
+          console.log(error);
+          message.channel.stopTyping();
+        }
+      });
+    }
 
     //sbubby
     if (command === "sbubby") {
@@ -1633,7 +1859,7 @@ Bot.on("message", async message => {
     //Used to play local mp3 files from the server before it was moved to a different hosting service
     // if (command === "sounds") {
     //   message.reply("don work, the way it hosted means this dont work now sadly");
-    //   /*
+    //   
     //   var voiceChannel = message.member.voiceChannel;
     //     if (!voiceChannel){
     //         return message.reply("if you want to hear fucking sounds get in a fucking channel");
@@ -1654,7 +1880,7 @@ Bot.on("message", async message => {
     //                voiceChannel.leave();
     //            });
     //        }).catch(err => console.log(err));
-    //      }*/
+    //      }
     // }
 
 
