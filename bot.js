@@ -20,7 +20,7 @@ Other data in the future
 //Sets up thr uptimerobot keeper upper
 const express = require("express")
 const expressApp = express()
-expressApp.get("/", (req, res) => res.json("OK"))
+expressApp.get("/", (req, res) => res.json("OK FAM"))
 expressApp.listen(process.env.PORT)
 
 
@@ -69,7 +69,8 @@ const http = require("http");
 var Request = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
-//const imageToAscii = require("image-to-ascii");
+const send = require('quick.hook');
+
 
 
 //Setup the queue system for music
@@ -97,7 +98,7 @@ Bot.on("guildCreate", guild => {
       name: 'Rue brick',
       color: 'BLACK',
     })
-    .then(role => console.log(`Created new role with name ${role.name} and color ${role.color} in ${guild.name}`))
+    
     .catch(console.error)
 });
 
@@ -134,6 +135,12 @@ if(guildMember.guild.id != process.env.SPITROASTid){
       
    
 });
+
+Bot.on("channelCreate", async channel => {
+  if(channel.type == "text"){
+  channel.send("First");
+  }
+});
   
 
 
@@ -164,43 +171,36 @@ message.channel.send(message.content.replace("jamie say", ""));
   var PREFIX = serverPrefix;
 
 
-  //Dont say yellow
-  if (message.content.toLowerCase() === "yellow") {
-    if (!(message.guild.id == process.env.JACKsserver)) {
-      message.channel.send("sorry, in the interest of something important it only works in a specific server.");
-      return;
-    }
+//   //Dont say yellow
+//   if (message.content.toLowerCase() === "yellow") {
+//     if (!(message.guild.id == process.env.JACKsserver)) {
+//       message.channel.send("sorry, in the interest of something important it only works in a specific server.");
+//       return;
+//     }
  
-    message.member.kick();
-      message.channel.send("yellow is illegal");
-    message.author.send("https://discord.gg/2vt3PeF");
+//     message.member.kick();
+//       message.channel.send("yellow is illegal");
+//     message.author.send("https://discord.gg/2vt3PeF");
 
 
 
-  }
+//   }
 
 
-  //funny reaction
-  if (message.content.toLowerCase().includes("dick") || message.content.toLowerCase().includes("penis")) {
-    message.react("🍆");
-  }
-  if (message.content.toLowerCase().includes("arse") || message.content.toLowerCase().includes("bum") || message.content.toLowerCase().includes("ass") || message.content.toLowerCase().includes("anus")) {
-    message.react("🍑");
-  }
-  if (message.content.toLowerCase().includes("smegma")) {
-    message.react("🧀");
-  }
-  if (message.content.toLowerCase().includes("vagina") || message.content.toLowerCase().includes("pussy")) {
-    message.react("🥑");
-  }
+  // //funny reaction
+  // if (message.content.toLowerCase().includes(" dick ") || message.content.toLowerCase().includes(" penis ")) {
+  //   message.react("🍆");
+  // }
+  // if (message.content.toLowerCase().includes(" arse ") || message.content.toLowerCase().includes(" bum ") || message.content.toLowerCase().includes(" ass ") || message.content.toLowerCase().includes(" anus ")) {
+  //   message.react("🍑");
+  // }
+  // if (message.content.toLowerCase().includes(" smegma ")) {
+  //   message.react("🧀");
+  // }
+  // if (message.content.toLowerCase().includes(" vagina ") || message.content.toLowerCase().includes(" pussy ")) {
+  //   message.react("🥑");
+  // }
 
-  //ignore embeds starting with ``
-  if (message.content.startsWith("``")) {
-    return;
-  }
-  if (message.content.endsWith("`")) {
-    return;
-  }
 
 
   //Makes it so when the bot is tagged with the word prefix after it send the guilds prefix
@@ -236,6 +236,10 @@ message.channel.send(message.content.replace("jamie say", ""));
 
     //yep 2.0
     if (message.content.toLowerCase().startsWith('fuck me')) {
+      if (message.content.toLowerCase().includes('please')){
+        message.channel.send("where do you live. ill be right there");
+        return;
+      }
       message.channel.send("only if you ask nicely");
     }
 
@@ -248,11 +252,19 @@ message.channel.send(message.content.replace("jamie say", ""));
     if (message.content.toLowerCase().startsWith('haha')) {
       message.channel.send("https://imgur.com/b0NbvBR");
     }
+    
+    //copypasta 1
     if (message.content.toLowerCase().startsWith('yep good')) {
       message.channel.send("Yep good. Less than a week notice. This is how to organise. I guess you don't really realise that people have jobs and yknow can't just be like yo can't go to work every time someone didn't give them enough time to book off time");
     }
+    
+    //copypasta 2
     if (message.content.toLowerCase().startsWith('kpop')) {
       message.channel.send("kpop is the definition of cheap computer generated music made by people who do not have any passion in music and are only concerned with the money and the publicity that comes along with it and it is insulting that people actually consider it to be something of quality when there is so much better stuff out there from people who are actually passionate and care about the music THEY ACTUALLY CREATE.");
+    }
+    if (message.content.toLowerCase().includes('@everyone')) {
+      message.channel.send("https://i.imgur.com/FTB2stB.gif");
+      return;
     }
   }
 
@@ -262,22 +274,141 @@ message.channel.send(message.content.replace("jamie say", ""));
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  
+  
+  
+  
+  
+  
+   //Is this ? meme maker
+    if (command === "isthis?") {
+      if (!args[0]){
+        message.channel.send("***WHAT DO YOU WANT TO SAYYYYYYYY?***");
+        return;
+      }
+      message.channel.startTyping();
+      
+        var url = "https://cdn.glitch.com/2b634e95-77b4-4fe3-9baa-d2bd7480eaa5%2FScreen%20Shot%202018-05-18%20at%202.14.23%20pm.png?1526618698092";
+        var canvasSizex = 1490;
+        var canvasSizey = 1118;
+        var questionPosx = (canvasSizex / 2)-30;
+        var questionPosy = 1060;
+        var textSize = 70;
+      var personPosx = (canvasSizex*0.05);
+        var personPosy = 900;
+      
+      var objectPosx = (canvasSizex*0.72);
+        var objectPosy = 490;
+        
+      
+   
+       
+      
+      var request = new Request();
+      request.get(url, function (err, resp, data) {
+        if (err) throw err;
+        var img = new Image();
+       
+        
+        img.src = data;
+        
+        
+        
+        var allText = args.join(" ");
+        var arrStr = allText.split(/[;;]/);
 
-  //ignore things that aren't a command
-  if (!(["volume", "showconf", "pupper", "kitty", "feedback", "bob", "elf", "freedom", "fuck", "fuckoff", "gtfo", "info", "manesh", "meme", "help", "halloween", "funnysexthing", "eval", "poll", "nsfwvid", "kelsey", "mute", "unmute", "nsfwgif", "avatar", "men", "allserversmessage", "prefix", "rule34", "botfriends", "github", "invite", "shopper", "img", "ping", "texttoascii", "nonptoggle", "enmaprefresh", "play", "skip", "stop", "pause", "resume", "createrole", "rolecolours", "addroll", "deleterole", "listroles", "sbubby", "removerole", "addgrantablerole", "removegrantablerole", "tweet", "bentley", "maggie", "jack", "franklin", "porncomments","franklinmeme", "smile", "smile2", "hot", "old", "young", "female2", "female", "male", "pan", "hitman", "hollywood", "heisenberg", "impression", "lion", "goatee", "hipster", "bangs", "glasses", "wave", "makeup", "test"].includes(command))) {
-    message.channel.send(message.author + " wee woo wee woo, we got a smart ass over here. (the '" + command + "' command doesn't exist, you probs typed it wrong('help' will solve that(if you think that command should exist, use the 'feedback' command to tell James what you really think or give a suggestion)))");
-  } else {
+         var questionToType = arrStr[1];
+        var personToType = arrStr[3];
+        var objectToType = arrStr[5];
+        
+        
+        
+        
+        
+        var canvas = new Canvas(canvasSizex, canvasSizey);
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvasSizex, canvasSizey);
+        ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+        ctx.font = textSize + 'px Serif';
+        var questiontext = ctx.measureText(questionToType);
+        
+        if (questiontext.width >= 806) {
+          message.channel.stopTyping();
+          message.channel.send("thats too big for me if you know what i mean");
+          return;
+        }
+        ctx.fillText(questionToType, questionPosx, questionPosy);
+        
+        
+        var persontext = ctx.measureText(personToType);
+     
+        if (persontext.width >= 459) {
+          message.channel.stopTyping();
+          message.channel.send("thats too big for me if you know what i mean");
+          return;
+        }
+        ctx.fillText(personToType, personPosx, personPosy);
+        
+        
+        var objecttext = ctx.measureText(objectToType);
+
+        if (objecttext.width >= 779) {
+          message.channel.stopTyping();
+          message.channel.send("thats too big for me if you know what i mean");
+          return;
+        }
+        ctx.fillText(objectToType, objectPosx-(objecttext.width/2), objectPosy);
+        //var text = ctx.measureText(args.join(" "))
+        var img = canvas.toDataURL();
+        var data = img.replace(/^data:image\/\w+;base64,/, "");
+        var buf = new Buffer(data, 'base64');
+        message.channel.send({
+          files: [{
+            attachment: buf,
+            name: 'is this '+questionToType+'.png'
+          }]
+        });
+        message.channel.stopTyping();
+      });
+    }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
     //test
-  //  if (command === "test") {
-   //   var request = new Request();
-   //   request.get(url, function (err, resp, data) {
-   //     imageToAscii(data, (err, converted) => {
-    //console.log(err || converted);
-//});
-    //  });
-    //}
+   if (command === "impersonate") {
+     
+     args.shift();
+     var textToSay = args.join(" ");
+     var memberToImpersonate = message.mentions.users.first();
+     
+     
+    var memberInGuild = message.guild.members.find('id',memberToImpersonate.id);
+  var webName;
+     if (memberInGuild.nickname==null){
+       webName = memberToImpersonate.username;
+     }
+     else {
+       webName = memberInGuild.nickname;
+     }
+   send(message.channel, textToSay,{
+     name: webName,
+    icon:"https://cdn.discordapp.com/avatars/" + memberToImpersonate.id + "/" + memberToImpersonate.avatar + ".jpg?size=256"
+    });
+     message.delete();
+   }
+        
 
 
     //notsobot face commmands
@@ -805,7 +936,7 @@ message.channel.send(message.content.replace("jamie say", ""));
       request.get(url, function (err, resp, data) {
         if (err) throw err;
         var img = new Image();
-        console.log(data);
+  
         img.src = data;
         var textToType = args.join(" ");
         var canvas = new Canvas(canvasSizex, canvasSizey);
@@ -852,7 +983,8 @@ message.channel.send(message.content.replace("jamie say", ""));
         if (!error) {
           message.channel.send("***i stuffed your tweet through the tubes and it has arrived at the end***");
         } else if (error) {
-          console.log(error);
+
+          
           message.channel.send("soz fam couldnt sendddddd itttt");
           message.channel.send("``` Code:" + error[0].code + " Message:" + error[0].message + "```");
         }
@@ -881,7 +1013,34 @@ message.channel.send(message.content.replace("jamie say", ""));
           message.channel.stopTyping();
         }
         if (error) {
-          console.log(error);
+       
+          message.channel.stopTyping();
+        }
+      });
+    }
+   //sbubby
+    if (command === "aww") {
+      message.channel.startTyping();
+      getJSON('https://www.reddit.com/r/aww/.json', function (error, response) {
+        if (response) {
+          var randomOne = Math.floor(Math.random() * response.data.children.length);
+          const embed = {
+            "title": "nowShowingCuteThing(" + response.data.children[randomOne].data.title + ")",
+            "color": 9442302,
+            "image": {
+              "url": response.data.children[randomOne].data.url
+            },
+            "footer": {
+              "text": "🔼 " + response.data.children[randomOne].data.ups
+            }
+          };
+          message.channel.send({
+            embed
+          });
+          message.channel.stopTyping();
+        }
+        if (error) {
+       
           message.channel.stopTyping();
         }
       });
@@ -909,7 +1068,7 @@ message.channel.send(message.content.replace("jamie say", ""));
           message.channel.stopTyping();
         }
         if (error) {
-          console.log(error);
+       
           message.channel.stopTyping();
         }
       });
@@ -938,7 +1097,7 @@ message.channel.send(message.content.replace("jamie say", ""));
           message.channel.stopTyping();
         }
         if (error) {
-          console.log(error);
+          
           message.channel.stopTyping();
         }
       });
@@ -1198,7 +1357,7 @@ message.channel.send(message.content.replace("jamie say", ""));
       } else {
         figlet(text, function (err, data) {
           if (err) {
-            console.log('Something went wrong...');
+          
             message.channel.send("***WHOOPS***");
             console.dir(err);
             return;
@@ -1242,7 +1401,7 @@ message.channel.send(message.content.replace("jamie say", ""));
             embed
           });
         }).catch(function (err) {
-          console.log(err);
+       
           message.channel.send("shit got fucked up (your search term was shit)");
         });
       //       const refresh = await message.channel.send("beep boop");
@@ -1279,7 +1438,7 @@ message.channel.send(message.content.replace("jamie say", ""));
           });
           message.channel.stopTyping();
         }).catch(function (err) {
-          console.log(err);
+  
           message.channel.send("shit got fucked up which is funny because its a hardcoded string but oh well");
         });
     }
@@ -1631,7 +1790,12 @@ message.channel.send(message.content.replace("jamie say", ""));
       var dataSaying = Math.floor(Math.random() * dataObj.saying.length);
       message.channel.send(dataObj.saying[dataSaying]);
     }
-
+ //Gives a random sleep thing (idk)
+    if (command === "funnysleepthing") {
+      let dataObj = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+      var dataSaying = Math.floor(Math.random() * dataObj.sleep.length);
+      message.channel.send(dataObj.sleep[dataSaying]);
+    }
 
     //Gives the amount of time to halloween
     if (command === "halloween") {
@@ -1699,7 +1863,7 @@ message.channel.send(message.content.replace("jamie say", ""));
           message.channel.stopTyping();
         }
         if (error) {
-          console.log(error);
+  
           message.channel.send("***ERRORRORRRORRORRRRR***");
           message.channel.stopTyping();
         }
@@ -1728,7 +1892,7 @@ message.channel.send(message.content.replace("jamie say", ""));
           message.channel.stopTyping();
         }
         if (error) {
-          console.log(error);
+        
           message.channel.send("***ERRORRORRRORRORRRRR*** (yes i am well aware this is broken)");
           message.channel.stopTyping();
         }
@@ -2107,9 +2271,11 @@ message.channel.send(message.content.replace("jamie say", ""));
 
     //Sends the user a help embed
     if (command === "help") {
-      message.channel.send("heres all my commands for ya bitch, https://myywebsite.glitch.me/html/jamie.html");
+      var name = encodeURI(message.guild.name);
+      var sprefix = encodeURI(PREFIX);
+      message.channel.send("heres all my commands for ya bitch, https://myywebsite.glitch.me/html/jamie.html?servername="+name+"&prefix="+sprefix);
     }
-  }
+  
 });
 
 
