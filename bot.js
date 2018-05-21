@@ -70,6 +70,8 @@ var Request = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
 const send = require('quick.hook');
+var owjs = require('overwatch-js');
+ var jsonfile = require('jsonfile');
 
 
 
@@ -99,7 +101,21 @@ Bot.on("guildCreate", guild => {
       color: 'BLACK',
     })
     
-    .catch(console.error)
+    .catch(console.error);
+  
+ 
+
+
+
+var json = {"serverData":""};
+json = JSON.stringify(json);
+fs.writeFileSync('./'+guild.id+'.json', json, (err) => {
+    if (!err) {
+        console.log('done');
+    }else if(err){
+      console.log(err);
+    }
+});  
 });
 
 
@@ -136,18 +152,22 @@ if(guildMember.guild.id != process.env.SPITROASTid){
    
 });
 
-Bot.on("channelCreate", async channel => {
-  if(channel.type == "text"){
-  channel.send("First");
-  }
-});
+// Bot.on("channelCreate", async channel => {
+//   if(channel.type == "text"){
+//   channel.send("First");
+//   }
+// });
   
 
 
 
 //Meat and potatos
 Bot.on("message", async message => {
-   
+   //Ignore dms with a reply
+  if (message.channel.type === 'dm') {
+    message.author.send("nope not here, sorry");
+    return;
+  }
   
   if (message.content.toLowerCase().startsWith("jamie say")){
 message.channel.send(message.content.replace("jamie say", ""));
@@ -158,11 +178,7 @@ message.channel.send(message.content.replace("jamie say", ""));
   }
 
 
-  //Ignore dms with a reply
-  if (message.channel.type === 'dm') {
-    message.author.send("nope not here, sorry");
-    return;
-  }
+  
 
 
   //Get prefix for that guild
@@ -275,8 +291,32 @@ message.channel.send(message.content.replace("jamie say", ""));
   const command = args.shift().toLowerCase();
 
   
+//   if (command==="ow"){
+//     owjs
+//     .getAll('pc', 'eu', args[0])
+//     .then((data) => message.channel.send(data, {depth : 2, colors : true}) );
+    
+//   }
   
-  
+
+if (command==="setreminder"){
+
+
+var serverDataFile = './'+message.guild.id+'.json';
+var obj = {
+    "reminderChannel": "<#405879481006555136>",
+    "reminders": [
+      {
+        "title":args[0],
+        "time":args[1]
+      }
+    ]
+};
+
+jsonfile.writeFile(serverDataFile, obj, {flag: 'a'}, function (err) {
+  console.error(err);
+});
+}
   
   
   
@@ -334,7 +374,7 @@ message.channel.send(message.content.replace("jamie say", ""));
         
         if (questiontext.width >= 806) {
           message.channel.stopTyping();
-          message.channel.send("thats too big for me if you know what i mean");
+          message.channel.send("the question text was a little too long. (yours was '"+questiontext.width+"'. should be no longer than 806)");
           return;
         }
         ctx.fillText(questionToType, questionPosx, questionPosy);
@@ -344,7 +384,7 @@ message.channel.send(message.content.replace("jamie say", ""));
      
         if (persontext.width >= 459) {
           message.channel.stopTyping();
-          message.channel.send("thats too big for me if you know what i mean");
+          message.channel.send("tthe person text was a little too long. (yours was '"+persontext.width+"'. should be no longer than 459)");
           return;
         }
         ctx.fillText(personToType, personPosx, personPosy);
@@ -354,7 +394,7 @@ message.channel.send(message.content.replace("jamie say", ""));
 
         if (objecttext.width >= 779) {
           message.channel.stopTyping();
-          message.channel.send("thats too big for me if you know what i mean");
+          message.channel.send("the object text was a little too long. (yours was '"+objecttext.width+"'. should be no longer than 779)");
           return;
         }
         ctx.fillText(objectToType, objectPosx-(objecttext.width/2), objectPosy);
@@ -1446,7 +1486,11 @@ message.channel.send(message.content.replace("jamie say", ""));
 
     //gives an invite for the bot
     if (command === "invite") {
-      message.channel.send("heres my number. call me! https://discordapp.com/oauth2/authorize?client_id=354163126947807242&scope=bot&permissions=288545856")
+      
+      var name = encodeURI(message.guild.name);
+      var sprefix = encodeURI(PREFIX);
+      
+      message.channel.send("heres my number. call me! https://discordapp.com/oauth2/authorize?client_id=354163126947807242&scope=bot&permissions=288545856");
     }
 
 
@@ -2094,14 +2138,26 @@ message.channel.send(message.content.replace("jamie say", ""));
     }
 
 
+  
+
     //music function
     function play(connection, message) {
       var server = servers[message.guild.id];
+      
       server.dispatcher = connection.playStream(yt(server.queue[0], {
         filter: "audioonly"
       }));
+
       var vidIDforSearch = getVideoId(server.queue[0]).id;
       fetchVideoInfo(vidIDforSearch).then(function (videoInfo) {
+        
+
+          
+          
+          
+          
+        
+        
         var minutes = Math.floor(videoInfo.duration / 60);
         var seconds = videoInfo.duration - minutes * 60;
         var oldDes = videoInfo.description;
@@ -2142,14 +2198,19 @@ message.channel.send(message.content.replace("jamie say", ""));
       server.dispatcher.setVolume(serverVol);
       server.queue.shift();
       server.dispatcher.on("end", function () {
+        
         if (server.queue[0]) {
           setTimeout(() => play(connection, message), 200)
+
+  
           if (!command === "stop") {
             message.channel.send("i am playing the next song in the queue motherfuckerrrrrr");
+        
           }
         } else {
           connection.disconnect();
           message.channel.send("k. done");
+
         }
       });
     }
@@ -2197,7 +2258,7 @@ message.channel.send(message.content.replace("jamie say", ""));
         }
       } else {
         var opts = {
-          maxResults: 1,
+          maxResults: 50,
           key: process.env.youtubeapi,
           type: 'video'
         };
@@ -2235,6 +2296,8 @@ message.channel.send(message.content.replace("jamie say", ""));
       if (server.dispatcher) {
         server.dispatcher.end();
         message.channel.send("i skipped that bitch just like skipping in primary school");
+ 
+        
       }
 
     }
@@ -2245,6 +2308,7 @@ message.channel.send(message.content.replace("jamie say", ""));
       if (message.guild.voiceConnection) {
         server.queue = [];
         message.guild.voiceConnection.disconnect();
+        
       }
     }
 
@@ -2280,4 +2344,4 @@ message.channel.send(message.content.replace("jamie say", ""));
 
 
 //Logs the bot in with a secret token
-Bot.login(process.env.TOKEN);
+Bot.login(process.env.TOKEN);//
