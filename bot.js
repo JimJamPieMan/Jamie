@@ -129,7 +129,7 @@ Bot.on("guildDelete", guild => {
 Bot.on('ready', () => {
   Bot.user.setUsername("Jamie");
   setInterval(function () {
-    Bot.user.setActivity(pg.generate() + " || `help || (" + Bot.guilds.size + ")");
+    Bot.user.setActivity("`help || (v69)");
   }, 120000);
 });
 
@@ -291,19 +291,17 @@ message.channel.send(message.content.replace("jamie say", ""));
   const command = args.shift().toLowerCase();
 
   
-//   if (command==="ow"){
-//     owjs
-//     .getAll('pc', 'eu', args[0])
-//     .then((data) => message.channel.send(data, {depth : 2, colors : true}) );
-    
-//   }
+
   
 
 if (command==="setreminder"){
 
 
 var serverDataFile = './'+message.guild.id+'.json';
-var obj = {
+  
+  
+
+var newData = {
     "reminderChannel": "<#405879481006555136>",
     "reminders": [
       {
@@ -313,11 +311,14 @@ var obj = {
     ]
 };
 
-jsonfile.writeFile(serverDataFile, obj, {flag: 'a'}, function (err) {
+jsonfile.writeFileSync(serverDataFile, newData, {flag: 'a'}, function (err) {
   console.error(err);
 });
+
 }
   
+ 
+
   
   
    //Is this ? meme maker
