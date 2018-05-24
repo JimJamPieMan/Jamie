@@ -107,7 +107,10 @@ Bot.on("guildCreate", guild => {
 
 
 
-var json = {"serverData":""};
+var json = {"serverData":{
+              "reminderChannel":"",
+              "reminders":[]
+                }};
 json = JSON.stringify(json);
 fs.writeFileSync('./'+guild.id+'.json', json, (err) => {
     if (!err) {
@@ -125,13 +128,71 @@ Bot.on("guildDelete", guild => {
 });
 
 
+function sendReminder(time, channel,message){
+  
+  var now = new Date();
+  
+  var countdown = (time-now.getTime());
+  
+  console.log(time,message);
+  setTimeout(function(){
+    channel.send(message);
+    
+  },countdown);
+  
+  
+}
+
 //When the bot is turned on, set the activity
 Bot.on('ready', () => {
+  
+  
+
+  
+  
+  
   Bot.user.setUsername("Jamie");
   setInterval(function () {
     Bot.user.setActivity("`help || (v69)");
   }, 120000);
+  
+  
+const guildNames = Bot.guilds.map(g => g.id);
+  //console.log(guildNames);
+for (var i = 0;i<guildNames.length;i++){
+//console.log(guildNames[i].id);
+  var serverDataFile = './'+guildNames[i]+'.json';
+
+  var obj =fs.readFileSync(serverDataFile,'utf-8');
+  var serverSettingsobj = JSON.parse(obj); 
+  
+  console.log(serverSettingsobj);
+  
+  var guild = Bot.guilds.find("id",guildNames[i]);
+ var guildChannels = guild.channels.map(chan =>chan);
+var reminder_Channel = guildChannels.filter(channel => channel.id === serverSettingsobj.serverData.reminderChannel);
+  //console.log(data);
+   
+if(serverSettingsobj.serverData.reminderChannel != ""){
+  
+  if (serverSettingsobj.serverData.reminders.length!=0){
+  for (var j =0;j<serverSettingsobj.serverData.reminders.length;j++){
+    
+    sendReminder(serverSettingsobj.serverData.reminders[j].reminder[0].time,reminder_Channel[0],serverSettingsobj.serverData.reminders[j].reminder[0].title);
+  }
+  }
+  
+  
+  
+
+  
+  
+}
+
+
+}
 });
+  
 
 
   
@@ -294,23 +355,64 @@ message.channel.send(message.content.replace("jamie say", ""));
 
   
 
-if (command==="setreminder"){
+  if (command==="setreminderchannel"){
 
 
 var serverDataFile = './'+message.guild.id+'.json';
-
+var reChannel = message.mentions.channels.first();
 
 
 fs.readFile(serverDataFile , 'utf-8',(err, data) => {
   if (err) throw err;
   console.log(data);
   
+  var newData = reChannel.id;
+  
+  
+  
+   var obj = JSON.parse(data); //now it an object
+  obj.serverData.reminderChannel = newData;
+  
+  //add some data
+    var json = JSON.stringify(obj);
+  fs.writeFile(serverDataFile, json, 'utf8', (err) =>{
+    if (err) throw err;
+});
+
+  
+
+
+
+});
+            }
+
+if (command==="setreminder"){
+
+
+var serverDataFile = './'+message.guild.id+'.json';
+
+
+var oneMinute = 60 * 1000;
+      var oneHour = oneMinute * 60;
+      var oneDay = oneHour * 24;
+  var dateString = args[0]; // Oct 23
+
+var dateParts = dateString.split("/");
+
+var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);    
+  
+  
+
+  args.shift();
+  var message = args.join(" ");
+fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+  if (err) throw err;
+  
   var newData = {
-    "reminderChannel": "<#405879481006555136>",
-    "reminders": [
+    "reminder": [
       {
-        "title":args[0],
-        "time":args[1]
+        "title":message,
+        "time":dateObject.getTime()
       }
     ]
 };
@@ -318,7 +420,8 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
   
   
    var obj = JSON.parse(data); //now it an object
-    obj.serverData.push(newData); //add some data
+  obj.serverData.reminders.push(newData);
+  //add some data
     var json = JSON.stringify(obj);
   fs.writeFile(serverDataFile, json, 'utf8', err);
 });
