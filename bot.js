@@ -298,10 +298,14 @@ if (command==="setreminder"){
 
 
 var serverDataFile = './'+message.guild.id+'.json';
-  
-  
 
-var newData = {
+
+
+fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+  if (err) throw err;
+  console.log(data);
+  
+  var newData = {
     "reminderChannel": "<#405879481006555136>",
     "reminders": [
       {
@@ -310,10 +314,18 @@ var newData = {
       }
     ]
 };
-
-jsonfile.writeFileSync(serverDataFile, newData, {flag: 'a'}, function (err) {
-  console.error(err);
+  
+  
+  
+   var obj = JSON.parse(data); //now it an object
+    obj.serverData.push(newData); //add some data
+    var json = JSON.stringify(obj);
+  fs.writeFile('myjsonfile.json', json, 'utf8', err);
 });
+
+  
+
+
 
 }
   
