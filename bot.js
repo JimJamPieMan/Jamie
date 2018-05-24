@@ -320,7 +320,7 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
    var obj = JSON.parse(data); //now it an object
     obj.serverData.push(newData); //add some data
     var json = JSON.stringify(obj);
-  fs.writeFile('myjsonfile.json', json, 'utf8', err);
+  fs.writeFile(serverDataFile, json, 'utf8', err);
 });
 
   
