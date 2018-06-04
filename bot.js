@@ -73,6 +73,10 @@ const send = require('quick.hook');
 var owjs = require('overwatch-js');
  var jsonfile = require('jsonfile');
 
+var shortid = require('shortid');
+
+
+
 
 
 //Setup the queue system for music
@@ -125,23 +129,49 @@ fs.writeFileSync('./'+guild.id+'.json', json, (err) => {
 //When the bot leaves a server delete the server settings
 Bot.on("guildDelete", guild => {
   settings.delete(guild.id);
+  var serverDataFile = './'+guild.id+'.json';
+   fs.unlinkSync(serverDataFile);
 });
 
 
-function sendReminder(time, channel,message){
+function sendReminder(time, channel,message,guild){
   
   var now = new Date();
   
   var countdown = (time-now.getTime());
+
   
   console.log(time,message);
   setTimeout(function(){
     channel.send(message);
     
+    var serverDataFile = './'+guild+'.json';
+    fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+  if (err) throw err;
+  
+ 
+  
+  
+  
+  var obj = JSON.parse(data); 
+  
+  //now it an object
+  obj.serverData.reminders.shift();
+  
+      var json = JSON.stringify(obj);
+  fs.writeFile(serverDataFile, json, 'utf-8', err);
+
+
+});
+    
   },countdown);
   
   
 }
+
+
+
+
 
 //When the bot is turned on, set the activity
 Bot.on('ready', () => {
@@ -156,6 +186,9 @@ Bot.on('ready', () => {
     Bot.user.setActivity("`help || (v69)");
   }, 120000);
   
+  
+   
+ 
   
 const guildNames = Bot.guilds.map(g => g.id);
   //console.log(guildNames);
@@ -178,7 +211,7 @@ if(serverSettingsobj.serverData.reminderChannel != ""){
   if (serverSettingsobj.serverData.reminders.length!=0){
   for (var j =0;j<serverSettingsobj.serverData.reminders.length;j++){
     
-    sendReminder(serverSettingsobj.serverData.reminders[j].reminder[0].time,reminder_Channel[0],serverSettingsobj.serverData.reminders[j].reminder[0].title);
+    sendReminder(serverSettingsobj.serverData.reminders[j].reminder[0].time,reminder_Channel[0],serverSettingsobj.serverData.reminders[j].reminder[0].title,guildNames[i]);
   }
   }
   
@@ -191,6 +224,8 @@ if(serverSettingsobj.serverData.reminderChannel != ""){
 
 
 }
+
+  
 });
   
 
@@ -248,6 +283,7 @@ message.channel.send(message.content.replace("jamie say", ""));
   var PREFIX = serverPrefix;
 
 
+
 //   //Dont say yellow
 //   if (message.content.toLowerCase() === "yellow") {
 //     if (!(message.guild.id == process.env.JACKsserver)) {
@@ -299,6 +335,7 @@ message.channel.send(message.content.replace("jamie say", ""));
   //HELP IVE FALLEN AND I NEED @SOMEONE
   if (message.content.toLowerCase().startsWith("@someone")) {
     var guildUsers = message.guild.members.map(m => m.user.id);
+
     var randomUser = Math.floor(Math.random() * guildUsers.length);
     message.channel.send(message.author + " has fallen and can't get up and cant get up and needs @someone. (" + "<@" + guildUsers[randomUser] + ">" + ")");
   }
@@ -327,7 +364,7 @@ message.channel.send(message.content.replace("jamie say", ""));
 
     //yep, the return
     if (message.content.toLowerCase().startsWith('haha')) {
-      message.channel.send("https://imgur.com/b0NbvBR");
+      message.channel.send("https://i.imgur.com/b0NbvBR.jpg");
     }
     
     //copypasta 1
@@ -350,89 +387,321 @@ message.channel.send(message.content.replace("jamie say", ""));
   if (message.content.indexOf(PREFIX) !== 0) return;
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-
+  
+  
+//   if (command==="join"){
+//     if (!message.member.voiceChannel) {
+//         message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
+//         return;
+//       }
+    
+//     if (!message.guild.voiceConnection) {
+//             message.member.voiceChannel.join() .then(connection => {
+//      const receiver = connection.createReceiver();
+//     receiver.on('pcm', (user, buffer) => {
+//         console.log(buffer);
+      
+//     });
+            
+//   });
+//     }
+    
+//   }
+//   if (command==="leave"){
+    
+    
+//     if (message.guild.voiceConnection) {
+//         message.guild.voiceConnection.disconnect();
+//       }
+    
+//   }
+  
   
 
+  if (command === "revokewarn"){
+    var serverDataFile = './'+message.guild.id+'.json';
+    var revokedWarn = false;
+    var id = args[0];
+if (!args[0]){
+  message.channel.send("No ID given to delete");
+  return;
+}
   
-
-  if (command==="setreminderchannel"){
-
-
-var serverDataFile = './'+message.guild.id+'.json';
-var reChannel = message.mentions.channels.first();
-
-
-fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+    
+     fs.readFile(serverDataFile , 'utf-8',(err, data) => {
   if (err) throw err;
-  console.log(data);
   
-  var newData = reChannel.id;
-  
-  
-  
-   var obj = JSON.parse(data); //now it an object
-  obj.serverData.reminderChannel = newData;
+   var obj = JSON.parse(data); 
+       
+       for (var i =0; i<obj.serverData.warns.length;i++){
+            if (obj.serverData.warns[i].warnID == id){
+              
+              obj.serverData.warns.splice(i,1);
+         revokedWarn=true;
+              message.channel.send("Warning revoked");
+              
+              
+            }
+       }//now it an object
+   if(revokedWarn==false){
+      message.channel.send("An error happened. (Invalid ID)");
+      return;
+    }
+    
   
   //add some data
     var json = JSON.stringify(obj);
   fs.writeFile(serverDataFile, json, 'utf8', (err) =>{
     if (err) throw err;
 });
-
+    
   
-
-
-
-});
-            }
-
-if (command==="setreminder"){
-
-
-var serverDataFile = './'+message.guild.id+'.json';
-
-
-var oneMinute = 60 * 1000;
-      var oneHour = oneMinute * 60;
-      var oneDay = oneHour * 24;
-  var dateString = args[0]; // Oct 23
-
-var dateParts = dateString.split("/");
-
-var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);    
+  });
+   
+  }
   
   
-
-  args.shift();
-  var message = args.join(" ");
-fs.readFile(serverDataFile , 'utf-8',(err, data) => {
-  if (err) throw err;
-  
-  var newData = {
-    "reminder": [
-      {
-        "title":message,
-        "time":dateObject.getTime()
+  if (command === "warn"){
+    
+  let myRole = message.guild.roles.find("name", "Rue brick");
+      if (!message.member.roles.has(myRole.id)) {
+        message.channel.send("To quote Hamlet, Act III, Scene III, Line 87, 'No'.");
+        return;
       }
-    ]
-};
-  
+    
+  var serverDataFile = './'+message.guild.id+'.json';
+    
+    //check user
+    //reason
+    var user = message.mentions.members.first();
+    
+    
+    if (!user){
+    message.channel.send("please mention a valid user");
+      return;
+    }
+    args.shift();
+    if (!args[0]){
+    message.channel.send("please give a reason");
+      return;
+    }
+    
+    var warnid = shortid.generate();
+    var reason = args.join(" ");
+    
+    
+    fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+  if (err) throw err;
+
+      var warning = {
+        warnID:warnid,
+        person:user.id,
+        reason:reason
+        
+      }
   
   
    var obj = JSON.parse(data); //now it an object
-  obj.serverData.reminders.push(newData);
+  obj.serverData.warns.push(warning);
+  
   //add some data
     var json = JSON.stringify(obj);
-  fs.writeFile(serverDataFile, json, 'utf8', err);
+  fs.writeFile(serverDataFile, json, 'utf8', (err) =>{
+    if (err) throw err;
 });
+    
+  
+  });
+    var data = fs.readFileSync(serverDataFile,'utf-8');
+var amountOfWarns=1;
+    data = JSON.parse(data);
+    
+    
+    
+    for (var i =0;i<data.serverData.warns.length;i++){
+    if (data.serverData.warns[i].person == user.id){
+amountOfWarns++;
+
+     
+  }
+    }
+     if (amountOfWarns>=6){
+        user.ban(reason);
+       message.channel.send("User Banned");
+
+      }else if (amountOfWarns>=5){
+        message.channel.send(user +" One more warn and you are Banned");
+
+      }else if (amountOfWarns>=3){
+        user.kick(reason);
+        message.channel.send("User Kicked");
+    }else if (amountOfWarns>=2){
+        message.channel.send(user +" One more warn and you are kicked");
+
+      }
+    
+  const embed = {
+                "title": "Warning given to "+ user.user.username,
+                "color": 9442302,
+                "fields":[{
+                  name:"UserId: ",
+                  value:user.id
+                },{
+                  name:"WarnID: ",
+                  value:warnid
+                },{
+                  name:"Reason: ",
+                  value:reason
+                }
+                         ]
+              };
+              message.channel.send({
+                embed
+              });
+    
+  }
+                
+
+  
+
+//   if (command==="setreminderchannel"){
+
+
+// var serverDataFile = './'+message.guild.id+'.json';
+    
+    
+// var reChannel = message.mentions.channels.first();
+// if(!reChannel){
+//       message.channel.send("Plase give a give a fuck the next time you type this command. i. fucking e give tag a proper channel");
+//       return;
+//     }
+
+// fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+//   if (err) throw err;
+  
+//   var newData = reChannel.id;
+  
+  
+  
+//    var obj = JSON.parse(data); //now it an object
+//   obj.serverData.reminderChannel = newData;
+  
+//   //add some data
+//     var json = JSON.stringify(obj);
+//   fs.writeFile(serverDataFile, json, 'utf8', (err) =>{
+//     if (err) throw err;
+// });
 
   
 
 
 
-}
+// });
+//     message.channel.send("reminder channel set as "+reChannel);
+//             }
+
+// if (command==="setreminder"){
+
+ 
+
+// var serverDataFile = './'+message.guild.id+'.json';
+
+
+// var oneMinute = 60 * 1000;
+//       var oneHour = oneMinute * 60;
+//       var oneDay = oneHour * 24;
+//   var dateString = args[0]; // Oct 23
+
+// var dateParts = dateString.split("/");
+  
+  
+//   if(isNaN(dateParts[2])||isNaN(dateParts[1] - 1)||isNaN(dateParts[0])){
+//     message.channel.send("please use the DD/MM/YYY format like the cunts down under do");
+//     return;
+//   }
+
+// var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);    
+  
+  
+
+//   args.shift();
+//   var reminderMessage = args.join(" ");
+  
+//   if (!args[0]){
+//   message.channel.send("please inculde a message for the reminder you feathered fuck");
+//     return;
+//   }  
+//   var now = new Date();
+  
+//   var countdown = ((dateObject.getTime())-(now.getTime()));
+//   console.log(countdown);
+
+//   var now = new Date();
+  
+
+//   var days = convertMiliseconds(countdown,'d');
+//   if(days+1 <= 0){
+//     message.channel.send("***YOU SILLY FUCK, TIME TRAVEL DOESN'T EXIST YET. #LEGALISETIMETRVEL***");
+//     return;
+//   }
+  
   
  
+// fs.readFile(serverDataFile , 'utf-8',(err, data) => {
+//   if (err) throw err;
+  
+//   var newData = {
+//     "reminder": [
+//       {
+//         "title":reminderMessage,
+//         "time":dateObject.getTime()
+//       }
+//     ]
+// };
+  
+  
+  
+//   var obj = JSON.parse(data); 
+//   if(obj.serverData.reminderChannel==""){
+//     message.channel.send("THERES NO REMINDER CHANNEL SET YOU FUCCCCCC");
+//     return;
+//   }
+//   //now it an object
+//   obj.serverData.reminders.push(newData);
+  
+//       var json = JSON.stringify(obj);
+//   fs.writeFile(serverDataFile, json, 'utf-8' ,(err) =>{
+//     if (err) throw err;
+//   });
+
+
+// });
+//  var data = fs.readFileSync(serverDataFile,'utf-8');
+//   var obj = JSON.parse(data);
+// var guild = Bot.guilds.find("id",message.guild.id);
+//  var guildChannels = guild.channels.map(chan =>chan);
+
+// var reminder_Channel = guildChannels.filter(channel => channel.id === obj.serverData.reminderChannel);
+  
+
+//   message.channel.send("i think you should be reminded in "+(days+1)+" days. honestly not too sure. but if it does happen it will be in <#"+obj.serverData.reminderChannel+">");
+//   setDaysTimeout(function(){
+//     reminder_Channel[0].send(message);
+    
+//   },days+1);
+
+ 
+ 
+  
+  
+
+
+
+
+
+// }
+  
+//  
 
   
   
@@ -1169,7 +1438,7 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
           message.channel.stopTyping();
         }
         if (error) {
-       
+         message.channel.send("An unkown error has afuckinghappended. dont contact me");
           message.channel.stopTyping();
         }
       });
@@ -1196,7 +1465,7 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
           message.channel.stopTyping();
         }
         if (error) {
-       
+       message.channel.send("An unkown error has afuckinghappended. dont contact me");
           message.channel.stopTyping();
         }
       });
@@ -1224,7 +1493,7 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
           message.channel.stopTyping();
         }
         if (error) {
-       
+       message.channel.send("An unkown error has afuckinghappended. dont contact me");
           message.channel.stopTyping();
         }
       });
@@ -1253,7 +1522,7 @@ fs.readFile(serverDataFile , 'utf-8',(err, data) => {
           message.channel.stopTyping();
         }
         if (error) {
-          
+          message.channel.send("An unkown error has afuckinghappended. dont contact me");
           message.channel.stopTyping();
         }
       });

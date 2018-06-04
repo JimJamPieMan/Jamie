@@ -1,1 +1,8 @@
-{"serverData":{"reminderChannel":"430741434698825739","reminders":[{"reminder":[{"title":"everone is gay as fuccccck","time":1527206400000}]}]}}
+{
+  "serverData":
+ {
+   "reminderChannel":"430741434698825739",
+   "reminders":[],
+   "warns":[]
+ }
+}

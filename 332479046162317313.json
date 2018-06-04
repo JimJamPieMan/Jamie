@@ -1,1 +1,8 @@
-{"serverData":{"reminderChannel":"","reminders":[]}}
+{
+  "serverData":
+ {
+   "reminderChannel":"",
+   "reminders":[],
+   "warns":[]
+ }
+}
