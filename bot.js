@@ -66,13 +66,22 @@ var youtubeUrl = require("youtube-url");
 var Canvas = require('canvas');
 var Image = Canvas.Image;
 const http = require("http");
-var Request = require('pixl-request');
+var PRequest = require('pixl-request');
 const faceapp = require('faceapp');
 const superagent = require('superagent');
 const send = require('quick.hook');
 var owjs = require('overwatch-js');
 var jsonfile = require('jsonfile');
 var shortid = require('shortid');
+const {
+  setLongTimeout,
+  setLongInterval,
+
+  clearLongTimeout,
+  clearLongInterval
+} = require('set-long-timeout')();
+var request = require('request');
+
 
 //Setup the queue system for music
 var servers = {};
@@ -119,8 +128,9 @@ Bot.on("guildDelete", guild => {
 function sendReminder(time, channel, message, guild) {
   var now = new Date();
   var countdown = (time - now.getTime());
-  setTimeout(function () {
-    channel.send(message);
+  // will call function after 30 days
+const timeoutId = setLongTimeout(() => { 
+  channel.send(message);
     var serverDataFile = './' + guild + '.json';
     fs.readFile(serverDataFile, 'utf-8', (err, data) => {
       if (err) throw err;
@@ -128,8 +138,9 @@ function sendReminder(time, channel, message, guild) {
       obj.serverData.reminders.shift();
       var json = JSON.stringify(obj);
       fs.writeFile(serverDataFile, json, 'utf-8', err);
-    });
-  }, countdown);
+    });}, countdown);
+// stop timeout with ID returned
+
 }
 
 //When the bot is turned on, set the activity
@@ -138,6 +149,11 @@ Bot.on('ready', () => {
   setInterval(function () {
     Bot.user.setActivity("`help || (v69)");
   }, 120000);
+  
+  Bot.fetchUser(process.env.myID)
+        .then(user => {
+          user.send("Bot Started in "+Bot.guilds.size+" servers.");
+        })
 
   const guildNames = Bot.guilds.map(g => g.id);
   for (var i = 0; i < guildNames.length; i++) {
@@ -155,6 +171,9 @@ Bot.on('ready', () => {
       }
     }
   }
+  
+  
+  
 });
 
 Bot.on('guildMemberAdd', (guildMember) => {
@@ -233,12 +252,13 @@ Bot.on("message", async message => {
 
     //yep 3.0
     if (message.content.toLowerCase().startsWith('hmm')) {
-      message.channel.send("https://imgur.com/Kj6GH8C");
+      message.channel.send({files: ['https://i.imgur.com/Kj6GH8C.gif']});
     }
 
     //yep, the return
+    
     if (message.content.toLowerCase().startsWith('haha')) {
-      message.channel.send("https://i.imgur.com/b0NbvBR.jpg");
+      message.channel.send({files: ['https://i.imgur.com/b0NbvBR.jpg']});
     }
 
     //copypasta 1
@@ -253,7 +273,7 @@ Bot.on("message", async message => {
 
     //REEEEEEEE
     if (message.content.toLowerCase().includes('@everyone')) {
-      message.channel.send("https://i.imgur.com/FTB2stB.gif");
+      message.channel.send({files: ['https://i.imgur.com/FTB2stB.gif']});
       return;
     }
 
@@ -280,27 +300,49 @@ Bot.on("message", async message => {
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  //   if (command==="join"){
-  //     if (!message.member.voiceChannel) {
-  //         message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
-  //         return;
-  //       }
-  //     if (!message.guild.voiceConnection) {
-  //             message.member.voiceChannel.join() .then(connection => {
-  //      const receiver = connection.createReceiver();
-  //     receiver.on('pcm', (user, buffer) => {
-  //         console.log(buffer);
-  //     });
-  //   });
-  //     }
-  //   }
+    if (command==="join"){
+      if (!message.member.voiceChannel) {
+          message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
+          return;
+        }
+      if (!message.guild.voiceConnection) {
+              message.member.voiceChannel.join() .then(connection => {
+       const voiceReceiver = connection.createReceiver();
+      connection.on('speaking', (user, speaking) => {
+                if (speaking) {
+                    console.log("listen on");
+                    let fileStream = fs.createWriteStream('./audiotest.pcm');
+                    let audioStream = voiceReceiver.createPCMStream(user);
+
+                    audioStream.pipe(fileStream);
+
+                    audioStream.on('end', () => {
+                        console.log("listen off");
+                        fileStream.end();
+                    });
+                }
+            });
+    });
+      }
+    }
 
 
-  //   if (command==="leave"){
-  //     if (message.guild.voiceConnection) {
-  //         message.guild.voiceConnection.disconnect();
-  //       }\
-  //   }
+    if (command==="leave"){
+      if (message.guild.voiceConnection) {
+          message.guild.voiceConnection.disconnect();
+        }
+    }
+  
+//   if (command==="download"){
+//       var file = fs.createWriteStream("file.mp3");
+// var request = http.get("http://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", function(response) {
+//   response.pipe(file);
+// });
+//     setTimeout(function(){
+// console.log(file);
+//     },2000);
+
+//   }
 
   //meme
   if (command === "servericon") {
@@ -309,7 +351,7 @@ Bot.on("message", async message => {
       message.channel.send("***hurrrr hurrrr GIVE LINK***");
       return;
     }
-    var request = new Request();
+    var request = new PRequest();
     request.get(url, function (err, resp, data) {
       if (err) {
         message.channel.send("failed to meme");
@@ -466,9 +508,7 @@ Bot.on("message", async message => {
     var now = new Date();
     var countdown = ((dateObject.getTime()) - (now.getTime()));
     console.log(countdown);
-    var now = new Date();
-    var days = convertMiliseconds(countdown, 'd');
-    if (days + 1 <= 0) {
+    if ((dateObject.getTime()) <= (now.getTime())) {
       message.channel.send("***YOU SILLY FUCK, TIME TRAVEL DOESN'T EXIST YET. #LEGALISETIMETRVEL***");
       return;
     }
@@ -497,10 +537,10 @@ Bot.on("message", async message => {
     var guild = Bot.guilds.find("id", message.guild.id);
     var guildChannels = guild.channels.map(chan => chan);
     var reminder_Channel = guildChannels.filter(channel => channel.id === obj.serverData.reminderChannel);
-    message.channel.send("i think you should be reminded in " + (days + 1) + " days. honestly not too sure. but if it does happen it will be in <#" + obj.serverData.reminderChannel + ">");
-    setDaysTimeout(function () {
-      reminder_Channel[0].send(message);
-    }, days + 1);
+    message.channel.send("i think you should be reminded in " + (countdown) + "ms. honestly not too sure. but if it does happen it will be in <#" + obj.serverData.reminderChannel + ">");
+    
+const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessage); }, countdown);
+
   }
 
 
@@ -521,7 +561,7 @@ Bot.on("message", async message => {
     var personPosy = 900;
     var objectPosx = (canvasSizex * 0.72);
     var objectPosy = 490;
-    var request = new Request();
+    var request = new PRequest();
     request.get(url, function (err, resp, data) {
       if (err) throw err;
       var img = new Image();
@@ -1089,7 +1129,7 @@ Bot.on("message", async message => {
       var textSize = 35;
     }
     args.shift();
-    var request = new Request();
+    var request = new PRequest();
     request.get(url, function (err, resp, data) {
       if (err) throw err;
       var img = new Image();
@@ -2047,9 +2087,9 @@ Bot.on("message", async message => {
     }
   }
 
-  //Sends a picture of bob the builder
+  //Sends a picture of bob the builderhttps://imgur.com/a/iCv7s
   if (command === "bob") {
-    message.channel.send(message.author + " pls sned bob " + "https://imgur.com/a/iCv7s");
+    message.channel.send(message.author + " pls sned bob",{files: ['https://i.imgur.com/a/iCv7s.jpg']});
   }
 
   //Makes an elf on the shelf meme
@@ -2126,50 +2166,64 @@ Bot.on("message", async message => {
   }
 
   //Used to play local mp3 files from the server before it was moved to a different hosting service
-  // if (command === "sounds") {
-  //   message.reply("don work, the way it hosted means this dont work now sadly");
-  //   
-  //   var voiceChannel = message.member.voiceChannel;
-  //     if (!voiceChannel){
-  //         return message.reply("if you want to hear fucking sounds get in a fucking channel");
-  //       }
-  //             else if (args[0] === "" || isNaN(args[0])){
-  //               message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
-  //       }
-  //       else{
-  //         var soundtoplay = args[0].toString();
-  //         console.log(args[0]);
-  //          message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
-  //        voiceChannel.join().then(connection => {
-  //            console.log("joined channel");
-  //            const dispatcher = connection.playFile("assets/"+args[0] + '.mp3');
-  //            dispatcher.on("end", end => {
-  //                console.log("left channel");
-  //                message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
-  //                voiceChannel.leave();
-  //            });
-  //        }).catch(err => console.log(err));
-  //      }
-  // }
+//   if (command === "sounds") {
+   
+    
+//     var voiceChannel = message.member.voiceChannel;
+//       if (!voiceChannel){
+//           return message.reply("if you want to hear fucking sounds get in a fucking channel");
+//         }
+//               else if (args[0] === "" || isNaN(args[0])){
+//                 message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
+//         }
+//         else{
+//           var soundtoplay = args[0].toString();
+      
+
+
+
+
+// var file = fs.createWriteStream("file.jpg");
+// var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F"+soundtoplay+".mp3?1518669335850", function(response) {
+//   response.pipe(file);
+// });
+//            message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
+//          voiceChannel.join().then(connection => {
+//              console.log(file);
+           
+       
+//              const dispatcher = connection.playFile(file);
+      
+             
+//              dispatcher.on("end", end => {
+//                  console.log("left channel");
+//                  message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
+//                  voiceChannel.leave();
+//              });
+//          }).catch(err => console.log(err));
+//        }
+//   }
 
   //Men
   if (command === "men") {
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
-    message.channel.send("https://i.imgur.com/189DJI3.jpg");
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
+    
   }
 
   //Sends 5 pictures of a random Indian man a friend found
   if (command === "manesh") {
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
-    message.channel.send("https://i.imgur.com/YZp0vDp.jpg");
+    message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+     message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+     message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+     message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+     message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+     message.channel.send({files: ['https://i.imgur.com/YZp0vDp.jpg']});
+    
   }
 
   //Sends a meme
