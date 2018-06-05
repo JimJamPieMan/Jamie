@@ -112,8 +112,8 @@ Bot.on("guildCreate", guild => {
 
 
 var json = {"serverData":{
-              "reminderChannel":"",
-              "reminders":[]
+            
+              "warns":[]
                 }};
 json = JSON.stringify(json);
 fs.writeFileSync('./'+guild.id+'.json', json, (err) => {
@@ -416,6 +416,18 @@ message.channel.send(message.content.replace("jamie say", ""));
     
 //   }
   
+  if (command==="servericon"){
+    var url = args[0];
+     var request = new Request();
+    request.get(url, function (err, resp, data) {
+        if (err){ 
+          message.channel.send("failed to meme");
+          throw err;
+                }
+      message.channel.send("why is this server such a fucking meme");
+      message.guild.setIcon(data);
+    });
+  }
   
 
   if (command === "revokewarn"){
