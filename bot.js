@@ -305,6 +305,10 @@ Bot.on("message", async message => {
   //meme
   if (command === "servericon") {
     var url = args[0];
+    if (!url){
+      message.channel.send("***hurrrr hurrrr GIVE LINK***");
+      return;
+    }
     var request = new Request();
     request.get(url, function (err, resp, data) {
       if (err) {
