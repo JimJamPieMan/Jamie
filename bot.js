@@ -305,7 +305,7 @@ Bot.on("message", async message => {
   //meme
   if (command === "servericon") {
     var url = args[0];
-    if (!url){
+    if (!url) {
       message.channel.send("***hurrrr hurrrr GIVE LINK***");
       return;
     }
@@ -422,90 +422,87 @@ Bot.on("message", async message => {
     });
   }
 
+  //ser the reminder channel
+  if (command === "setreminderchannel") {
+    var serverDataFile = './' + message.guild.id + '.json';
+    var reChannel = message.mentions.channels.first();
+    if (!reChannel) {
+      message.channel.send("Plase give a give a fuck the next time you type this command. i. fucking e give tag a proper channel");
+      return;
+    }
+    fs.readFile(serverDataFile, 'utf-8', (err, data) => {
+      if (err) throw err;
+      var newData = reChannel.id;
+      var obj = JSON.parse(data); //now it an object
+      obj.serverData.reminderChannel = newData;
+      //add some data
+      var json = JSON.stringify(obj);
+      fs.writeFile(serverDataFile, json, 'utf8', (err) => {
+        if (err) throw err;
+      });
+    });
+    message.channel.send("reminder channel set as " + reChannel);
+  }
 
+  //setreminder
+  if (command === "setreminder") {
+    var serverDataFile = './' + message.guild.id + '.json';
+    var oneMinute = 60 * 1000;
+    var oneHour = oneMinute * 60;
+    var oneDay = oneHour * 24;
+    var dateString = args[0]; // Oct 23
+    var dateParts = dateString.split("/");
+    if (isNaN(dateParts[2]) || isNaN(dateParts[1] - 1) || isNaN(dateParts[0])) {
+      message.channel.send("please use the DD/MM/YYY format like the cunts down under do");
+      return;
+    }
+    var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    args.shift();
+    var reminderMessage = args.join(" ");
+    if (!args[0]) {
+      message.channel.send("please inculde a message for the reminder you feathered fuck");
+      return;
+    }
+    var now = new Date();
+    var countdown = ((dateObject.getTime()) - (now.getTime()));
+    console.log(countdown);
+    var now = new Date();
+    var days = convertMiliseconds(countdown, 'd');
+    if (days + 1 <= 0) {
+      message.channel.send("***YOU SILLY FUCK, TIME TRAVEL DOESN'T EXIST YET. #LEGALISETIMETRVEL***");
+      return;
+    }
+    fs.readFile(serverDataFile, 'utf-8', (err, data) => {
+      if (err) throw err;
+      var newData = {
+        "reminder": [{
+          "title": reminderMessage,
+          "time": dateObject.getTime()
+        }]
+      };
+      var obj = JSON.parse(data);
+      if (obj.serverData.reminderChannel == "") {
+        message.channel.send("THERES NO REMINDER CHANNEL SET YOU FUCCCCCC");
+        return;
+      }
+      //now it an object
+      obj.serverData.reminders.push(newData);
+      var json = JSON.stringify(obj);
+      fs.writeFile(serverDataFile, json, 'utf-8', (err) => {
+        if (err) throw err;
+      });
+    });
+    var data = fs.readFileSync(serverDataFile, 'utf-8');
+    var obj = JSON.parse(data);
+    var guild = Bot.guilds.find("id", message.guild.id);
+    var guildChannels = guild.channels.map(chan => chan);
+    var reminder_Channel = guildChannels.filter(channel => channel.id === obj.serverData.reminderChannel);
+    message.channel.send("i think you should be reminded in " + (days + 1) + " days. honestly not too sure. but if it does happen it will be in <#" + obj.serverData.reminderChannel + ">");
+    setDaysTimeout(function () {
+      reminder_Channel[0].send(message);
+    }, days + 1);
+  }
 
-
-  //   if (command==="setreminderchannel"){
-  // var serverDataFile = './'+message.guild.id+'.json';
-  // var reChannel = message.mentions.channels.first();
-  // if(!reChannel){
-  //       message.channel.send("Plase give a give a fuck the next time you type this command. i. fucking e give tag a proper channel");
-  //       return;
-  //     }
-  // fs.readFile(serverDataFile , 'utf-8',(err, data) => {
-  //   if (err) throw err;
-  //   var newData = reChannel.id;
-  //    var obj = JSON.parse(data); //now it an object
-  //   obj.serverData.reminderChannel = newData;
-  //   //add some data
-  //     var json = JSON.stringify(obj);
-  //   fs.writeFile(serverDataFile, json, 'utf8', (err) =>{
-  //     if (err) throw err;
-  // });
-  // });
-  //     message.channel.send("reminder channel set as "+reChannel);
-  //             }
-
-  // if (command==="setreminder"){
-  // var serverDataFile = './'+message.guild.id+'.json';
-  // var oneMinute = 60 * 1000;
-  //       var oneHour = oneMinute * 60;
-  //       var oneDay = oneHour * 24;
-  //   var dateString = args[0]; // Oct 23
-  // var dateParts = dateString.split("/");
-  //   if(isNaN(dateParts[2])||isNaN(dateParts[1] - 1)||isNaN(dateParts[0])){
-  //     message.channel.send("please use the DD/MM/YYY format like the cunts down under do");
-  //     return;
-  //   }
-  // var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);    
-  //   args.shift();
-  //   var reminderMessage = args.join(" ");
-  //   if (!args[0]){
-  //   message.channel.send("please inculde a message for the reminder you feathered fuck");
-  //     return;
-  //   }  
-  //   var now = new Date();
-  //   var countdown = ((dateObject.getTime())-(now.getTime()));
-  //   console.log(countdown);
-  //   var now = new Date();
-  //   var days = convertMiliseconds(countdown,'d');
-  //   if(days+1 <= 0){
-  //     message.channel.send("***YOU SILLY FUCK, TIME TRAVEL DOESN'T EXIST YET. #LEGALISETIMETRVEL***");
-  //     return;
-  //   }
-  // fs.readFile(serverDataFile , 'utf-8',(err, data) => {
-  //   if (err) throw err;
-  //   var newData = {
-  //     "reminder": [
-  //       {
-  //         "title":reminderMessage,
-  //         "time":dateObject.getTime()
-  //       }
-  //     ]
-  // };
-  //   var obj = JSON.parse(data); 
-  //   if(obj.serverData.reminderChannel==""){
-  //     message.channel.send("THERES NO REMINDER CHANNEL SET YOU FUCCCCCC");
-  //     return;
-  //   }
-  //   //now it an object
-  //   obj.serverData.reminders.push(newData);
-  //       var json = JSON.stringify(obj);
-  //   fs.writeFile(serverDataFile, json, 'utf-8' ,(err) =>{
-  //     if (err) throw err;
-  //   });
-  // });
-  //  var data = fs.readFileSync(serverDataFile,'utf-8');
-  //   var obj = JSON.parse(data);
-  // var guild = Bot.guilds.find("id",message.guild.id);
-  //  var guildChannels = guild.channels.map(chan =>chan);
-  // var reminder_Channel = guildChannels.filter(channel => channel.id === obj.serverData.reminderChannel);
-  //   message.channel.send("i think you should be reminded in "+(days+1)+" days. honestly not too sure. but if it does happen it will be in <#"+obj.serverData.reminderChannel+">");
-  //   setDaysTimeout(function(){
-  //     reminder_Channel[0].send(message);
-  //   },days+1);
-  // }
-  //  
 
   //Is this ? meme maker
   if (command === "isthis?") {
