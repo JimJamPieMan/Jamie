@@ -311,7 +311,7 @@ Bot.on("message", async message => {
       connection.on('speaking', (user, speaking) => {
                 if (speaking) {
                     console.log("listen on");
-                    let fileStream = fs.createWriteStream('./audiotest.ogg');
+                    let fileStream = fs.createWriteStream('./audiotest.opus');
                     let audioStream = voiceReceiver.createOpusStream(user);
 
                     audioStream.pipe(fileStream);
