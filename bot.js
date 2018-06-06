@@ -137,7 +137,10 @@ const timeoutId = setLongTimeout(() => {
       var obj = JSON.parse(data);
       obj.serverData.reminders.shift();
       var json = JSON.stringify(obj);
-      fs.writeFile(serverDataFile, json, 'utf-8', err);
+      fs.writeFile(serverDataFile, json, 'utf-8',(err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
     });}, countdown);
 // stop timeout with ID returned
 
@@ -150,10 +153,7 @@ Bot.on('ready', () => {
     Bot.user.setActivity("`help || (v69)");
   }, 120000);
   
-  Bot.fetchUser(process.env.myID)
-        .then(user => {
-          user.send("Bot Started in "+Bot.guilds.size+" servers.");
-        })
+console.log("Started");
 
   const guildNames = Bot.guilds.map(g => g.id);
   for (var i = 0; i < guildNames.length; i++) {
