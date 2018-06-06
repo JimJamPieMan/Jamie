@@ -333,16 +333,14 @@ Bot.on("message", async message => {
         }
     }
   
-//   if (command==="download"){
-//       var file = fs.createWriteStream("file.mp3");
-// var request = http.get("http://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", function(response) {
-//   response.pipe(file);
-// });
-//     setTimeout(function(){
-// console.log(file);
-//     },2000);
+  if (command==="download"){
+      var file = fs.createWriteStream("file.mp3");
+var request = http.get("http://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", function(response) {
+  response.pipe(file);
+});
+   
 
-//   }
+  }
 
   //meme
   if (command === "servericon") {
