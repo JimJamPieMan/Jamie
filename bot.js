@@ -335,7 +335,7 @@ Bot.on("message", async message => {
   
   if (command==="download"){
       var file = fs.createWriteStream("soundsfile.mp3");
-var request = http.get("http://vocaroo.com/media_command.php?media=s14V81NWDYRz&command=download_mp3", function(response) {
+var request = http.get("http://vocaroo.com/i/s14V81NWDYRz", function(response) {
   response.pipe(file);
 });
    
