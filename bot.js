@@ -334,8 +334,8 @@ Bot.on("message", async message => {
     }
   
   if (command==="download"){
-      var file = fs.createWriteStream("file.mp3");
-var request = http.get("http://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", function(response) {
+      var file = fs.createWriteStream("soundsfile.mp3");
+var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F7.mp3?1518669335850", function(response) {
   response.pipe(file);
 });
    
