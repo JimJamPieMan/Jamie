@@ -81,6 +81,7 @@ const {
   clearLongInterval
 } = require('set-long-timeout')();
 var request = require('request');
+const Pxlsrt = require('pxlsrt');
 
 
 //Setup the queue system for music
@@ -125,7 +126,7 @@ Bot.on("guildDelete", guild => {
   fs.unlinkSync(serverDataFile);
 });
 
-function sendReminder(time, channel, message, guild) {
+function sendReminder(time, channel, message, guild, pos) {
   var now = new Date();
   var countdown = (time - now.getTime());
   // will call function after 30 days
@@ -135,7 +136,7 @@ const timeoutId = setLongTimeout(() => {
     fs.readFile(serverDataFile, 'utf-8', (err, data) => {
       if (err) throw err;
       var obj = JSON.parse(data);
-      obj.serverData.reminders.shift();
+      obj.serverData.warns.splice(pos, 1);
       var json = JSON.stringify(obj);
       fs.writeFile(serverDataFile, json, 'utf-8',(err) => {
   if (err) throw err;
@@ -166,7 +167,7 @@ console.log("Started");
     if (serverSettingsobj.serverData.reminderChannel != "") {
       if (serverSettingsobj.serverData.reminders.length != 0) {
         for (var j = 0; j < serverSettingsobj.serverData.reminders.length; j++) {
-          sendReminder(serverSettingsobj.serverData.reminders[j].reminder[0].time, reminder_Channel[0], serverSettingsobj.serverData.reminders[j].reminder[0].title, guildNames[i]);
+          sendReminder(serverSettingsobj.serverData.reminders[j].reminder[0].time, reminder_Channel[0], serverSettingsobj.serverData.reminders[j].reminder[0].title, guildNames[i], j);
         }
       }
     }
@@ -227,7 +228,14 @@ Bot.on("message", async message => {
 
   //HELP IVE FALLEN AND I NEED @SOMEONE
   if (message.content.toLowerCase().startsWith("@someone")) {
-    var guildUsers = message.guild.members.map(m => m.user.id);
+    
+    let filter = m => m.user.bot===false,
+botCount = message.guild.members.filter(filter);
+
+    
+    
+        var guildUsers = botCount.map(m => m.user.id);
+
 
     var randomUser = Math.floor(Math.random() * guildUsers.length);
     message.channel.send(message.author + " has fallen and can't get up and cant get up and needs @someone. (" + "<@" + guildUsers[randomUser] + ">" + ")");
@@ -300,46 +308,28 @@ Bot.on("message", async message => {
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-    if (command==="join"){
-      if (!message.member.voiceChannel) {
-          message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
-          return;
-        }
-      if (!message.guild.voiceConnection) {
-              message.member.voiceChannel.join() .then(connection => {
-       const voiceReceiver = connection.createReceiver();
-      connection.on('speaking', (user, speaking) => {
-                if (speaking) {
-                    console.log("listen on");
-                    let fileStream = fs.createWriteStream('./audiotest.opus');
-                    let audioStream = voiceReceiver.createOpusStream(user);
-
-                    audioStream.pipe(fileStream);
-
-                    audioStream.on('end', () => {
-                        console.log("listen off");
-                        fileStream.end();
-                    });
-                }
-            });
-    });
+  if(command==="test"){
+    //message.channel.send("beep boop");
+    var url = args[0];
+    if (!url) {
+      message.channel.send("***hurrrr hurrrr GIVE LINK***");
+      return;
+    }
+    var request = new PRequest();
+    request.get(url, function (err, resp, data) {
+      if (err) {
+        message.channel.send("failed to meme");
+        throw err;
       }
-    }
-
-
-    if (command==="leave"){
-      if (message.guild.voiceConnection) {
-          message.guild.voiceConnection.disconnect();
-        }
-    }
-  
-  if (command==="download"){
-      var file = fs.createWriteStream("soundsfile.mp3");
-var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F7.mp3?1518669335850", function(response) {
-  response.pipe(file);
+     
+    console.log(data);
+    Pxlsrt.read(data).then(image => {
+  image.filter('brute', { min: 10, max: 20, method: 'saturation', direction: 'vertical' }).write("./output.png");
+      message.channel.send({files:["./output.png"]});
 });
+      
+    });
    
-
   }
 
   //meme
@@ -543,7 +533,7 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
 
 
   //Is this ? meme maker
-  if (command === "isthis?") {
+  if (command === "isthis") {
     if (!args[0]) {
       message.channel.send("***WHAT DO YOU WANT TO SAYYYYYYYY?***");
       return;
@@ -2163,45 +2153,6 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
 
   }
 
-  //Used to play local mp3 files from the server before it was moved to a different hosting service
-//   if (command === "sounds") {
-   
-    
-//     var voiceChannel = message.member.voiceChannel;
-//       if (!voiceChannel){
-//           return message.reply("if you want to hear fucking sounds get in a fucking channel");
-//         }
-//               else if (args[0] === "" || isNaN(args[0])){
-//                 message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
-//         }
-//         else{
-//           var soundtoplay = args[0].toString();
-      
-
-
-
-
-// var file = fs.createWriteStream("file.jpg");
-// var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F"+soundtoplay+".mp3?1518669335850", function(response) {
-//   response.pipe(file);
-// });
-//            message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
-//          voiceChannel.join().then(connection => {
-//              console.log(file);
-           
-       
-//              const dispatcher = connection.playFile(file);
-      
-             
-//              dispatcher.on("end", end => {
-//                  console.log("left channel");
-//                  message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
-//                  voiceChannel.leave();
-//              });
-//          }).catch(err => console.log(err));
-//        }
-//   }
-
   //Men
   if (command === "men") {
     message.channel.send({files: ['https://i.imgur.com/189DJI3.jpg']});
@@ -2419,4 +2370,92 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
 });
 
 //Logs the bot in with a secret token
-Bot.login(process.env.TOKEN); //
+Bot.login(process.env.TOKEN); 
+
+
+
+
+
+//defunct commands
+
+//     if (command==="join"){
+//       if (!message.member.voiceChannel) {
+//           message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
+//           return;
+//         }
+//       if (!message.guild.voiceConnection) {
+//               message.member.voiceChannel.join() .then(connection => {
+//        const voiceReceiver = connection.createReceiver();
+//       connection.on('speaking', (user, speaking) => {
+//                 if (speaking) {
+//                     console.log("listen on");
+//                     let fileStream = fs.createWriteStream('./audiotest.opus');
+//                     let audioStream = voiceReceiver.createOpusStream(user);
+
+//                     audioStream.pipe(fileStream);
+
+//                     audioStream.on('end', () => {
+//                         console.log("listen off");
+//                         fileStream.end();
+//                     });
+//                 }
+//             });
+//     });
+//       }
+//     }
+
+
+//     if (command==="leave"){
+//       if (message.guild.voiceConnection) {
+//           message.guild.voiceConnection.disconnect();
+//         }
+//     }
+  
+//   if (command==="download"){
+//       var file = fs.createWriteStream("soundsfile.mp3");
+// var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F7.mp3?1518669335850", function(response) {
+//   response.pipe(file);
+// });
+   
+
+//   }
+
+
+  //Used to play local mp3 files from the server before it was moved to a different hosting service
+//   if (command === "sounds") {
+   
+    
+//     var voiceChannel = message.member.voiceChannel;
+//       if (!voiceChannel){
+//           return message.reply("if you want to hear fucking sounds get in a fucking channel");
+//         }
+//               else if (args[0] === "" || isNaN(args[0])){
+//                 message.reply("for fuck sake what the fuck do you want me to play. (1: good good cut got it great, 2: they got t, 3: fun fueled family fuel fun for the whole adventure family, 4: as nebble say brontasorus, 5: CHiPS!!!, 5.1:CHiPS!!!!, 6:ITS A FUN TIME, 7:i love babies, 8:that kid kicked sand in cool cats face, 9:three flavours of wine");
+//         }
+//         else{
+//           var soundtoplay = args[0].toString();
+      
+
+
+
+
+// var file = fs.createWriteStream("file.jpg");
+// var request = http.get("http://cdn.glitch.com/ed065e92-daf8-4718-90ec-7b7d3c3337ce%2F"+soundtoplay+".mp3?1518669335850", function(response) {
+//   response.pipe(file);
+// });
+//            message.channel.sendMessage('i joined your fucking channel  (do not do the sounds command again because i havent done the queue code yet and its proving to be a lil bitch. thanks, love james)');
+//          voiceChannel.join().then(connection => {
+//              console.log(file);
+           
+       
+//              const dispatcher = connection.playFile(file);
+      
+             
+//              dispatcher.on("end", end => {
+//                  console.log("left channel");
+//                  message.channel.sendMessage("either the song ended and i left or some fucker didnt read the above message and did the command again. either way fuck you");
+//                  voiceChannel.leave();
+//              });
+//          }).catch(err => console.log(err));
+//        }
+//   }
