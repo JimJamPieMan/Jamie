@@ -82,6 +82,7 @@ const {
 } = require('set-long-timeout')();
 var request = require('request');
 const Pxlsrt = require('pxlsrt');
+var qr = require('qr-image');
 
 
 //Setup the queue system for music
@@ -178,12 +179,15 @@ console.log("Started");
 });
 
 Bot.on('guildMemberAdd', (guildMember) => {
-  if (guildMember.guild.id != process.env.SPITROASTid) {
-    return;
-  } else {
+  if (guildMember.guild.id == process.env.SPITROASTid) {
     guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Spit Roast"));
     guildMember.guild.channels.find("name", "announcements").send("hey, send nudes " + guildMember);
     guildMember.send("hey welcome to " + guildMember.guild.name + ", make sure you read the rules plz. they are in <#440780606289477633>");
+  } else if(guildMember.guild.id == process.env.JACKsserver){
+    if(guildMember.id==process.env.CALEBid){
+      guildMember.ban();
+    }
+    
   }
 });
 
@@ -307,8 +311,17 @@ botCount = message.guild.members.filter(filter);
   if (message.content.indexOf(PREFIX) !== 0) return;
   const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
+  
+  
+  if(command==="qr"){
+     
+var qr_svg = qr.image('I love QR!', { type: 'png' });
+qr_svg.pipe(require('fs').createWriteStream('i_love_qr.png'));
+    message.channel.send({files:"i_love_qr.png"});
 
-  if(command==="test"){
+  }
+
+  if(command==="sort"){
     //message.channel.send("beep boop");
     var url = args[0];
     if (!url) {
@@ -2242,7 +2255,11 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
       });
     });
     var serverVol = guildConf.volume;
-    server.dispatcher.setVolume(serverVol);
+
+   
+      server.dispatcher.setVolume(serverVol);
+    
+    
     server.queue.shift();
     server.dispatcher.on("end", function () {
       if (server.queue[0]) {
@@ -2257,7 +2274,7 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
     });
   }
 
-  //Plays music, pretty simple
+ //Plays music, pretty simple
   if (command === "play") {
     if (!message.member.voiceChannel) {
       message.channel.send("if you want to hear me get in a fucking voice channel you cuck");
@@ -2298,7 +2315,7 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
         key: process.env.youtubeapi,
         type: 'video'
       };
-      var searchTerm = args.join("_");
+      var searchTerm = args.join("_"); 
       search(searchTerm, opts, function (err, results) {
         if (err) {
           console.log(err);
@@ -2324,7 +2341,7 @@ const timeoutId = setLongTimeout(() => { reminder_Channel[0].send(reminderMessag
       });
     }
   }
-
+   
   //skips music
   if (command === "skip") {
     var server = servers[message.guild.id];
