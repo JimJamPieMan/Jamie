@@ -81,7 +81,6 @@ const {
   clearLongInterval
 } = require('set-long-timeout')();
 var request = require('request');
-const Pxlsrt = require('pxlsrt');
 var qr = require('qr-image');
 
 
@@ -315,34 +314,10 @@ botCount = message.guild.members.filter(filter);
   
   if(command==="qr"){
      
-var qr_svg = qr.image('I love QR!', { type: 'png' });
-qr_svg.pipe(require('fs').createWriteStream('i_love_qr.png'));
-    message.channel.send({files:"i_love_qr.png"});
+var qr_svg = qr.image(args.join(" "), { type: 'png' });
+qr_svg.pipe(require('fs').createWriteStream('./qr.png'));
+    message.channel.send({files:["./qr.png"]});
 
-  }
-
-  if(command==="sort"){
-    //message.channel.send("beep boop");
-    var url = args[0];
-    if (!url) {
-      message.channel.send("***hurrrr hurrrr GIVE LINK***");
-      return;
-    }
-    var request = new PRequest();
-    request.get(url, function (err, resp, data) {
-      if (err) {
-        message.channel.send("failed to meme");
-        throw err;
-      }
-     
-    console.log(data);
-    Pxlsrt.read(data).then(image => {
-  image.filter('brute', { min: 10, max: 20, method: 'saturation', direction: 'vertical' }).write("./output.png");
-      message.channel.send({files:["./output.png"]});
-});
-      
-    });
-   
   }
 
   //meme
